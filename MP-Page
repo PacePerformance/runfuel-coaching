@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Run & Fuel Coaching</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a08;--surface: #141410;--surface2: #1e1e18;
+    --accent: #d4f53c;--accent2: #ff6b2b;--text: #f0ede4;
+    --muted: #6b6b5a;--border: #2a2a22;--success: #4caf82;--danger: #e05252;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem;background:rgba(10,10,8,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+  .logo{display:flex;align-items:center;gap:.7rem;cursor:pointer;}
+  .logo-svg{width:36px;height:36px;flex-shrink:0;}
+  .logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.14em;color:var(--text);line-height:1;}
+  .logo-text span{color:var(--accent);}
+  nav ul{list-style:none;display:flex;gap:2.5rem;}
+  nav ul li a{text-decoration:none;color:var(--muted);font-size:.84rem;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;cursor:pointer;}
+  nav ul li a:hover,nav ul li a.active{color:var(--accent);}
+  .admin-btn{font-family:'Space Mono',monospace;font-size:.72rem;background:transparent;border:1px solid var(--border);color:var(--muted);padding:.4rem .85rem;cursor:pointer;transition:all .2s;letter-spacing:.08em;}
+  .admin-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* PAGES */
+  .page{display:none;padding-top:66px;}
+  .page.active{display:block;}
+
+  /* HERO */
+  .hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding:0 2.5rem;gap:2rem;align-items:center;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 68% 50%,rgba(212,245,60,.06) 0%,transparent 60%),radial-gradient(ellipse at 18% 80%,rgba(255,107,43,.04) 0%,transparent 55%);}
+  .hero-text{position:relative;z-index:1;}
+  .hero-tag{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--accent2);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:.7rem;}
+  .hero-tag::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent2);}
+  .hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,7vw,6.5rem);line-height:.95;letter-spacing:.04em;margin-bottom:1.5rem;}
+  .hero h1 em{color:var(--accent);font-style:normal;}
+  .hero h1 .line2{color:var(--accent2);display:block;}
+  .hero p{font-size:1rem;color:var(--muted);line-height:1.75;max-width:440px;margin-bottom:2.5rem;font-weight:300;}
+  .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;}
+  .btn-primary{background:var(--accent);color:#0a0a08;border:none;padding:.85rem 2rem;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s;letter-spacing:.06em;text-transform:uppercase;}
+  .btn-primary:hover{background:#c8e830;transform:translateY(-1px);}
+  .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border);padding:.85rem 2rem;font-family:'DM Sans',sans-serif;font-weight:400;font-size:.9rem;cursor:pointer;transition:all .2s;letter-spacing:.06em;text-transform:uppercase;}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+  .hero-stats{display:flex;gap:2.5rem;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);}
+  .stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--accent);letter-spacing:.06em;}
+  .stat-label{font-size:.74rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+
+  /* HERO VISUAL */
+  .hero-visual{position:relative;display:flex;align-items:center;justify-content:center;min-height:500px;z-index:1;}
+  .hv-wrap{position:relative;width:380px;height:380px;}
+  .hv-ring{position:absolute;border-radius:50%;border:1px solid var(--border);}
+  .hv-ring.r1{inset:0;}
+  .hv-ring.r2{inset:56px;border-color:rgba(212,245,60,.15);}
+  .hv-spin{position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(212,245,60,.2);animation:vspin 24s linear infinite;}
+  .hv-spin::before{content:'';position:absolute;width:8px;height:8px;background:var(--accent);border-radius:50%;top:-4px;left:50%;transform:translateX(-50%);}
+  @keyframes vspin{to{transform:rotate(360deg);}}
+  .hv-center{position:absolute;inset:56px;border-radius:50%;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;}
+  .hv-icon{width:88px;height:88px;}
+  .hv-label{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;text-align:center;line-height:1.7;}
+  .hv-kanji{position:absolute;font-family:serif;color:rgba(212,245,60,.1);user-select:none;pointer-events:none;font-size:5rem;line-height:1;}
+  .hv-kanji.k1{top:0;right:8px;font-size:3.8rem;}
+  .hv-kanji.k2{bottom:0;left:6px;font-size:3.2rem;}
+
+  /* SECTION */
+  section{padding:6rem 2.5rem;max-width:1200px;margin:0 auto;}
+  .section-tag{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--accent2);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.8rem;}
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:.06em;margin-bottom:1rem;}
+  .section-sub{color:var(--muted);font-size:1rem;line-height:1.75;max-width:540px;margin-bottom:3rem;font-weight:300;}
+
+  /* PLANS */
+  .plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5px;background:var(--border);}
+  .plan-card{background:var(--surface);padding:2.5rem;position:relative;transition:background .2s;cursor:pointer;border-top:2px solid transparent;}
+  .plan-card:hover{background:var(--surface2);}
+  .plan-card.featured{background:var(--surface2);outline:1.5px solid var(--accent);z-index:1;border-top-color:var(--accent);}
+  .plan-badge{position:absolute;top:1.5rem;right:1.5rem;background:var(--accent);color:#0a0a08;font-family:'Space Mono',monospace;font-size:.6rem;padding:.25rem .6rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;}
+  .plan-icon-wrap{width:40px;height:40px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;background:var(--bg);}
+  .plan-icon-wrap svg{width:18px;height:18px;}
+  .plan-name{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:.08em;margin-bottom:.5rem;}
+  .plan-desc{font-size:.88rem;color:var(--muted);line-height:1.65;margin-bottom:1.5rem;font-weight:300;}
+  .plan-price{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--accent);letter-spacing:.04em;}
+  .plan-price span{font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--muted);font-weight:300;}
+  .plan-features{list-style:none;margin:1.2rem 0 1.8rem;display:flex;flex-direction:column;gap:.5rem;}
+  .plan-features li{font-size:.86rem;color:var(--muted);display:flex;align-items:center;gap:.65rem;}
+  .plan-features li::before{content:'―';color:var(--accent);font-size:.7rem;}
+  .plan-cta{width:100%;padding:.78rem;background:transparent;border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;cursor:pointer;transition:all .2s;letter-spacing:.06em;text-transform:uppercase;}
+  .plan-card.featured .plan-cta{background:var(--accent);border-color:var(--accent);color:#0a0a08;font-weight:600;}
+  .plan-cta:hover{background:var(--accent);border-color:var(--accent);color:#0a0a08;}
+
+  /* BOOKING */
+  #page-booking{background:var(--bg);}
+  .booking-wrap{max-width:900px;margin:0 auto;padding:4rem 2.5rem;}
+  .booking-steps{display:flex;margin-bottom:3rem;border-bottom:1px solid var(--border);}
+  .step{padding:1rem 1.5rem;font-size:.78rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'Space Mono',monospace;position:relative;cursor:default;}
+  .step.active{color:var(--accent);}
+  .step.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent);}
+  .step-num{color:var(--accent2);margin-right:.4rem;}
+  .booking-panel{display:none;}
+  .booking-panel.active{display:block;}
+  .service-select-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--border);margin-bottom:2rem;}
+  .service-option{background:var(--surface);padding:1.8rem;cursor:pointer;transition:background .2s;border:2px solid transparent;}
+  .service-option:hover{background:var(--surface2);}
+  .service-option.selected{background:var(--surface2);border-color:var(--accent);}
+  .svc-icon{width:30px;height:30px;margin-bottom:.8rem;display:block;}
+  .svc-name{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;margin-bottom:.3rem;}
+  .svc-dur{font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace;}
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+  .cal-month{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.1em;}
+  .cal-nav{background:var(--surface);border:1px solid var(--border);color:var(--text);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:border-color .2s;}
+  .cal-nav:hover{border-color:var(--accent);color:var(--accent);}
+  .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
+  .cal-wd{text-align:center;font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);padding:.4rem 0;letter-spacing:.06em;}
+  .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:2rem;}
+  .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.86rem;cursor:pointer;border:1px solid transparent;transition:all .15s;position:relative;}
+  .cal-day:hover:not(.disabled):not(.empty){border-color:var(--accent);color:var(--accent);}
+  .cal-day.available::after{content:'';position:absolute;bottom:4px;width:4px;height:4px;background:var(--accent);border-radius:50%;}
+  .cal-day.selected{background:var(--accent);color:#0a0a08;border-color:var(--accent);font-weight:600;}
+  .cal-day.selected::after{display:none;}
+  .cal-day.disabled{color:var(--border);cursor:not-allowed;}
+  .cal-day.today{border-color:var(--accent2);}
+  .timeslots-wrap{margin-bottom:2rem;}
+  .timeslots-title{font-size:.72rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:1rem;}
+  .timeslots-grid{display:flex;flex-wrap:wrap;gap:.6rem;}
+  .timeslot{padding:.5rem 1.1rem;border:1px solid var(--border);font-family:'Space Mono',monospace;font-size:.78rem;cursor:pointer;transition:all .15s;color:var(--muted);}
+  .timeslot:hover{border-color:var(--accent);color:var(--accent);}
+  .timeslot.selected{background:var(--accent);border-color:var(--accent);color:#0a0a08;font-weight:700;}
+  .timeslot.booked{color:var(--border);cursor:not-allowed;text-decoration:line-through;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+  .form-group{display:flex;flex-direction:column;gap:.4rem;}
+  .form-group.full{grid-column:1/-1;}
+  .form-group label{font-size:.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'Space Mono',monospace;}
+  .form-group input,.form-group textarea,.form-group select{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.8rem 1rem;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;}
+  .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent);}
+  .form-group textarea{resize:vertical;min-height:90px;}
+  .form-group select option{background:var(--surface);}
+  .step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;}
+  .confirm-box{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--accent);padding:2rem;margin-bottom:1.5rem;}
+  .confirm-row{display:flex;justify-content:space-between;padding:.7rem 0;border-bottom:1px solid var(--border);font-size:.9rem;}
+  .confirm-row:last-child{border-bottom:none;}
+  .confirm-label{color:var(--muted);}
+  .confirm-value{font-family:'Space Mono',monospace;font-size:.82rem;}
+
+  /* PAYPAL */
+  .paypal-section{background:var(--surface2);border:1px solid var(--border);border-top:2px solid var(--accent2);padding:1.5rem 2rem;margin-bottom:1.5rem;}
+  .paypal-title{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;}
+  .paypal-title::before{content:'';width:14px;height:1px;background:var(--accent2);}
+  .paypal-title svg{width:60px;opacity:.7;}
+  .paypal-options{display:flex;gap:1rem;flex-wrap:wrap;}
+  .paypal-opt{flex:1;min-width:140px;padding:.9rem 1.2rem;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:border-color .2s;text-align:center;}
+  .paypal-opt:hover{border-color:var(--accent2);}
+  .paypal-opt.selected{border-color:var(--accent2);}
+  .ppo-label{font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.08em;margin-bottom:.25rem;}
+  .ppo-price{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--accent);letter-spacing:.06em;}
+  .paypal-note{font-size:.78rem;color:var(--muted);margin-top:1rem;line-height:1.65;}
+  .paypal-secure{display:flex;align-items:center;gap:.5rem;margin-top:.8rem;font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.06em;}
+  .paypal-secure::before{content:'🔒';font-size:.8rem;}
+
+  /* PAYPAL ADMIN */
+  .paypal-admin-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent2);padding:1.5rem 2rem;margin-bottom:2rem;}
+  .paypal-admin-box h3{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.1em;margin-bottom:1rem;color:var(--accent2);}
+  .paypal-admin-box p{font-size:.85rem;color:var(--muted);line-height:1.65;margin-bottom:.8rem;}
+  .paypal-admin-box a{color:var(--accent2);}
+  .paypal-step{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border);}
+  .paypal-step:last-child{border-bottom:none;margin-bottom:0;}
+  .paypal-step-num{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent2);letter-spacing:.06em;line-height:1;min-width:2rem;}
+  .paypal-step-body{}
+  .paypal-step-title{font-size:.88rem;font-weight:600;margin-bottom:.3rem;color:var(--text);}
+  .paypal-step-desc{font-size:.82rem;color:var(--muted);line-height:1.6;}
+
+  .success-screen{text-align:center;padding:4rem 2rem;display:none;}
+  .success-screen.show{display:block;}
+  .success-screen h2{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.1em;color:var(--accent);margin-bottom:1rem;margin-top:1.5rem;}
+  .success-screen p{color:var(--muted);line-height:1.75;max-width:460px;margin:0 auto 2rem;}
+
+  /* ADMIN */
+  #page-admin{min-height:100vh;}
+  .admin-login{max-width:380px;margin:0 auto;padding:6rem 2rem;text-align:center;}
+  .admin-login h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.1em;margin-bottom:.5rem;}
+  .admin-login p{color:var(--muted);font-size:.88rem;margin-bottom:2rem;}
+  .admin-panel{display:none;padding:2rem 2.5rem;max-width:1100px;margin:0 auto;}
+  .admin-panel.visible{display:block;}
+  .admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+  .admin-header h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.1em;}
+  .admin-tabs{display:flex;margin-bottom:2rem;border-bottom:1px solid var(--border);}
+  .admin-tab{padding:.8rem 1.5rem;font-size:.76rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-family:'Space Mono',monospace;cursor:pointer;border:none;background:transparent;position:relative;transition:color .2s;}
+  .admin-tab:hover{color:var(--text);}
+  .admin-tab.active{color:var(--accent);}
+  .admin-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent);}
+  .admin-content{display:none;}
+  .admin-content.active{display:block;}
+  .avail-week{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border);margin-bottom:2rem;}
+  .avail-day-col{background:var(--surface);padding:1.2rem;}
+  .avail-day-name{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;margin-bottom:.8rem;text-align:center;}
+  .avail-toggle{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.8rem;}
+  .toggle-switch{position:relative;width:40px;height:22px;cursor:pointer;}
+  .toggle-switch input{display:none;}
+  .toggle-track{position:absolute;inset:0;background:var(--border);border-radius:11px;transition:background .2s;}
+  .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--muted);border-radius:50%;transition:all .2s;}
+  .toggle-switch input:checked~.toggle-track{background:var(--accent);}
+  .toggle-switch input:checked~.toggle-thumb{left:21px;background:#0a0a08;}
+  .avail-slots{display:flex;flex-direction:column;gap:.4rem;}
+  .avail-slot-row{display:flex;align-items:center;gap:.3rem;font-size:.78rem;}
+  .avail-slot-row input[type="time"]{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.3rem .4rem;font-family:'Space Mono',monospace;font-size:.72rem;width:80px;outline:none;}
+  .avail-slot-row input[type="time"]:focus{border-color:var(--accent);}
+  .del-slot{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:0 .2rem;transition:color .2s;}
+  .del-slot:hover{color:var(--danger);}
+  .add-slot{background:none;border:1px dashed var(--border);color:var(--muted);font-size:.72rem;padding:.3rem .5rem;cursor:pointer;margin-top:.3rem;width:100%;transition:all .2s;letter-spacing:.06em;}
+  .add-slot:hover{border-color:var(--accent);color:var(--accent);}
+  .save-avail{background:var(--accent);color:#0a0a08;border:none;padding:.85rem 2.5rem;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;transition:background .2s;letter-spacing:.06em;text-transform:uppercase;}
+  .save-avail:hover{background:#c8e830;}
+  .save-msg{display:none;color:var(--success);font-size:.85rem;margin-left:1rem;font-family:'Space Mono',monospace;}
+  .bookings-table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;}
+  th{text-align:left;padding:.7rem 1rem;font-family:'Space Mono',monospace;font-size:.64rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid var(--border);}
+  td{padding:.9rem 1rem;font-size:.88rem;border-bottom:1px solid var(--border);color:var(--text);}
+  tr:hover td{background:var(--surface);}
+  .status-badge{padding:.25rem .7rem;font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;}
+  .status-new{background:rgba(212,245,60,.1);color:var(--accent);}
+  .status-confirmed{background:rgba(76,175,130,.1);color:var(--success);}
+  .status-cancelled{background:rgba(224,82,82,.08);color:var(--danger);}
+  .action-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:.3rem .7rem;font-size:.75rem;cursor:pointer;transition:all .15s;margin-right:.3rem;}
+  .action-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .action-btn.del:hover{border-color:var(--danger);color:var(--danger);}
+  .no-bookings{text-align:center;padding:3rem;color:var(--muted);font-size:.9rem;}
+
+  footer{border-top:1px solid var(--border);padding:2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+  .footer-left{display:flex;align-items:center;gap:.8rem;}
+  .footer-logo-svg{width:24px;height:24px;opacity:.45;}
+  .footer-name{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.14em;color:var(--muted);}
+  .footer-kanji{font-family:serif;font-size:1.1rem;color:rgba(212,245,60,.16);letter-spacing:.22em;}
+  .footer-copy{font-size:.74rem;color:var(--muted);}
+  .divider{height:1px;background:var(--border);margin:0 2.5rem;}
+  .notif{position:fixed;bottom:2rem;right:2rem;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);padding:1rem 1.5rem;font-size:.88rem;z-index:999;transform:translateX(120%);transition:transform .3s;max-width:320px;color:var(--text);}
+  .notif.show{transform:translateX(0);}
+  .notif.error{border-left-color:var(--danger);}
+  /* ABOUT */
+  #page-about{background:var(--bg);}
+  .about-wrap{max-width:1100px;margin:0 auto;padding:5rem 2.5rem;}
+  .about-hero{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;margin-bottom:5rem;}
+  .about-img-placeholder{background:var(--surface);border:1px solid var(--border);aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;position:relative;overflow:hidden;cursor:pointer;}
+  .about-img-placeholder::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,245,60,.04),transparent);}
+  .about-img-placeholder input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .about-img-placeholder img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;}
+  .about-img-placeholder img.loaded{display:block;}
+  .about-img-icon{color:var(--muted);font-size:2rem;}
+  .about-img-hint{font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.1em;text-align:center;position:relative;z-index:1;}
+  .about-text h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:.06em;margin-bottom:1.5rem;line-height:1;}
+  .about-text h2 em{color:var(--accent);font-style:normal;}
+  .about-text p{color:var(--muted);font-size:.95rem;line-height:1.85;margin-bottom:1.2rem;font-weight:300;}
+  .about-badges{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2rem;}
+  .about-badge{border:1px solid var(--border);padding:.35rem .9rem;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+  .about-badge.accent{border-color:var(--accent);color:var(--accent);}
+  .about-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border);margin-bottom:4rem;}
+  .gallery-slot{background:var(--surface);aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:background .2s;}
+  .gallery-slot:hover{background:var(--surface2);}
+  .gallery-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .gallery-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;}
+  .gallery-slot img.loaded{display:block;}
+  .gallery-slot-hint{font-size:.65rem;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.08em;text-align:center;padding:1rem;}
+  .about-values{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border);}
+  .value-card{background:var(--surface);padding:2rem;border-top:2px solid transparent;transition:border-color .2s;}
+  .value-card:hover{border-top-color:var(--accent);}
+  .value-kanji{font-family:serif;font-size:2.8rem;color:rgba(212,245,60,.25);margin-bottom:.8rem;line-height:1;}
+  .value-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.1em;color:var(--accent);margin-bottom:.5rem;}
+  .value-desc{font-size:.84rem;color:var(--muted);line-height:1.7;font-weight:300;}
+
+  /* LEGAL PAGES */
+  #page-impressum,#page-dsgvo{background:var(--bg);}
+  .legal-wrap{max-width:760px;margin:0 auto;padding:5rem 2.5rem;}
+  .legal-wrap h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3rem);letter-spacing:.06em;margin-bottom:.5rem;}
+  .legal-wrap h2{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.08em;color:var(--accent);margin:2.5rem 0 .8rem;}
+  .legal-wrap p{font-size:.9rem;color:var(--muted);line-height:1.85;margin-bottom:1rem;font-weight:300;}
+  .legal-wrap a{color:var(--accent);}
+  .legal-tag{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent2);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.8rem;}
+
+  /* FOOTER LINKS */
+  .footer-links{display:flex;gap:1.5rem;}
+  .footer-links a{font-size:.72rem;color:var(--muted);text-decoration:none;cursor:pointer;letter-spacing:.06em;transition:color .2s;}
+  .footer-links a:hover{color:var(--accent);}
+
+  /* MODAL overlay for legal pages */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;overflow-y:auto;}
+  .modal-overlay.open{display:block;}
+  .modal-box{max-width:760px;margin:4rem auto;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--accent);padding:3rem;}
+  .modal-close{float:right;background:none;border:1px solid var(--border);color:var(--muted);padding:.35rem .8rem;cursor:pointer;font-family:'Space Mono',monospace;font-size:.72rem;transition:all .2s;}
+  .modal-close:hover{border-color:var(--danger);color:var(--danger);}
+
+  @media(max-width:768px){
+    .about-hero{grid-template-columns:1fr;}
+    .about-gallery{grid-template-columns:repeat(2,1fr);}
+    .about-values{grid-template-columns:1fr;}
+    .hero{grid-template-columns:1fr;padding:1.5rem;}
+    .hero-visual{display:none;}
+    nav ul{display:none;}
+    .avail-week{grid-template-columns:1fr;}
+    .form-grid{grid-template-columns:1fr;}
+    .admin-panel{padding:1rem;}
+  }
+</style>
+<body>
+
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <svg class="logo-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="8" y1="17" x2="8" y2="31" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="28" y1="17" x2="28" y2="31" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M3 11 Q18 6 33 11" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      <line x1="9" y1="17" x2="27" y2="17" stroke="#d4f53c" stroke-width="1.1" stroke-linecap="round"/>
+      <circle cx="19" cy="5" r="2.3" fill="#ff6b2b"/>
+      <line x1="19" y1="7.3" x2="17" y2="14" stroke="#ff6b2b" stroke-width="1.7" stroke-linecap="round"/>
+      <line x1="18.2" y1="10" x2="22" y2="8" stroke="#ff6b2b" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="18.2" y1="10" x2="15" y2="12.5" stroke="#ff6b2b" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="17" y1="14" x2="14.5" y2="21" stroke="#ff6b2b" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="17" y1="14" x2="20.5" y2="20" stroke="#ff6b2b" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="5" y1="9" x2="11" y2="9" stroke="#d4f53c" stroke-width=".9" stroke-linecap="round" opacity=".45"/>
+      <line x1="3" y1="12.5" x2="10" y2="12.5" stroke="#d4f53c" stroke-width=".9" stroke-linecap="round" opacity=".28"/>
+    </svg>
+    <span class="logo-text">RUN<span>&</span>FUEL</span>
+  </div>
+  <ul>
+    <li><a onclick="showPage('home')" id="nav-home" class="active">Home</a></li>
+    <li><a onclick="showPage('about')" id="nav-about">About Me</a></li>
+    <li><a onclick="showPage('plans')" id="nav-plans">Trainingspläne</a></li>
+    <li><a onclick="showPage('booking')" id="nav-booking">Termin buchen</a></li>
+  </ul>
+  <button class="admin-btn" onclick="showPage('admin')">Admin ↗</button>
+</nav>
+
+<div class="notif" id="notif"></div>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-tag">Persönliches Coaching</div>
+      <h1>LAUF<br><em>SCHNELLER.</em><br><span class="line2">ISS BESSER.</span></h1>
+      <p>Marathon. Halbmarathon. Ernährungscoaching. Individuell auf dich zugeschnitten – von einem Trainer mit echter Wettkampferfahrung.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="showPage('plans')">Trainingspläne</button>
+        <button class="btn-outline" onclick="showPage('booking')">Termin anfragen</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><div class="stat-num">42K</div><div class="stat-label">Marathon</div></div>
+        <div class="stat-item"><div class="stat-num">21K</div><div class="stat-label">Halbmarathon</div></div>
+        <div class="stat-item"><div class="stat-num">3in1</div><div class="stat-label">Trainer · Ernährung · Lauf</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hv-wrap">
+        <div class="hv-kanji k1">走</div>
+        <div class="hv-kanji k2">力</div>
+        <!-- Outer oval track ring -->
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="380" height="380" viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;">
+            <!-- Outer oval track lanes -->
+            <ellipse cx="190" cy="190" rx="178" ry="155" stroke="#2a2a22" stroke-width="1"/>
+            <ellipse cx="190" cy="190" rx="155" ry="132" stroke="rgba(212,245,60,.18)" stroke-width="1" stroke-dasharray="6 5"/>
+            <ellipse cx="190" cy="190" rx="131" ry="109" stroke="#2a2a22" stroke-width="1"/>
+            <!-- Track lane divider dots -->
+            <ellipse cx="190" cy="190" rx="167" ry="143" stroke="rgba(212,245,60,.08)" stroke-width="1"/>
+            <!-- Start/finish line -->
+            <line x1="190" y1="35" x2="190" y2="58" stroke="rgba(212,245,60,.5)" stroke-width="1.5" stroke-linecap="round"/>
+            <!-- Animated dot on outer track -->
+            <circle r="5" fill="#d4f53c">
+              <animateMotion dur="8s" repeatCount="indefinite">
+                <mpath href="#outerTrack"/>
+              </animateMotion>
+            </circle>
+            <path id="outerTrack" d="M 190,35 A 155,155 0 1,1 189.9,35" fill="none"/>
+            <!-- Animated runner dot on inner track -->
+            <circle r="3.5" fill="#ff6b2b" opacity=".8">
+              <animateMotion dur="5.5s" repeatCount="indefinite" begin="-2s">
+                <mpath href="#innerTrack"/>
+              </animateMotion>
+            </circle>
+            <path id="innerTrack" d="M 190,81 A 109,109 0 1,1 189.9,81" fill="none"/>
+          </svg>
+        </div>
+        <!-- Center circle with Fuji + runner -->
+        <div class="hv-center">
+          <svg class="hv-icon" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Mount Fuji silhouette — minimal, iconic -->
+            <!-- Snow cap -->
+            <path d="M48 14 L54 24 L42 24 Z" fill="rgba(212,245,60,.35)"/>
+            <!-- Main mountain body -->
+            <path d="M48 14 L72 58 L24 58 Z" stroke="#d4f53c" stroke-width="1.4" stroke-linejoin="round" fill="rgba(212,245,60,.04)"/>
+            <!-- Gentle lower slopes extending wide -->
+            <path d="M24 58 Q10 60 4 62 M72 58 Q86 60 92 62" stroke="#d4f53c" stroke-width="1.2" stroke-linecap="round" opacity=".5"/>
+            <!-- Horizon / ground line -->
+            <line x1="4" y1="64" x2="92" y2="64" stroke="#2a2a22" stroke-width="1" stroke-linecap="round"/>
+            <!-- Runner below the mountain — mid-stride silhouette, clean -->
+            <!-- head -->
+            <circle cx="52" cy="72" r="3.5" fill="#ff6b2b"/>
+            <!-- lean forward torso -->
+            <line x1="52" y1="75.5" x2="49" y2="84" stroke="#ff6b2b" stroke-width="2" stroke-linecap="round"/>
+            <!-- arm back -->
+            <line x1="51" y1="79" x2="56" y2="75" stroke="#ff6b2b" stroke-width="1.6" stroke-linecap="round"/>
+            <!-- arm forward -->
+            <line x1="51" y1="79" x2="46" y2="82" stroke="#ff6b2b" stroke-width="1.6" stroke-linecap="round"/>
+            <!-- rear leg back -->
+            <line x1="49" y1="84" x2="54" y2="92" stroke="#ff6b2b" stroke-width="1.8" stroke-linecap="round"/>
+            <!-- front leg drive -->
+            <line x1="49" y1="84" x2="44" y2="91" stroke="#ff6b2b" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <div class="hv-label">Run · Fuel<br>鍛錬</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <footer>
+    <div class="footer-left">
+      <svg class="footer-logo-svg" viewBox="0 0 36 36" fill="none">
+        <line x1="7" y1="21" x2="7" y2="34" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/>
+        <line x1="29" y1="21" x2="29" y2="34" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M3 13 Q18 8.5 33 13" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+        <line x1="8.5" y1="18" x2="27.5" y2="18" stroke="#d4f53c" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="21.5" cy="7.5" r="2.2" fill="#ff6b2b"/>
+        <line x1="21.5" y1="9.7" x2="19.2" y2="16" stroke="#ff6b2b" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="19.2" y1="16" x2="16.5" y2="21" stroke="#ff6b2b" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="19.2" y1="16" x2="22.5" y2="20.5" stroke="#ff6b2b" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <span class="footer-name">RUN & FUEL COACHING</span>
+    </div>
+    <div class="footer-kanji">走 · 食 · 力</div>
+    <div class="footer-links">
+      <a onclick="openModal('impressum')">Impressum</a>
+      <a onclick="openModal('dsgvo')">Datenschutz</a>
+    </div>
+    <div class="footer-copy">© 2025 Run & Fuel Coaching</div>
+  </footer>
+</div>
+
+<!-- PLANS -->
+<div class="page" id="page-plans">
+  <section>
+    <div class="section-tag">// Angebote</div>
+    <h2 class="section-title">TRAININGSPLÄNE & COACHING</h2>
+    <p class="section-sub">Individuell auf dein Ziel und Fitnesslevel angepasst. Ob erstes Finish oder neue Bestzeit – ich begleite dich von A bis Z.</p>
+    <div class="plans-grid">
+      <div class="plan-card" onclick="showPage('booking')">
+        <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="5" r="3" stroke="#d4f53c" stroke-width="1.3"/><path d="M2 17c0-3.87 3.13-7 7-7s7 3.13 7 7" stroke="#6b6b5a" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+        <div class="plan-name">Erstgespräch</div>
+        <div class="plan-desc">Kostenfreies 30-Minuten Kennenlerngespräch – kein Risiko, kein Commitment.</div>
+        <div class="plan-price">Kostenlos</div>
+        <ul class="plan-features"><li>Ziele & Wünsche besprechen</li><li>Analyse deiner Situation</li><li>Empfehlung & nächste Schritte</li></ul>
+        <button class="plan-cta">Termin buchen</button>
+      </div>
+      <div class="plan-card" onclick="showPage('booking')">
+        <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#d4f53c" stroke-width="1.3"/><path d="M6 9l2 2 4-4" stroke="#ff6b2b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="plan-name">Ernährungsberatung</div>
+        <div class="plan-desc">Sportgerechte Ernährung, Wettkampfvorbereitung und individuelle Ernährungsplanung.</div>
+        <div class="plan-price">ab 79 <span>€ / Einheit</span></div>
+        <ul class="plan-features"><li>Ernährungsanalyse & Beratung</li><li>Wettkampf-Ernährungsstrategie</li><li>Makro- & Mikronährstoffe</li><li>Carbo-Loading Protokoll</li></ul>
+        <button class="plan-cta">Jetzt anfragen</button>
+      </div>
+      <div class="plan-card featured" onclick="showPage('booking')">
+        <div class="plan-badge">Beliebt</div>
+        <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><circle cx="12" cy="4" r="2" fill="#d4f53c"/><line x1="12" y1="6" x2="10" y2="11" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round"/><line x1="11" y1="8" x2="8" y2="9.5" stroke="#d4f53c" stroke-width="1.1" stroke-linecap="round"/><line x1="11" y1="8" x2="13.5" y2="6.5" stroke="#d4f53c" stroke-width="1.1" stroke-linecap="round"/><line x1="10" y1="11" x2="7.5" y2="15" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round"/><line x1="10" y1="11" x2="12.5" y2="14.5" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+        <div class="plan-name">Marathon Trainingsplan</div>
+        <div class="plan-desc">12–20-Wochen Vorbereitung auf deinen Marathon. Strukturiert, progressiv, individuell.</div>
+        <div class="plan-price">ab 149 <span>€ / Plan</span></div>
+        <ul class="plan-features"><li>Individueller Trainingsplan</li><li>Wöchentliche Anpassungen</li><li>Wettkampf-Tapering</li><li>Ernährungsplan inkl.</li><li>Direkter Trainer-Kontakt</li></ul>
+        <button class="plan-cta">Jetzt anfragen</button>
+      </div>
+      <div class="plan-card" onclick="showPage('booking')">
+        <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><path d="M3 15 L3 8 L9 4 L15 8 L15 15" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><rect x="7" y="10" width="4" height="5" stroke="#ff6b2b" stroke-width="1.1"/></svg></div>
+        <div class="plan-name">Halbmarathon Paket</div>
+        <div class="plan-desc">8–12-Wochen Vorbereitung auf den Halbmarathon. Ideal für Ein- und Umsteiger.</div>
+        <div class="plan-price">ab 109 <span>€ / Plan</span></div>
+        <ul class="plan-features"><li>Strukturierter Trainingsplan</li><li>Laufökonomie-Tipps</li><li>Wettkampfstrategie</li><li>Ernährungsgrundlagen</li></ul>
+        <button class="plan-cta">Jetzt anfragen</button>
+      </div>
+      <div class="plan-card" onclick="showPage('booking')">
+        <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="7" width="3" height="4" rx=".5" stroke="#d4f53c" stroke-width="1.2"/><rect x="13" y="7" width="3" height="4" rx=".5" stroke="#d4f53c" stroke-width="1.2"/><line x1="5" y1="9" x2="13" y2="9" stroke="#d4f53c" stroke-width="1.2" stroke-linecap="round"/><rect x="7" y="6" width="4" height="6" rx=".5" stroke="#ff6b2b" stroke-width="1.1"/></svg></div>
+        <div class="plan-name">Fitness & Krafttraining</div>
+        <div class="plan-desc">Gezieltes Kraft- und Konditionstraining als Ergänzung zum Laufsport oder allgemein.</div>
+        <div class="plan-price">ab 69 <span>€ / Einheit</span></div>
+        <ul class="plan-features"><li>Persönliche Einheit (60 min)</li><li>Plan für zuhause oder Gym</li><li>Laufkraft & Stabilität</li></ul>
+        <button class="plan-cta">Jetzt anfragen</button>
+      </div>
+      <div class="plan-card" onclick="showPage('booking')">
+        <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#d4f53c" stroke-width="1.2"/><circle cx="9" cy="9" r="3.5" stroke="#ff6b2b" stroke-width="1.1"/><circle cx="9" cy="9" r="1" fill="#d4f53c"/></svg></div>
+        <div class="plan-name">Rundum-Paket</div>
+        <div class="plan-desc">Training + Ernährung + Wettkampfvorbereitung als ganzheitliches Coaching-Paket.</div>
+        <div class="plan-price">ab 249 <span>€ / Monat</span></div>
+        <ul class="plan-features"><li>Alles aus Marathon-Plan</li><li>Wöchentliche Beratung</li><li>Vollständiger Ernährungsplan</li><li>WhatsApp-Support</li><li>Videocall-Check-ins</li></ul>
+        <button class="plan-cta">Jetzt anfragen</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- BOOKING -->
+<div class="page" id="page-booking">
+  <div class="booking-wrap">
+    <div class="section-tag">// Terminanfrage</div>
+    <h2 class="section-title">TERMIN ANFRAGEN</h2>
+    <div id="booking-main">
+      <div class="booking-steps">
+        <div class="step active" id="bstep1"><span class="step-num">01</span>Leistung</div>
+        <div class="step" id="bstep2"><span class="step-num">02</span>Datum</div>
+        <div class="step" id="bstep3"><span class="step-num">03</span>Details</div>
+        <div class="step" id="bstep4"><span class="step-num">04</span>Bestätigung</div>
+      </div>
+      <!-- Step 1 -->
+      <div class="booking-panel active" id="bpanel1">
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Was möchtest du buchen?</p>
+        <div class="service-select-grid">
+          <div class="service-option" data-svc="Erstgespräch (kostenlos)" data-dur="30 Min" data-price="0" onclick="selectService(this)">
+            <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="9" r="5" stroke="#d4f53c" stroke-width="1.4"/><path d="M5 27c0-5.52 4.48-10 10-10s10 4.48 10 10" stroke="#6b6b5a" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <div class="svc-name">Erstgespräch</div><div class="svc-dur">30 Min · Kostenlos</div>
+          </div>
+          <div class="service-option" data-svc="Ernährungsberatung" data-dur="60 Min" data-price="79" onclick="selectService(this)">
+            <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="11" stroke="#d4f53c" stroke-width="1.4"/><path d="M10 15l3 3 7-6" stroke="#ff6b2b" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="svc-name">Ernährungsberatung</div><div class="svc-dur">60 Min · ab 79€</div>
+          </div>
+          <div class="service-option" data-svc="Marathon Trainingsplan" data-dur="90 Min" data-price="149" onclick="selectService(this)">
+            <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><circle cx="20" cy="6" r="3" fill="#d4f53c"/><line x1="20" y1="9" x2="17.5" y2="17" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/><line x1="18.8" y1="12.5" x2="14" y2="15" stroke="#d4f53c" stroke-width="1.4" stroke-linecap="round"/><line x1="18.8" y1="12.5" x2="23" y2="10.5" stroke="#d4f53c" stroke-width="1.4" stroke-linecap="round"/><line x1="17.5" y1="17" x2="14" y2="23" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/><line x1="17.5" y1="17" x2="21" y2="22.5" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <div class="svc-name">Marathon Plan</div><div class="svc-dur">90 Min · ab 149€</div>
+          </div>
+          <div class="service-option" data-svc="Halbmarathon Paket" data-dur="60 Min" data-price="109" onclick="selectService(this)">
+            <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><line x1="3" y1="24" x2="27" y2="24" stroke="#2a2a22" stroke-width="1.4" stroke-linecap="round"/><circle cx="3" cy="24" r="1.5" fill="#ff6b2b"/><circle cx="27" cy="24" r="1.5" fill="#d4f53c"/><path d="M3 24 Q15 8 27 24" stroke="#d4f53c" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+            <div class="svc-name">Halbmarathon</div><div class="svc-dur">60 Min · ab 109€</div>
+          </div>
+          <div class="service-option" data-svc="Fitness & Krafttraining" data-dur="60 Min" data-price="69" onclick="selectService(this)">
+            <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><rect x="1" y="12" width="5" height="6" rx="1" stroke="#d4f53c" stroke-width="1.3"/><rect x="24" y="12" width="5" height="6" rx="1" stroke="#d4f53c" stroke-width="1.3"/><line x1="6" y1="15" x2="24" y2="15" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round"/><rect x="11" y="10" width="8" height="10" rx="1" stroke="#ff6b2b" stroke-width="1.2"/></svg>
+            <div class="svc-name">Krafttraining</div><div class="svc-dur">60 Min · ab 69€</div>
+          </div>
+          <div class="service-option" data-svc="Rundum-Paket Beratung" data-dur="90 Min" data-price="249" onclick="selectService(this)">
+            <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="12" stroke="#d4f53c" stroke-width="1.3"/><circle cx="15" cy="15" r="6" stroke="#ff6b2b" stroke-width="1.2"/><circle cx="15" cy="15" r="2" fill="#d4f53c"/></svg>
+            <div class="svc-name">Rundum-Paket</div><div class="svc-dur">90 Min · ab 249€/Mo</div>
+          </div>
+        </div>
+        <div class="step-nav"><div></div><button class="btn-primary" onclick="goStep(2)">Weiter →</button></div>
+      </div>
+      <!-- Step 2 -->
+      <div class="booking-panel" id="bpanel2">
+        <div class="cal-header"><button class="cal-nav" onclick="changeMonth(-1)">‹</button><div class="cal-month" id="cal-month-label"></div><button class="cal-nav" onclick="changeMonth(1)">›</button></div>
+        <div class="cal-weekdays"><div class="cal-wd">Mo</div><div class="cal-wd">Di</div><div class="cal-wd">Mi</div><div class="cal-wd">Do</div><div class="cal-wd">Fr</div><div class="cal-wd">Sa</div><div class="cal-wd">So</div></div>
+        <div class="cal-days" id="cal-days"></div>
+        <div class="timeslots-wrap" id="timeslots-wrap" style="display:none"><div class="timeslots-title" id="timeslots-date-label"></div><div class="timeslots-grid" id="timeslots-grid"></div></div>
+        <div class="step-nav"><button class="btn-outline" onclick="goStep(1)">← Zurück</button><button class="btn-primary" onclick="goStep(3)">Weiter →</button></div>
+      </div>
+      <!-- Step 3 -->
+      <div class="booking-panel" id="bpanel3">
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Deine Kontaktdaten</p>
+        <div class="form-grid">
+          <div class="form-group"><label>Vorname *</label><input type="text" id="fname" placeholder="Max"></div>
+          <div class="form-group"><label>Nachname *</label><input type="text" id="lname" placeholder="Mustermann"></div>
+          <div class="form-group"><label>E-Mail *</label><input type="email" id="email" placeholder="max@beispiel.de"></div>
+          <div class="form-group"><label>Telefon</label><input type="tel" id="phone" placeholder="+49 ..."></div>
+          <div class="form-group full"><label>Nachricht / Ziele</label><textarea id="message" placeholder="Beschreibe dein Ziel, aktuelles Laufniveau, Wettkampf-Datum ..."></textarea></div>
+        </div>
+        <div class="step-nav"><button class="btn-outline" onclick="goStep(2)">← Zurück</button><button class="btn-primary" onclick="goStep(4)">Weiter →</button></div>
+      </div>
+      <!-- Step 4 -->
+      <div class="booking-panel" id="bpanel4">
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Bitte überprüfe deine Anfrage:</p>
+        <div class="confirm-box">
+          <div class="confirm-row"><span class="confirm-label">Leistung</span><span class="confirm-value" id="conf-svc">–</span></div>
+          <div class="confirm-row"><span class="confirm-label">Dauer</span><span class="confirm-value" id="conf-dur">–</span></div>
+          <div class="confirm-row"><span class="confirm-label">Datum</span><span class="confirm-value" id="conf-date">–</span></div>
+          <div class="confirm-row"><span class="confirm-label">Uhrzeit</span><span class="confirm-value" id="conf-time">–</span></div>
+          <div class="confirm-row"><span class="confirm-label">Name</span><span class="confirm-value" id="conf-name">–</span></div>
+          <div class="confirm-row"><span class="confirm-label">E-Mail</span><span class="confirm-value" id="conf-email">–</span></div>
+        </div>
+        <div class="paypal-section" id="paypal-block" style="display:none">
+          <div class="paypal-title">
+            <span>Zahlung via PayPal</span>
+            <!-- PayPal wordmark -->
+            <svg viewBox="0 0 60 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <text x="0" y="13" font-family="Arial" font-weight="700" font-size="13" fill="#009cde">Pay</text>
+              <text x="24" y="13" font-family="Arial" font-weight="700" font-size="13" fill="#003087">Pal</text>
+            </svg>
+          </div>
+          <div class="paypal-options" id="paypal-options"></div>
+          <div class="paypal-secure">SSL-verschlüsselt · PCI-zertifiziert · Käuferschutz inklusive</div>
+          <p class="paypal-note">Du wirst nach dem Absenden auf PayPal weitergeleitet. Bei Stornierung bis 48h vorher volle Rückerstattung.</p>
+        </div>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;">Nach dem Absenden wirst du zu PayPal weitergeleitet. Ich bestätige deinen Termin nach Zahlungseingang.</p>
+        <div class="step-nav"><button class="btn-outline" onclick="goStep(3)">← Zurück</button><button class="btn-primary" onclick="submitBooking()">Jetzt buchen & bezahlen ✓</button></div>
+      </div>
+    </div>
+    <div class="success-screen" id="booking-success">
+      <svg width="60" height="60" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="28" stroke="#d4f53c" stroke-width="1.5"/><path d="M17 30 L25 38 L43 20" stroke="#d4f53c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <h2>ANFRAGE GESENDET!</h2>
+      <p>Du wirst zu PayPal weitergeleitet. Nach Zahlungseingang bestätige ich deinen Termin innerhalb von 24 Stunden.</p>
+      <button class="btn-primary" onclick="resetBooking()">Neue Anfrage</button>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT ME -->
+<div class="page" id="page-about">
+  <div class="about-wrap">
+    <div class="section-tag">// About Me</div>
+    <div class="about-hero">
+      <div class="about-img-placeholder" id="about-main-img-wrap">
+        <input type="file" accept="image/*" onchange="loadImg(this,'about-main-img')">
+        <img id="about-main-img" alt="Profilbild">
+        <div class="about-img-icon">＋</div>
+        <div class="about-img-hint">Klicken zum<br>Bild hochladen</div>
+      </div>
+      <div class="about-text">
+        <h2>ICH BIN<br><em>DEIN COACH.</em></h2>
+        <p>Hier kannst du einen kurzen persönlichen Text über dich eintragen – dein Weg zum Laufsport, deine Motivation, warum Japan dich inspiriert, und was Kunden von dir erwarten können.</p>
+        <p>Als Lauf- und Ernährungscoach begleite ich Menschen dabei, ihre persönlichen Bestzeiten zu erreichen – ob beim ersten Halbmarathon oder beim nächsten Boston-Qualifier.</p>
+        <p>Meine Leidenschaft für Japan hat mich gelehrt: Disziplin, Kontinuität und Respekt vor dem Weg sind wichtiger als das Ziel. 一歩一歩 – Schritt für Schritt.</p>
+        <div class="about-badges">
+          <span class="about-badge accent">Laufcoach</span>
+          <span class="about-badge accent">Ernährungsberater</span>
+          <span class="about-badge accent">Fitnesstrainer</span>
+          <span class="about-badge">Marathon</span>
+          <span class="about-badge">Halbmarathon</span>
+          <span class="about-badge">Japan 🗾</span>
+          <span class="about-badge">Wettkampf-Ernährung</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-tag" style="margin-bottom:1.5rem;">// Impressionen</div>
+    <div class="about-gallery">
+      <div class="gallery-slot" id="gs0"><input type="file" accept="image/*" onchange="loadImg(this,'gi0')"><img id="gi0" alt=""><div class="gallery-slot-hint">+ Bild<br>hinzufügen</div></div>
+      <div class="gallery-slot" id="gs1"><input type="file" accept="image/*" onchange="loadImg(this,'gi1')"><img id="gi1" alt=""><div class="gallery-slot-hint">+ Bild<br>hinzufügen</div></div>
+      <div class="gallery-slot" id="gs2"><input type="file" accept="image/*" onchange="loadImg(this,'gi2')"><img id="gi2" alt=""><div class="gallery-slot-hint">+ Bild<br>hinzufügen</div></div>
+      <div class="gallery-slot" id="gs3"><input type="file" accept="image/*" onchange="loadImg(this,'gi3')"><img id="gi3" alt=""><div class="gallery-slot-hint">+ Bild<br>hinzufügen</div></div>
+      <div class="gallery-slot" id="gs4"><input type="file" accept="image/*" onchange="loadImg(this,'gi4')"><img id="gi4" alt=""><div class="gallery-slot-hint">+ Bild<br>hinzufügen</div></div>
+      <div class="gallery-slot" id="gs5"><input type="file" accept="image/*" onchange="loadImg(this,'gi5')"><img id="gi5" alt=""><div class="gallery-slot-hint">+ Bild<br>hinzufügen</div></div>
+    </div>
+
+    <div class="section-tag" style="margin-bottom:1.5rem;">// Meine Werte</div>
+    <div class="about-values">
+      <div class="value-card">
+        <div class="value-kanji">鍛</div>
+        <div class="value-title">Disziplin</div>
+        <div class="value-desc">Kontinuität schlägt Intensität. Ich helfe dir, einen Plan zu entwickeln, den du wirklich durchhältst – nachhaltig und auf deinen Alltag abgestimmt.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-kanji">誠</div>
+        <div class="value-title">Ehrlichkeit</div>
+        <div class="value-desc">Kein Blatt vor den Mund. Ich sage dir, was dich wirklich schneller macht – und was nicht. Evidenzbasiert, praxisnah, ohne Hype.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-kanji">魂</div>
+        <div class="value-title">Leidenschaft</div>
+        <div class="value-desc">Laufen ist mehr als Sport. Es ist Meditation, Freiheit und Selbstentdeckung. Diese Begeisterung gebe ich an jeden meiner Athleten weiter.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IMPRESSUM MODAL -->
+<div class="modal-overlay" id="modal-impressum">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('impressum')">✕ Schließen</button>
+    <div class="legal-tag">Rechtliches</div>
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.08em;margin-bottom:2rem;">IMPRESSUM</h1>
+    <h2>Angaben gemäß § 5 TMG</h2>
+    <p><strong style="color:var(--text);">Vorname Nachname</strong><br>
+    Musterstraße 1<br>
+    85049 Ingolstadt<br>
+    Deutschland</p>
+    <h2>Kontakt</h2>
+    <p>Telefon: +49 (0) 123 456789<br>
+    E-Mail: <a href="mailto:deine@email.de">deine@email.de</a></p>
+    <h2>Umsatzsteuer-ID</h2>
+    <p>Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung).</p>
+    <h2>Berufsbezeichnung</h2>
+    <p>Fitnesstrainer, Ernährungsberater, Laufcoach (freiberuflich). Die Tätigkeit wird nebenberuflich ausgeübt.</p>
+    <h2>Haftungsausschluss</h2>
+    <p>Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehme ich keine Gewähr. Die Nutzung der Inhalte erfolgt auf eigene Gefahr.</p>
+    <p style="font-size:.78rem;color:var(--muted);margin-top:2rem;font-family:'Space Mono',monospace;">⚠ Bitte ersetze alle Platzhalter (Name, Adresse, E-Mail) mit deinen echten Daten.</p>
+  </div>
+</div>
+
+<!-- DSGVO MODAL -->
+<div class="modal-overlay" id="modal-dsgvo">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('dsgvo')">✕ Schließen</button>
+    <div class="legal-tag">Rechtliches</div>
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.08em;margin-bottom:2rem;">DATENSCHUTZERKLÄRUNG</h1>
+    <h2>1. Verantwortlicher</h2>
+    <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:<br>
+    Vorname Nachname, Musterstraße 1, 85049 Ingolstadt, deine@email.de</p>
+    <h2>2. Welche Daten wir erheben</h2>
+    <p>Bei der Terminbuchung erheben wir: Vorname, Nachname, E-Mail-Adresse, Telefonnummer (optional) und deine Nachricht/dein Ziel. Diese Daten sind notwendig, um deine Anfrage zu bearbeiten.</p>
+    <h2>3. Zweck der Datenverarbeitung</h2>
+    <p>Die erhobenen Daten werden ausschließlich zur Bearbeitung deiner Terminanfrage und zur Kommunikation mit dir verwendet. Eine Weitergabe an Dritte findet nicht statt – mit Ausnahme der Zahlungsabwicklung über PayPal.</p>
+    <h2>4. Zahlungsabwicklung via PayPal</h2>
+    <p>Für die Zahlungsabwicklung nutzen wir PayPal (PayPal (Europe) S.à.r.l. et Cie, S.C.A., 22-24 Boulevard Royal, L-2449 Luxembourg). Bei Zahlungen über PayPal werden deine Zahlungsdaten ausschließlich auf den Servern von PayPal verarbeitet. Wir haben keinen Zugriff auf deine Kreditkarten- oder Bankdaten. Weitere Informationen zum Datenschutz bei PayPal findest du unter <a href="https://www.paypal.com/de/webapps/mpp/ua/privacy-full" target="_blank">paypal.com/de/privacy</a>.</p>
+    <h2>5. Datenspeicherung</h2>
+    <p>Deine Buchungsdaten werden lokal in deinem Browser (localStorage) gespeichert und nicht auf externen Servern. Du kannst diese Daten jederzeit durch Löschen des Browser-Caches entfernen.</p>
+    <h2>6. Deine Rechte</h2>
+    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung deiner personenbezogenen Daten. Wende dich dafür jederzeit per E-Mail an: <a href="mailto:deine@email.de">deine@email.de</a></p>
+    <h2>7. Cookies</h2>
+    <p>Diese Website verwendet keine Tracking-Cookies. Es wird ausschließlich der lokale Browser-Speicher (localStorage) für Funktionszwecke genutzt.</p>
+    <h2>8. Beschwerderecht</h2>
+    <p>Du hast das Recht, dich bei einer Datenschutzaufsichtsbehörde zu beschweren. Die zuständige Behörde in Bayern ist das Bayerische Landesamt für Datenschutzaufsicht (BayLDA), Promenade 18, 91522 Ansbach.</p>
+    <p style="font-size:.78rem;color:var(--muted);margin-top:2rem;font-family:'Space Mono',monospace;">⚠ Bitte passe alle Platzhalter mit deinen echten Kontaktdaten an. Diese Erklärung ersetzt keine rechtliche Beratung.</p>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="admin-login" id="admin-login">
+    <h2>ADMIN LOGIN</h2>
+    <p>Melde dich mit deinem Passwort an.</p>
+    <div class="form-group" style="margin-bottom:1rem;text-align:left"><label>Passwort</label><input type="password" id="admin-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+    <button class="btn-primary" style="width:100%;" onclick="adminLogin()">Einloggen</button>
+    <p style="font-size:.75rem;color:var(--muted);margin-top:1rem;">Standard: <code style="color:var(--accent);font-family:'Space Mono',monospace">coach2024</code></p>
+  </div>
+  <div class="admin-panel" id="admin-panel">
+    <div class="admin-header">
+      <div><div class="section-tag">// Backend</div><h2>ADMIN-BEREICH</h2></div>
+      <button class="admin-btn" onclick="adminLogout()">Abmelden</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('availability')">Verfügbarkeit</button>
+      <button class="admin-tab" onclick="switchAdminTab('bookings')">Terminanfragen</button>
+      <button class="admin-tab" onclick="switchAdminTab('paypal')">PayPal</button>
+      <button class="admin-tab" onclick="switchAdminTab('settings')">Einstellungen</button>
+    </div>
+    <!-- Availability -->
+    <div class="admin-content active" id="atab-availability">
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Lege fest, an welchen Wochentagen und Uhrzeiten du verfügbar bist.</p>
+      <div class="avail-week" id="avail-week"></div>
+      <div style="display:flex;align-items:center;gap:1rem;margin-top:1rem;">
+        <button class="save-avail" onclick="saveAvailability()">Speichern</button>
+        <span class="save-msg" id="save-msg">✓ Gespeichert!</span>
+      </div>
+    </div>
+    <!-- Bookings -->
+    <div class="admin-content" id="atab-bookings">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+        <p style="color:var(--muted);font-size:.9rem;">Alle eingegangenen Terminanfragen.</p>
+        <button class="action-btn" onclick="renderBookingsTable()">↻ Aktualisieren</button>
+      </div>
+      <div class="bookings-table-wrap" id="bookings-table-wrap"></div>
+    </div>
+    <!-- PayPal -->
+    <div class="admin-content" id="atab-paypal">
+      <div class="paypal-admin-box">
+        <h3>PayPal Business Einrichtung</h3>
+        <div class="paypal-step">
+          <div class="paypal-step-num">1</div>
+          <div class="paypal-step-body">
+            <div class="paypal-step-title">PayPal Business Account erstellen</div>
+            <div class="paypal-step-desc">Gehe zu <a href="https://www.paypal.com/de/business" target="_blank">paypal.com/de/business</a> und erstelle ein kostenloses Business-Konto (oder upgrade dein privates Konto). Völlig kostenlos – PayPal zieht nur bei erfolgreicher Zahlung eine kleine Gebühr (ca. 1.9% + 0.35€).</div>
+          </div>
+        </div>
+        <div class="paypal-step">
+          <div class="paypal-step-num">2</div>
+          <div class="paypal-step-body">
+            <div class="paypal-step-title">PayPal-E-Mail eintragen</div>
+            <div class="paypal-step-desc">Trag unten deine PayPal-Business-E-Mail ein. Kunden werden beim Buchen automatisch zu einem sicheren PayPal-Zahlungslink weitergeleitet. Die Zahlung ist PCI-zertifiziert und SSL-verschlüsselt.</div>
+          </div>
+        </div>
+        <div class="paypal-step">
+          <div class="paypal-step-num">3</div>
+          <div class="paypal-step-body">
+            <div class="paypal-step-title">Zahlungseingang verfolgen</div>
+            <div class="paypal-step-desc">Du erhältst bei jeder Zahlung eine E-Mail-Benachrichtigung. In der Terminübersicht oben siehst du den bezahlten Betrag pro Buchung. Bestätige dann den Termin mit einem Klick.</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-grid" style="max-width:560px;">
+        <div class="form-group full"><label>Deine PayPal E-Mail *</label><input type="email" id="pp-email" placeholder="deine@paypal-email.de"></div>
+        <div class="form-group"><label>Währung</label><select id="pp-currency"><option value="EUR" selected>EUR — Euro</option><option value="USD">USD — US Dollar</option><option value="CHF">CHF — Schweizer Franken</option></select></div>
+        <div class="form-group"><label>Zahlungsmodus</label><select id="pp-mode"><option value="full">Vollbetrag</option><option value="deposit">Anzahlung (50%)</option></select></div>
+        <div class="form-group full"><label>Betreff bei PayPal</label><input type="text" id="pp-desc" placeholder="Run & Fuel Coaching" value="Run &amp; Fuel Coaching"></div>
+      </div>
+      <button class="save-avail" style="margin-top:1rem;" onclick="savePayPalSettings()">PayPal speichern</button>
+      <span class="save-msg" id="pp-save-msg">✓ Gespeichert!</span>
+      <div style="margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border);">
+        <p style="color:var(--muted);font-size:.82rem;margin-bottom:.6rem;">Generierter Zahlungslink (Vorschau):</p>
+        <code id="pp-preview" style="font-family:'Space Mono',monospace;font-size:.75rem;color:var(--accent);background:var(--surface);padding:.6rem 1rem;display:block;word-break:break-all;border:1px solid var(--border);">— Noch keine E-Mail eingetragen —</code>
+      </div>
+    </div>
+    <!-- Settings -->
+    <div class="admin-content" id="atab-settings">
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Allgemeine Einstellungen.</p>
+      <div class="form-grid" style="max-width:500px;">
+        <div class="form-group full"><label>Passwort ändern</label><input type="password" id="new-pw" placeholder="Neues Passwort"></div>
+        <div class="form-group full"><label>Passwort bestätigen</label><input type="password" id="new-pw2" placeholder="Wiederholung"></div>
+      </div>
+      <button class="save-avail" style="margin-top:1rem;" onclick="changePassword()">Passwort ändern</button>
+      <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+        <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem;">Slot-Dauer für Terminbuchungen:</p>
+        <div class="form-group" style="max-width:200px;"><label>Minuten pro Slot</label><select id="slot-duration" onchange="saveSlotDuration()"><option value="30">30 Minuten</option><option value="60" selected>60 Minuten</option><option value="90">90 Minuten</option></select></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let bookingData={service:'',duration:'',date:'',time:'',price:0,fname:'',lname:'',email:'',phone:'',message:''};
+let currentStep=1,calYear,calMonth,selectedDate=null,selectedTime=null;
+const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const defaultAvail={0:{active:false,slots:[]},1:{active:true,slots:[['08:00','12:00'],['14:00','18:00']]},2:{active:true,slots:[['08:00','12:00']]},3:{active:true,slots:[['15:00','19:00']]},4:{active:true,slots:[['08:00','12:00']]},5:{active:false,slots:[]},6:{active:true,slots:[['09:00','13:00']]}};
+const L=k=>{try{return JSON.parse(localStorage.getItem(k))||null;}catch(e){return null;}};
+const loadAvail=()=>L('rf_avail')||defaultAvail;
+const loadBookings=()=>L('rf_bookings')||[];
+const loadPassword=()=>localStorage.getItem('rf_password')||'coach2024';
+const loadSlotDuration=()=>parseInt(localStorage.getItem('rf_slot_dur')||'60');
+const loadPayPal=()=>L('rf_paypal')||{email:'',currency:'EUR',desc:'Run & Fuel Coaching',mode:'full'};
+
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('nav ul li a').forEach(el=>el.classList.remove('active'));
+  const n=document.getElementById('nav-'+p);if(n)n.classList.add('active');
+  if(p==='booking')initCalendar();
+  if(p==='admin'&&document.getElementById('admin-panel').classList.contains('visible')){renderAvailability();renderBookingsTable();}
+  window.scrollTo(0,0);
+}
+function openModal(id){document.getElementById('modal-'+id).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');document.body.style.overflow='';}
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-overlay'))closeModal(e.target.id.replace('modal-',''));});
+function loadImg(input,imgId){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{const img=document.getElementById(imgId);img.src=e.target.result;img.classList.add('loaded');
+    const hint=input.parentElement.querySelector('.about-img-hint,.gallery-slot-hint');if(hint)hint.style.display='none';
+    const icon=input.parentElement.querySelector('.about-img-icon');if(icon)icon.style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function goStep(n){
+  if(n===2&&!bookingData.service){showNotif('Bitte wähle zuerst eine Leistung aus.',true);return;}
+  if(n===3&&(!selectedDate||!selectedTime)){showNotif('Bitte wähle Datum und Uhrzeit.',true);return;}
+  if(n===4){
+    const fn=document.getElementById('fname').value.trim(),ln=document.getElementById('lname').value.trim(),em=document.getElementById('email').value.trim();
+    if(!fn||!ln||!em){showNotif('Bitte fülle alle Pflichtfelder aus.',true);return;}
+    if(!em.includes('@')){showNotif('Bitte gib eine gültige E-Mail an.',true);return;}
+    bookingData.fname=fn;bookingData.lname=ln;bookingData.email=em;
+    bookingData.phone=document.getElementById('phone').value.trim();
+    bookingData.message=document.getElementById('message').value.trim();
+    document.getElementById('conf-svc').textContent=bookingData.service;
+    document.getElementById('conf-dur').textContent=bookingData.duration;
+    document.getElementById('conf-date').textContent=formatDate(selectedDate);
+    document.getElementById('conf-time').textContent=selectedTime+' Uhr';
+    document.getElementById('conf-name').textContent=fn+' '+ln;
+    document.getElementById('conf-email').textContent=em;
+    renderPayPalOptions();
+  }
+  currentStep=n;
+  document.querySelectorAll('.booking-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('bpanel'+n).classList.add('active');
+  document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('active',i+1===n));
+}
+function selectService(el){
+  document.querySelectorAll('.service-option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  bookingData.service=el.dataset.svc;bookingData.duration=el.dataset.dur;bookingData.price=parseInt(el.dataset.price);
+}
+function renderPayPalOptions(){
+  const pp=loadPayPal(),price=bookingData.price,block=document.getElementById('paypal-block'),opts=document.getElementById('paypal-options');
+  if(!price||!pp.email){block.style.display='none';return;}
+  block.style.display='block';
+  const deposit=Math.ceil(price*.5);
+  opts.innerHTML=pp.mode==='deposit'
+    ?`<div class="paypal-opt selected" data-amount="${deposit}" onclick="selectPayOpt(this)"><div class="ppo-label">Anzahlung 50%</div><div class="ppo-price">${deposit}€</div></div><div class="paypal-opt" data-amount="${price}" onclick="selectPayOpt(this)"><div class="ppo-label">Vollbetrag</div><div class="ppo-price">${price}€</div></div>`
+    :`<div class="paypal-opt selected" data-amount="${price}" onclick="selectPayOpt(this)"><div class="ppo-label">Vollbetrag</div><div class="ppo-price">${price}€</div></div>`;
+}
+function selectPayOpt(el){document.querySelectorAll('.paypal-opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
+function getPayPalUrl(amount){
+  const pp=loadPayPal();if(!pp.email)return null;
+  return`https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(pp.email)}&item_name=${encodeURIComponent(pp.desc+' — '+bookingData.service)}&amount=${amount}&currency_code=${pp.currency}&return=https://your-domain.de/danke&cancel_return=https://your-domain.de`;
+}
+function submitBooking(){
+  const b=loadBookings(),sel=document.querySelector('.paypal-opt.selected'),amount=sel?parseInt(sel.dataset.amount):0;
+  b.push({id:Date.now(),service:bookingData.service,duration:bookingData.duration,date:formatDate(selectedDate),time:selectedTime,price:bookingData.price,paid:amount,fname:bookingData.fname,lname:bookingData.lname,email:bookingData.email,phone:bookingData.phone,message:bookingData.message,status:'new',createdAt:new Date().toISOString()});
+  localStorage.setItem('rf_bookings',JSON.stringify(b));
+  document.getElementById('booking-main').style.display='none';
+  document.getElementById('booking-success').classList.add('show');
+  if(amount>0){const url=getPayPalUrl(amount);if(url)setTimeout(()=>window.open(url,'_blank'),2000);}
+}
+function resetBooking(){
+  bookingData={service:'',duration:'',date:'',time:'',price:0,fname:'',lname:'',email:'',phone:'',message:''};
+  selectedDate=null;selectedTime=null;currentStep=1;
+  document.getElementById('booking-success').classList.remove('show');
+  document.getElementById('booking-main').style.display='block';
+  document.querySelectorAll('.service-option').forEach(o=>o.classList.remove('selected'));
+  ['fname','lname','email','phone','message'].forEach(id=>document.getElementById(id).value='');
+  goStep(1);initCalendar();
+}
+function initCalendar(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();renderCalendar();}
+function changeMonth(d){calMonth+=d;if(calMonth<0){calMonth=11;calYear--;}if(calMonth>11){calMonth=0;calYear++;}renderCalendar();}
+function renderCalendar(){
+  document.getElementById('cal-month-label').textContent=MONTHS[calMonth]+' '+calYear;
+  const avail=loadAvail();let sd=new Date(calYear,calMonth,1).getDay();sd=sd===0?6:sd-1;
+  const dim=new Date(calYear,calMonth+1,0).getDate();const today=new Date();
+  let html='';for(let i=0;i<sd;i++)html+='<div class="cal-day empty"></div>';
+  for(let d=1;d<=dim;d++){
+    const date=new Date(calYear,calMonth,d);let dow=date.getDay();dow=dow===0?6:dow-1;
+    const isPast=date<new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const da=avail[dow];const hasSlots=da&&da.active&&da.slots.length>0;
+    const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isT=date.toDateString()===today.toDateString(),isSel=selectedDate===ds;
+    let cls='cal-day';if(isPast||!hasSlots)cls+=' disabled';else cls+=' available';
+    if(isT)cls+=' today';if(isSel)cls+=' selected';
+    html+=`<div class="${cls}" ${(!isPast&&hasSlots)?`onclick="selectDate('${ds}')"`:''} >${d}</div>`;
+  }
+  document.getElementById('cal-days').innerHTML=html;if(selectedDate)renderTimeSlots(selectedDate);
+}
+function selectDate(ds){selectedDate=ds;selectedTime=null;renderCalendar();renderTimeSlots(ds);}
+function renderTimeSlots(ds){
+  const avail=loadAvail();const date=new Date(ds);let dow=date.getDay();dow=dow===0?6:dow-1;
+  const da=avail[dow];document.getElementById('timeslots-date-label').textContent='Verfügbare Zeiten am '+formatDate(ds);
+  document.getElementById('timeslots-wrap').style.display='block';
+  const booked=loadBookings().filter(b=>b.date===formatDate(ds)).map(b=>b.time);
+  const dur=loadSlotDuration();let slots=[];
+  if(da&&da.active)da.slots.forEach(([s,e])=>{let cur=timeToMin(s),end=timeToMin(e);while(cur+dur<=end){slots.push(minToTime(cur));cur+=dur;}});
+  const grid=document.getElementById('timeslots-grid');
+  if(!slots.length){grid.innerHTML='<p style="color:var(--muted);font-size:.85rem;">Keine Zeiten verfügbar.</p>';return;}
+  grid.innerHTML=slots.map(s=>{const b=booked.includes(s),sel=selectedTime===s;return`<div class="timeslot ${b?'booked':sel?'selected':''}" ${!b?`onclick="selectTime('${s}')"`:''}>${s}</div>`;}).join('');
+}
+function selectTime(t){selectedTime=t;if(selectedDate)renderTimeSlots(selectedDate);}
+function timeToMin(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+function minToTime(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+function formatDate(ds){if(!ds)return'–';const[y,mo,d]=ds.split('-');return`${d}.${mo}.${y}`;}
+
+function adminLogin(){
+  if(document.getElementById('admin-pw').value===loadPassword()){
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-panel').classList.add('visible');
+    renderAvailability();renderBookingsTable();loadPayPalAdmin();
+  }else showNotif('Falsches Passwort.',true);
+}
+function adminLogout(){document.getElementById('admin-panel').classList.remove('visible');document.getElementById('admin-login').style.display='block';document.getElementById('admin-pw').value='';}
+function switchAdminTab(tab){
+  const tabs=['availability','bookings','paypal','settings'];
+  document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===tab));
+  document.querySelectorAll('.admin-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('atab-'+tab).classList.add('active');
+  if(tab==='bookings')renderBookingsTable();if(tab==='paypal')loadPayPalAdmin();
+  if(tab==='settings')document.getElementById('slot-duration').value=String(loadSlotDuration());
+}
+function loadPayPalAdmin(){
+  const pp=loadPayPal();
+  document.getElementById('pp-email').value=pp.email||'';document.getElementById('pp-currency').value=pp.currency||'EUR';
+  document.getElementById('pp-desc').value=pp.desc||'Run & Fuel Coaching';document.getElementById('pp-mode').value=pp.mode||'full';
+  updatePPPreview(pp);
+}
+function updatePPPreview(pp){
+  document.getElementById('pp-preview').textContent=pp.email
+    ?`https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${pp.email}&item_name=${encodeURIComponent(pp.desc)}&currency_code=${pp.currency}&amount=XX`
+    :'— Noch keine E-Mail eingetragen —';
+}
+function savePayPalSettings(){
+  const pp={email:document.getElementById('pp-email').value.trim(),currency:document.getElementById('pp-currency').value,desc:document.getElementById('pp-desc').value.trim()||'Run & Fuel Coaching',mode:document.getElementById('pp-mode').value};
+  localStorage.setItem('rf_paypal',JSON.stringify(pp));updatePPPreview(pp);
+  const msg=document.getElementById('pp-save-msg');msg.style.display='inline';setTimeout(()=>msg.style.display='none',2500);
+  showNotif('PayPal-Einstellungen gespeichert!');
+}
+function renderAvailability(){
+  const avail=loadAvail();
+  const dayNames=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+  document.getElementById('avail-week').innerHTML=Array.from({length:7},(_,d)=>{
+    const day=avail[d]||{active:false,slots:[]};
+    return`<div class="avail-day-col"><div class="avail-day-name">${dayNames[d]}</div><div class="avail-toggle"><label class="toggle-switch"><input type="checkbox" id="toggle-${d}" ${day.active?'checked':''} onchange="toggleDay(${d})"><div class="toggle-track"></div><div class="toggle-thumb"></div></label><span style="font-size:.7rem;color:var(--muted)">${day.active?'An':'Aus'}</span></div><div class="avail-slots" id="slots-${d}">${day.slots.map((s,i)=>`<div class="avail-slot-row"><input type="time" id="from-${d}-${i}" value="${s[0]}" step="1800"><span style="color:var(--muted)">–</span><input type="time" id="to-${d}-${i}" value="${s[1]}" step="1800"><button class="del-slot" onclick="removeSlot(${d},${i})">×</button></div>`).join('')}</div><button class="add-slot" onclick="addSlot(${d})">+ Zeit</button></div>`;
+  }).join('');
+}
+function toggleDay(d){const a=loadAvail();a[d].active=document.getElementById('toggle-'+d).checked;localStorage.setItem('rf_avail',JSON.stringify(a));}
+function addSlot(d){const a=loadAvail();a[d].slots.push(['09:00','12:00']);localStorage.setItem('rf_avail',JSON.stringify(a));renderAvailability();}
+function removeSlot(d,i){const a=loadAvail();a[d].slots.splice(i,1);localStorage.setItem('rf_avail',JSON.stringify(a));renderAvailability();}
+function saveAvailability(){
+  const a=loadAvail();
+  for(let d=0;d<7;d++){a[d].active=document.getElementById('toggle-'+d)?.checked||false;const slots=[];a[d].slots.forEach((_,i)=>{const f=document.getElementById(`from-${d}-${i}`)?.value,t=document.getElementById(`to-${d}-${i}`)?.value;if(f&&t)slots.push([f,t]);});a[d].slots=slots;}
+  localStorage.setItem('rf_avail',JSON.stringify(a));
+  const m=document.getElementById('save-msg');m.style.display='inline';setTimeout(()=>m.style.display='none',2500);showNotif('Verfügbarkeiten gespeichert!');
+}
+function renderBookingsTable(){
+  const b=loadBookings().sort((a,c)=>c.createdAt>a.createdAt?1:-1),wrap=document.getElementById('bookings-table-wrap');
+  if(!b.length){wrap.innerHTML='<div class="no-bookings">Noch keine Terminanfragen.</div>';return;}
+  wrap.innerHTML=`<table><thead><tr><th>Status</th><th>Datum</th><th>Zeit</th><th>Name</th><th>Leistung</th><th>Bezahlt</th><th>Aktionen</th></tr></thead><tbody>${b.map(x=>`<tr><td><span class="status-badge status-${x.status}">${{new:'Neu',confirmed:'Bestätigt',cancelled:'Abgesagt'}[x.status]||x.status}</span></td><td>${x.date}</td><td style="font-family:'Space Mono',monospace;font-size:.78rem">${x.time} Uhr</td><td>${x.fname} ${x.lname}</td><td style="font-size:.8rem;color:var(--muted)">${x.service}</td><td style="font-family:'Space Mono',monospace;font-size:.78rem;color:var(--accent)">${x.paid>0?x.paid+'€':'—'}</td><td>${x.status!=='confirmed'?`<button class="action-btn" onclick="setStatus(${x.id},'confirmed')">✓</button>`:''} ${x.status!=='cancelled'?`<button class="action-btn del" onclick="setStatus(${x.id},'cancelled')">✕</button>`:''} <button class="action-btn del" onclick="deleteBooking(${x.id})">🗑</button></td></tr>`).join('')}</tbody></table>`;
+}
+function setStatus(id,status){const b=loadBookings(),item=b.find(x=>x.id===id);if(item){item.status=status;localStorage.setItem('rf_bookings',JSON.stringify(b));renderBookingsTable();}}
+function deleteBooking(id){if(!confirm('Termin wirklich löschen?'))return;localStorage.setItem('rf_bookings',JSON.stringify(loadBookings().filter(x=>x.id!==id)));renderBookingsTable();showNotif('Termin gelöscht.');}
+function changePassword(){
+  const p1=document.getElementById('new-pw').value,p2=document.getElementById('new-pw2').value;
+  if(!p1){showNotif('Bitte gib ein Passwort ein.',true);return;}if(p1!==p2){showNotif('Passwörter stimmen nicht überein.',true);return;}
+  localStorage.setItem('rf_password',p1);document.getElementById('new-pw').value='';document.getElementById('new-pw2').value='';showNotif('Passwort geändert!');
+}
+function saveSlotDuration(){localStorage.setItem('rf_slot_dur',document.getElementById('slot-duration').value);showNotif('Slot-Dauer gespeichert.');}
+function showNotif(msg,isError=false){const el=document.getElementById('notif');el.textContent=msg;el.className='notif'+(isError?' error':'')+' show';setTimeout(()=>el.classList.remove('show'),3000);}
+window.addEventListener('DOMContentLoaded',()=>{if(!localStorage.getItem('rf_avail'))localStorage.setItem('rf_avail',JSON.stringify(defaultAvail));initCalendar();});
+</script>
+</body>
+</html>
