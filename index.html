@@ -560,21 +560,42 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
           <svg width="380" height="380" viewBox="0 0 380 380" fill="none" style="position:absolute;top:0;left:0;">
             <!-- Äußere und innere Ellipsen = Laufbahn-Spuren -->
             <ellipse cx="190" cy="190" rx="178" ry="155" stroke="#2a2a22" stroke-width="1"/>
-            <ellipse cx="190" cy="190" rx="155" ry="132" stroke="rgba(212,245,60,.18)" stroke-width="1" stroke-dasharray="6 5"/>
+            <ellipse cx="190" cy="190" rx="155" ry="132" stroke="rgba(212,245,60,.18)" stroke-width="1"/>
             <ellipse cx="190" cy="190" rx="131" ry="109" stroke="#2a2a22" stroke-width="1"/>
             <ellipse cx="190" cy="190" rx="167" ry="143" stroke="rgba(212,245,60,.08)" stroke-width="1"/>
             <!-- Start/Ziel-Linie oben -->
-            <line x1="190" y1="35" x2="190" y2="58" stroke="rgba(212,245,60,.5)" stroke-width="1.5" stroke-linecap="round"/>
-            <!-- Animierter grüner Punkt auf der äußeren Bahn -->
-            <circle r="5" fill="#d4f53c">
-              <animateMotion dur="8s" repeatCount="indefinite"><mpath href="#outerTrack"/></animateMotion>
+            <!--<line x1="190" y1="35" x2="190" y2="58" stroke="rgba(212,245,60,.5)" stroke-width="1.5" stroke-linecap="round"/>
+            <!--<!-- Animierter grüner Punkt auf der äußeren Bahn -->
+            <!--<circle r="5" fill="#d4f53c">
+            <!--  <animateMotion dur="8s" repeatCount="indefinite"><mpath href="#outerTrack"/></animateMotion>
+            <!--</circle>
+            <!--<path id="outerTrack" d="M 190,35 A 155,155 0 1,1 189.9,35" fill="none"/>
+            <!--<!-- Animierter oranger Punkt auf der inneren Bahn (schneller) -->
+            <!--<circle r="3.5" fill="#ff6b2b" opacity=".8">
+            <!--  <animateMotion dur="5.5s" repeatCount="indefinite" begin="-2s"><mpath href="#innerTrack"/></animateMotion>
             </circle>
-            <path id="outerTrack" d="M 190,35 A 155,155 0 1,1 189.9,35" fill="none"/>
-            <!-- Animierter oranger Punkt auf der inneren Bahn (schneller) -->
-            <circle r="3.5" fill="#ff6b2b" opacity=".8">
-              <animateMotion dur="5.5s" repeatCount="indefinite" begin="-2s"><mpath href="#innerTrack"/></animateMotion>
-            </circle>
+            <!-- Animierter grüner Punkt auf der äußeren elliptischen Bahn -->
+<circle r="5" fill="#d4f53c">
+  <animateMotion dur="8s" repeatCount="indefinite">
+    <mpath href="#outerTrack"/>
+  </animateMotion>
+</circle>
+
+<!-- Äußere Ellipse (passt zur gezeichneten Bahn rx=178 ry=155) -->
+<path id="outerTrack" d="M 190,35 A 178,155 0 1,1 189.9,35" fill="none"/>
+
+
+<!-- Animierter oranger Punkt auf der inneren elliptischen Bahn -->
+<circle r="3.5" fill="#ff6b2b" opacity=".8">
+  <animateMotion dur="5.5s" repeatCount="indefinite" begin="-2s">
+    <mpath href="#innerTrack"/>
+  </animateMotion>
+</circle>
+
+<!-- Innere Ellipse (passt zur gezeichneten Bahn rx=131 ry=109) -->
+<path id="innerTrack" d="M 190,81 A 131,109 0 1,1 189.9,81" fill="none"/>
             <path id="innerTrack" d="M 190,81 A 109,109 0 1,1 189.9,81" fill="none"/>
+            
           </svg>
         </div>
 
@@ -854,10 +875,10 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
           <p class="paypal-note">Du wirst nach dem Absenden auf PayPal weitergeleitet. Bei Stornierung bis 48h vorher volle Rückerstattung.</p>
         </div>
 
-        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;">Nach dem Absenden wirst du zu PayPal weitergeleitet. Ich bestätige deinen Termin nach Zahlungseingang.</p>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;">Nach dem Absenden prüfe ich deine Anfrage und sende dir eine Bestätigungs-E-Mail mit dem Zahlungslink zu.</p>
         <div class="step-nav">
           <button class="btn-outline" onclick="goStep(3)">← Zurück</button>
-          <button class="btn-primary" onclick="submitBooking()">Jetzt buchen & bezahlen ✓</button>
+          <button class="btn-primary" onclick="submitBooking()">Anfrage absenden ✓</button>
         </div>
       </div>
     </div>
@@ -865,9 +886,10 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     <!-- Erfolgsbestätigung nach Absenden -->
     <div class="success-screen" id="booking-success">
       <svg width="60" height="60" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="28" stroke="#d4f53c" stroke-width="1.5"/><path d="M17 30 L25 38 L43 20" stroke="#d4f53c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <h2>ANFRAGE GESENDET!</h2>
-      <p>Du wirst zu PayPal weitergeleitet. Nach Zahlungseingang bestätige ich deinen Termin innerhalb von 24 Stunden.</p>
-      <button class="btn-primary" onclick="resetBooking()">Neue Anfrage</button>
+      <h2>ANFRAGE EINGEGANGEN!</h2>
+      <p>Ich habe deine Terminanfrage erhalten und melde mich innerhalb von 24 Stunden.<br>
+      Du bekommst eine <strong>E-Mail mit dem Zahlungslink</strong>, sobald ich den Termin bestätigt habe.</p>
+      <button class="btn-primary" onclick="resetBooking()">Weitere Anfrage</button>
     </div>
   </div>
 </div>
@@ -1024,12 +1046,6 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
 <!-- ============================================================
-
-<!-- Admin-Bereich entfernt — läuft unter admin.matzeperformance.de -->
-
-
-
-<!-- ============================================================
      JAVASCRIPT — Funktionen der Website
 
      Hier ist die Logik. Du musst hier normalerweise nichts ändern,
@@ -1045,7 +1061,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 //    const LOGO_URL = 'bilder/logo.png';         // Unterordner
 //    const LOGO_URL = 'https://domain.de/logo.png'; // externe URL
 // ======================================================================
-const LOGO_URL = ''; // ← Hier deinen Bildpfad eintragen
+const LOGO_URL = 'LOGOMP.png'; // ← Hier deinen Bildpfad eintragen
 
 
 // ============================================================
@@ -1054,40 +1070,46 @@ const LOGO_URL = ''; // ← Hier deinen Bildpfad eintragen
 // Es überlebt das Schließen des Tabs, aber nicht das Löschen des Caches.
 // ============================================================
 
-// ── Globaler App-State (aus Supabase geladen) ────────────────
-let _avail = {
-  0:{active:false,slots:[]},
-  1:{active:true, slots:[['08:00','12:00'],['14:00','18:00']]},
-  2:{active:true, slots:[['08:00','12:00']]},
-  3:{active:true, slots:[['15:00','19:00']]},
-  4:{active:true, slots:[['08:00','12:00']]},
-  5:{active:false,slots:[]},
-  6:{active:true, slots:[['09:00','13:00']]}
+// Hilfsfunktion: Daten aus dem Browser-Speicher laden
+const L = key => { try { return JSON.parse(localStorage.getItem(key)) || null; } catch(e) { return null; } };
+
+// Verfügbarkeiten laden (Standard: Mo, Di, Mi, Do aktiv)
+const loadAvail = () => _avail || L('rf_avail') || {
+  0: {active:false, slots:[]},
+  1: {active:true,  slots:[['08:00','12:00'],['14:00','18:00']]},
+  2: {active:true,  slots:[['08:00','12:00']]},
+  3: {active:true,  slots:[['15:00','19:00']]},
+  4: {active:true,  slots:[['08:00','12:00']]},
+  5: {active:false, slots:[]},
+  6: {active:true,  slots:[['09:00','13:00']]}
 };
+
+const loadBookings     = () => L('rf_bookings') || [];
+const loadPayPal       = () => _paypal;
+// Admin Login deaktiviert (läuft künftig über Supabase)
+const loadPassword     = () => null;
+const loadSlotDuration = () => _slotDur;
+
+// ── Einstellungen aus Supabase laden (Verfügbarkeit & PayPal) ─────────────
+let _avail = null;   // wird von fetchSettings befüllt
 let _slotDur = 60;
 let _paypal  = {email:'', currency:'EUR', desc:'Run & Fuel Coaching', mode:'full'};
 
-const loadAvail        = () => _avail;
-const loadSlotDuration = () => _slotDur;
-const loadPayPal       = () => _paypal;
-
-// Einstellungen einmalig beim Start aus Supabase laden
 async function fetchSettings() {
-  if (!supabaseClient || SUPABASE_URL === 'DEINE_SUPABASE_URL') return; // noch nicht konfiguriert
+  if (SUPABASE_URL.includes('DEINE')) return; // noch nicht konfiguriert
   try {
-    const { data } = await supabaseClient
-      .from('settings').select('key,value');
+    const { data } = await supabaseClient.from('settings').select('key,value');
     if (!data) return;
     data.forEach(row => {
-      if (row.key === 'availability') {
-        if (row.value.avail)    _avail    = row.value.avail;
-        if (row.value.slotDur)  _slotDur  = row.value.slotDur;
+      if (row.key === 'availability' && row.value) {
+        if (row.value.avail)   _avail   = row.value.avail;
+        if (row.value.slotDur) _slotDur = row.value.slotDur;
       }
-      if (row.key === 'paypal' && row.value.email) {
+      if (row.key === 'paypal' && row.value && row.value.email) {
         _paypal = row.value;
       }
     });
-  } catch(e) { /* Supabase noch nicht konfiguriert — Standardwerte bleiben */ }
+  } catch(e) { /* Supabase nicht erreichbar — Standardwerte */ }
 }
 
 // Buchungs-Zustandsvariablen (temporär, wird bei Seiten-Reload zurückgesetzt)
@@ -1111,7 +1133,11 @@ function showPage(p) {
   if (n) n.classList.add('active');
   // Kalender initialisieren, wenn Buchungsseite aufgerufen wird
   if (p === 'booking') initCalendar();
-  // Admin läuft unter admin.matzeperformance.de (separate Seite)
+  // Admin-Daten laden, wenn Admin-Seite aufgerufen wird und bereits eingeloggt
+  if (p === 'admin' && document.getElementById('admin-panel').classList.contains('visible')) {
+    renderAvailability();
+    renderBookingsTable();
+  }
   window.scrollTo(0, 0);
 }
 
@@ -1274,13 +1300,8 @@ async function submitBooking() {
   if (!ok) return;
   document.getElementById('booking-main').style.display = 'none';
   document.getElementById('booking-success').classList.add('show');
-  // PayPal-Weiterleitung wenn konfiguriert
-  const pp = loadPayPal();
-  if (pp.email && bookingData.price > 0) {
-    const amount = pp.mode === 'deposit' ? bookingData.price * 0.5 : bookingData.price;
-    const url = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(pp.email)}&item_name=${encodeURIComponent(pp.desc + ' – ' + bookingData.service)}&currency_code=${pp.currency}&amount=${amount.toFixed(2)}`;
-    setTimeout(() => window.open(url, '_blank'), 1500);
-  }
+  // Kein PayPal-Redirect mehr — der Zahlungslink wird per E-Mail
+  // gesendet, sobald du den Termin im Admin-Panel bestätigst.
 }
 
 // Buchungsformular zurücksetzen
@@ -1401,7 +1422,10 @@ function showNotif(msg, isError = false) {
 // INITIALISIERUNG beim Laden der Seite
 // ============================================================
 window.addEventListener('DOMContentLoaded', async () => {
-  // Einstellungen (Verfügbarkeit, PayPal) aus Supabase laden, dann Kalender rendern
+  // Standard-Verfügbarkeiten setzen, wenn noch keine vorhanden
+  if (!localStorage.getItem('rf_avail')) {
+    localStorage.setItem('rf_avail', JSON.stringify(loadAvail()));
+  }
   await fetchSettings();
   initCalendar();
 
