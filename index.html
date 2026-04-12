@@ -463,10 +463,70 @@ footer { border-top:1px solid var(--border); padding:2.5rem; display:flex; justi
      Werten aus dem Supabase-Dashboard (Project Settings → API)
      ============================================================ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<!-- EmailJS — Benachrichtigung bei neuer Buchungsanfrage -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 const SUPABASE_URL = "https://vthhcgsfdsmgzqfeywbd.supabase.co";   // z.B. https://xxx.supabase.co
 const SUPABASE_KEY = "sb_publishable_L6oa1uSdqitiA_okV8_i-A_11XzKw-I"; // beginnt mit "eyJ..."
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// ✏️  E-MAIL BENACHRICHTIGUNG — EmailJS Zugangsdaten
+//
+// Einmalig einrichten (5 Min):
+// 1. emailjs.com → kostenloses Konto erstellen
+// 2. "Email Services" → Gmail/Outlook verbinden → SERVICE_ID notieren
+// 3. "Email Templates" → Neue Vorlage (Inhalt weiter unten) → TEMPLATE_ID notieren
+// 4. "Account" → PUBLIC_KEY notieren
+// 5. Alle drei Werte hier eintragen + deine Admin-E-Mail
+// ══════════════════════════════════════════════════════════════
+const EMAILJS_SERVICE_ID  = 'DEIN_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'DEIN_TEMPLATE_ID';
+const EMAILJS_PUBLIC_KEY  = 'DEIN_PUBLIC_KEY';
+const ADMIN_EMAIL         = 'DEINE_EMAIL@BEISPIEL.DE'; // ← deine E-Mail-Adresse
+
+// EmailJS initialisieren (nur wenn konfiguriert)
+if (EMAILJS_PUBLIC_KEY !== 'DEIN_PUBLIC_KEY') {
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+}
+
+// ── Benachrichtigungs-E-Mail an Admin senden ───────────────────
+// Wird nach jeder erfolgreichen Buchung aufgerufen.
+// EmailJS-Template-Vorlage (kopiere das in dein Template):
+// ─────────────────────────────────────────────────────
+// Subject: 🏃 Neue Buchungsanfrage: {{service}}
+// Body:
+//   Neue Terminanfrage eingegangen!
+//
+//   Name:      {{name}}
+//   E-Mail:    {{customer_email}}
+//   Telefon:   {{phone}}
+//   Leistung:  {{service}}
+//   Datum:     {{date}} um {{time}} Uhr
+//   Betrag:    {{amount}}
+//   Nachricht: {{message}}
+// ─────────────────────────────────────────────────────
+async function notifyAdmin(booking) {
+  if (EMAILJS_PUBLIC_KEY === 'DEIN_PUBLIC_KEY') return; // noch nicht konfiguriert
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email:       ADMIN_EMAIL,
+      name:           booking.fname + ' ' + booking.lname,
+      customer_email: booking.email,
+      phone:          booking.phone || '—',
+      service:        booking.service,
+      date:           booking.date,
+      time:           booking.time,
+      amount:         booking.paid > 0 ? booking.paid + ' €' : 'Kostenlos',
+      message:        booking.message || '—',
+    });
+  } catch(e) {
+    console.warn('Admin-Benachrichtigung fehlgeschlagen:', e);
+    // Buchung trotzdem erfolgreich — kein Fehler für den Kunden
+  }
+}
 </script>
 
 </head>
@@ -1298,10 +1358,22 @@ async function submitBooking() {
     bookingData.price
   );
   if (!ok) return;
+
+  // Admin per E-Mail benachrichtigen
+  await notifyAdmin({
+    fname:   bookingData.fname,
+    lname:   bookingData.lname,
+    email:   bookingData.email,
+    phone:   bookingData.phone,
+    service: bookingData.service,
+    date:    formatDate(selectedDate),
+    time:    selectedTime,
+    paid:    bookingData.price,
+    message: bookingData.message,
+  });
+
   document.getElementById('booking-main').style.display = 'none';
   document.getElementById('booking-success').classList.add('show');
-  // Kein PayPal-Redirect mehr — der Zahlungslink wird per E-Mail
-  // gesendet, sobald du den Termin im Admin-Panel bestätigst.
 }
 
 // Buchungsformular zurücksetzen
