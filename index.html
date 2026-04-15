@@ -1067,20 +1067,34 @@ async function notifyAdmin(booking) {
            Beispiel GitHub:  src="https://raw.githubusercontent.com/DEIN-USER/DEIN-REPO/main/bilder/profil.jpg"
            Beispiel lokal:   src="bilder/profil.jpg"  (Datei muss im Repo liegen)
       -->
-      <div class="about-img-placeholder" id="about-main-img-wrap">
-        <img id="about-main-img" alt="Profilbild"
-             src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon04.jpeg"
-             onerror="this.style.display='none';document.getElementById('about-img-fallback').style.display='flex'">
-         <div id="about-img-fallback" class="hv-placeholder" style="display:flex;width:100%;height:100%;position:absolute;inset:0;border-radius:0;">
-          <div class="hv-placeholder-icon">📷</div>
-          <div class="hv-placeholder-text">Profilbild eintragen:<br>src="dein-bild.jpg"</div>
-        </div> 
-      </div>
+     <div class="about-img-placeholder" id="about-main-img-wrap" style="position:relative;">
+  
+  <img id="about-main-img" 
+       alt="Profilbild"
+       src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon04.jpeg"
+       style="width:100%; height:100%; object-fit:cover;"
+       onerror="this.style.display='none';document.getElementById('about-img-fallback').style.display='flex'">
+
+  <div id="about-img-fallback" 
+       class="hv-placeholder" 
+       style="display:none; width:100%; height:100%; position:absolute; inset:0; border-radius:0;">
+    
+    <div class="hv-placeholder-icon">📷</div>
+    <div class="hv-placeholder-text">
+      Profilbild eintragen:<br>src="dein-bild.jpg"
+    </div>
+
+  </div> 
+
+</div>
 
       <div class="about-text">
         <!-- ✏️ ANPASSEN: Überschrift, Texte und Badges -->
         <h2>ICH BIN<br><em>DEIN COACH.</em></h2>
-        <p>Hier kannst du einen kurzen persönlichen Text über dich eintragen – dein Weg zum Laufsport, deine Motivation, warum Japan dich inspiriert, und was Kunden von dir erwarten können.</p>
+        <p>Seit 2017 arbeite ich als Trainer und begleite Menschen dabei, fitter, gesünder und leistungsfähiger zu werden – als Fitness Trainer, Ernährungsberater und Running Coach.</p>
+        <p>Was mir dabei wichtig ist: Ich rede nicht nur darüber, ich lebe es selbst. Ob Halbmarathon, Marathon oder sogar Triathlon auf der Langdistanz – ich habe schon viele Wettkämpfe bestritten und weiß aus eigener Erfahrung, worauf es wirklich ankommt.</p>
+        <p>Genau diese Mischung aus Wissen und Praxis gebe ich an dich weiter. Egal ob es um Training, Ernährung oder die Vorbereitung auf deinen nächsten Lauf geht – bei mir bekommst du alles aus einer Hand.</p>
+        <p>Wenn du etwas erreichen willst und jemanden suchst, der dich wirklich versteht und motiviert, dann bist du bei mir genau richtig. 💪</p>
         <!-- ✏️ ANPASSEN: Badges — füge eigene hinzu oder entferne welche -->
         <div class="about-badges">
           <span class="about-badge accent">Laufcoach</span>
