@@ -1069,9 +1069,12 @@ async function notifyAdmin(booking) {
       -->
       <div class="about-img-placeholder" id="about-main-img-wrap">
         <img id="about-main-img" alt="Profilbild"
-             src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Hyrox.jpeg"
+             src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon04.jpeg"
              onerror="this.style.display='none';document.getElementById('about-img-fallback').style.display='flex'">
-        </div>
+         <div id="about-img-fallback" class="hv-placeholder" style="display:flex;width:100%;height:100%;position:absolute;inset:0;border-radius:0;">
+          <div class="hv-placeholder-icon">📷</div>
+          <div class="hv-placeholder-text">Profilbild eintragen:<br>src="dein-bild.jpg"</div>
+        </div> 
       </div>
 
       <div class="about-text">
@@ -1105,7 +1108,7 @@ async function notifyAdmin(booking) {
     -->
     <div class="section-tag" style="margin-bottom:1.5rem;">// Impressionen</div>
     <div class="about-gallery">
-      <div class="gallery-slot"><img id="gi0" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon04.jpeg" alt="Impression 1" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi0" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Hyrox.jpeg" alt="Impression 1" onerror="this.parentElement.style.display='none'"></div>
       <div class="gallery-slot"><img id="gi1" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon03.jpeg" alt="Impression 2" onerror="this.parentElement.style.display='none'"></div>
       <div class="gallery-slot"><img id="gi2" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/BerlinMarathon.jpg" alt="Impression 3" onerror="this.parentElement.style.display='none'"></div>
       <div class="gallery-slot"><img id="gi3" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Challenge Roth.jpg" alt="Impression 4" onerror="this.parentElement.style.display='none'"></div>
