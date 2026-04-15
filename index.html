@@ -1060,85 +1060,62 @@ async function notifyAdmin(booking) {
   <div class="about-wrap">
     <div class="section-tag">// About Me</div>
 
-    <!-- Oberer Bereich: Profilbild + Text -->
     <div class="about-hero">
 
-      <!-- ✏️ PROFILBILD — Bildpfad hier eintragen (GitHub-URL oder lokaler Dateiname)
-           Beispiel GitHub:  src="https://raw.githubusercontent.com/DEIN-USER/DEIN-REPO/main/bilder/profil.jpg"
-           Beispiel lokal:   src="bilder/profil.jpg"  (Datei muss im Repo liegen)
-      -->
-     <div class="about-img-placeholder" id="about-main-img-wrap" style="position:relative;">
-  
-  <img id="about-main-img" 
-       alt="Profilbild"
-       src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon04.jpeg"
-       style="width:100%; height:100%; object-fit:cover;"
-       onerror="this.style.display='none';document.getElementById('about-img-fallback').style.display='flex'">
-
-  <div id="about-img-fallback" 
-       class="hv-placeholder" 
-       style="display:none; width:100%; height:100%; position:absolute; inset:0; border-radius:0;">
-    
-    <div class="hv-placeholder-icon">📷</div>
-    <div class="hv-placeholder-text">
-      Profilbild eintragen:<br>src="dein-bild.jpg"
-    </div>
-
-  </div> 
-
-</div>
+      <!-- ✏️ PROFILBILD — src="" mit deiner GitHub-URL befüllen -->
+      <div class="about-img-placeholder" id="about-main-img-wrap">
+        <img id="about-main-img" alt="Profilbild"
+             src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon04.jpeg"
+             onerror="this.style.display='none';document.getElementById('about-img-fallback').style.display='flex'">
+        <div id="about-img-fallback" style="display:none;position:absolute;inset:0;background:var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;">
+          <div style="font-size:2rem;opacity:.4">📷</div>
+          <div style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);text-align:center;">Bild nicht gefunden</div>
+        </div>
+      </div>
 
       <div class="about-text">
-        <!-- ✏️ ANPASSEN: Überschrift, Texte und Badges -->
         <h2>ICH BIN<br><em>DEIN COACH.</em></h2>
         <p>Seit 2017 arbeite ich als Trainer und begleite Menschen dabei, fitter, gesünder und leistungsfähiger zu werden – als Fitness Trainer, Ernährungsberater und Running Coach.</p>
         <p>Was mir dabei wichtig ist: Ich rede nicht nur darüber, ich lebe es selbst. Ob Halbmarathon, Marathon oder sogar Triathlon auf der Langdistanz – ich habe schon viele Wettkämpfe bestritten und weiß aus eigener Erfahrung, worauf es wirklich ankommt.</p>
         <p>Genau diese Mischung aus Wissen und Praxis gebe ich an dich weiter. Egal ob es um Training, Ernährung oder die Vorbereitung auf deinen nächsten Lauf geht – bei mir bekommst du alles aus einer Hand.</p>
         <p>Wenn du etwas erreichen willst und jemanden suchst, der dich wirklich versteht und motiviert, dann bist du bei mir genau richtig. 💪</p>
-        <!-- ✏️ ANPASSEN: Badges — füge eigene hinzu oder entferne welche -->
         <div class="about-badges">
           <span class="about-badge accent">Laufcoach</span>
           <span class="about-badge accent">Ernährungsberater</span>
           <span class="about-badge accent">Fitnesstrainer</span>
           <span class="about-badge">Marathon</span>
           <span class="about-badge">Halbmarathon</span>
-          <span class="about-badge">Motivation 🗾</span>
+          <span class="about-badge">Motivation 🔥</span>
           <span class="about-badge">Wettkampf-Ernährung</span>
         </div>
       </div>
     </div>
 
-    <!-- ✏️ BILDERGALERIE — Trage deine Bildpfade in die src="" Attribute ein.
-         Beispiel GitHub: src="https://raw.githubusercontent.com/DEIN-USER/DEIN-REPO/main/bilder/foto1.jpg"
-         Beispiel lokal:  src="bilder/foto1.jpg"   (Dateien müssen im Repo liegen)
-         Leere src="" = Slot wird automatisch ausgeblendet.
-    -->
+    <!-- ✏️ BILDERGALERIE — Leere src="" = Slot ausgeblendet -->
     <div class="section-tag" style="margin-bottom:1.5rem;">// Impressionen</div>
     <div class="about-gallery">
-      <div class="gallery-slot"><img id="gi0" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Hyrox.jpeg" alt="Impression 1" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi1" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon03.jpeg" alt="Impression 2" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi2" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/BerlinMarathon.jpg" alt="Impression 3" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi3" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Challenge Roth.jpg" alt="Impression 4" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi4" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/StockholmMarathon.jpg" alt="Impression 5" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi5" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Hyrox2.jpeg" alt="Impression 6" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi0" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Hyrox.jpeg"           alt="Impression 1" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi1" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon03.jpeg"   alt="Impression 2" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi2" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/BerlinMarathon.jpg"      alt="Impression 3" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi3" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Challenge%20Roth.jpg"    alt="Impression 4" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi4" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/StockholmMarathon.jpg"   alt="Impression 5" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi5" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Hyrox2.jpeg"             alt="Impression 6" onerror="this.parentElement.style.display='none'"></div>
     </div>
 
-    <!-- Werte-Karten mit japanischen Kanji -->
     <div class="section-tag" style="margin-bottom:1.5rem;">// Meine Werte</div>
     <div class="about-values">
-      <!-- ✏️ ANPASSEN: Kanji, Titel und Text der Werte-Karten -->
       <div class="value-card">
-        <div class="value-kanji">鍛</div> <!-- 鍛 = Stählen / Training -->
+        <div class="value-kanji">鍛</div>
         <div class="value-title">Disziplin</div>
         <div class="value-desc">Kontinuität schlägt Intensität. Ich helfe dir, einen Plan zu entwickeln, den du wirklich durchhältst – nachhaltig und auf deinen Alltag abgestimmt.</div>
       </div>
       <div class="value-card">
-        <div class="value-kanji">誠</div> <!-- 誠 = Aufrichtigkeit / Ehrlichkeit -->
+        <div class="value-kanji">誠</div>
         <div class="value-title">Ehrlichkeit</div>
         <div class="value-desc">Kein Blatt vor den Mund. Ich sage dir, was dich wirklich schneller macht – und was nicht. Evidenzbasiert, praxisnah, ohne Hype.</div>
       </div>
       <div class="value-card">
-        <div class="value-kanji">魂</div> <!-- 魂 = Seele / Leidenschaft -->
+        <div class="value-kanji">魂</div>
         <div class="value-title">Leidenschaft</div>
         <div class="value-desc">Laufen ist mehr als Sport. Es ist Meditation, Freiheit und Selbstentdeckung. Diese Begeisterung gebe ich an jeden meiner Athleten weiter.</div>
       </div>
