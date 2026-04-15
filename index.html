@@ -1067,7 +1067,7 @@ async function notifyAdmin(booking) {
         <img id="about-main-img" alt="Profilbild"
              src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon04.jpeg"
              onerror="this.style.display='none';document.getElementById('about-img-fallback').style.display='flex'">
-        <div id="about-img-fallback" style="display:none;position:absolute;inset:0;background:var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;">
+        <div id="about-img-fallback" style="display:none;position:absolute;inset:0;background:var(--surface2);flex-direction:column;align-items:center;justify-content:center;gap:.7rem;">
           <div style="font-size:2rem;opacity:.4">📷</div>
           <div style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);text-align:center;">Bild nicht gefunden</div>
         </div>
@@ -1088,7 +1088,8 @@ async function notifyAdmin(booking) {
           <span class="about-badge">Motivation 🔥</span>
           <span class="about-badge">Wettkampf-Ernährung</span>
         </div>
-    </div>
+      </div><!-- end about-text -->
+    </div><!-- end about-hero -->
 
     <!-- ✏️ BILDERGALERIE — Leere src="" = Slot ausgeblendet -->
     <div class="section-tag" style="margin-bottom:1.5rem;">// Impressionen</div>
@@ -1598,9 +1599,6 @@ window.addEventListener('DOMContentLoaded', async () => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
-    // Platzhalter im Hero ausblenden
-    const ph = document.querySelector('.hv-placeholder');
-    if (ph) ph.style.display = 'none';
     const heroImg = document.getElementById('logo-hero');
     if (heroImg) heroImg.style.display = 'block';
   }
