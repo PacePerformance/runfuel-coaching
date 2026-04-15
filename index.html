@@ -99,7 +99,7 @@ nav ul li a:hover, nav ul li a.active { color:var(--accent); }
    JavaScript schaltet zwischen ihnen um.
    ============================================================ */
 .page { display:none; padding-top:66px; } /* padding-top = Höhe der fixen Nav */
-.page.active { display:block; }
+.page.active { display:block !important; }
 
 
 /* ============================================================
@@ -639,10 +639,10 @@ async function notifyAdmin(booking) {
 
   <!-- Navigationslinks — jedes onclick="showPage('...')" öffnet die zugehörige Seite -->
   <ul>
-    <li><a onclick="showPage('home')"    id="nav-home"    class="active">Home</a></li>
-    <li><a onclick="showPage('about')"   id="nav-about"              >About Me</a></li>
-    <li><a onclick="showPage('plans')"   id="nav-plans"              >Trainingspläne</a></li>
-    <li><a onclick="showPage('booking')" id="nav-booking"            >Termin buchen</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('home')"    id="nav-home"    class="active">Home</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('about')"   id="nav-about"              >About Me</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('plans')"   id="nav-plans"              >Trainingspläne</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('booking')" id="nav-booking"            >Termin buchen</a></li>
   </ul>
 
   <!-- Hamburger Button (nur Mobil sichtbar) -->
@@ -655,10 +655,10 @@ async function notifyAdmin(booking) {
 
 <!-- Mobile Dropdown Menu ─────────────────────────────────── -->
 <div class="mobile-menu" id="mobile-menu">
-  <a onclick="mobileNav('home')"    id="mob-home"    class="active">Home</a>
-  <a onclick="mobileNav('about')"   id="mob-about"              >About Me</a>
-  <a onclick="mobileNav('plans')"   id="mob-plans"              >Trainingspläne</a>
-  <a onclick="mobileNav('booking')" id="mob-booking"            >Termin buchen</a>
+  <a href="javascript:void(0)" onclick="mobileNav('home')"    id="mob-home"    class="active">Home</a>
+  <a href="javascript:void(0)" onclick="mobileNav('about')"   id="mob-about"              >About Me</a>
+  <a href="javascript:void(0)" onclick="mobileNav('plans')"   id="mob-plans"              >Trainingspläne</a>
+  <a href="javascript:void(0)" onclick="mobileNav('booking')" id="mob-booking"            >Termin buchen</a>
   <div class="mobile-divider"></div>
   <!--
     ✏️ INSTAGRAM — trage deinen Link hier ein (gleich wie im Footer)
@@ -1274,19 +1274,26 @@ const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August',
 // Wechselt zwischen den verschiedenen "Seiten" der App.
 // ============================================================
 function showPage(p) {
-  // Alle Seiten ausblenden
-  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-  document.getElementById('page-' + p).classList.add('active');
-  // Desktop-Nav aktiv setzen
-  document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
-  const n = document.getElementById('nav-' + p);
-  if (n) n.classList.add('active');
-  // Mobile-Nav aktiv setzen
-  document.querySelectorAll('.mobile-menu a[id]').forEach(el => el.classList.remove('active'));
-  const mob = document.getElementById('mob-' + p);
-  if (mob) mob.classList.add('active');
-  if (p === 'booking') initCalendar();
-  window.scrollTo(0, 0);
+  try {
+    // Alle Seiten ausblenden
+    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+    // Zielseite einblenden
+    const target = document.getElementById('page-' + p);
+    if (!target) { console.error('Seite nicht gefunden: page-' + p); return; }
+    target.classList.add('active');
+    // Desktop-Nav aktiv setzen
+    document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
+    const n = document.getElementById('nav-' + p);
+    if (n) n.classList.add('active');
+    // Mobile-Nav aktiv setzen
+    document.querySelectorAll('.mobile-menu a[id]').forEach(el => el.classList.remove('active'));
+    const mob = document.getElementById('mob-' + p);
+    if (mob) mob.classList.add('active');
+    if (p === 'booking') initCalendar();
+    window.scrollTo(0, 0);
+  } catch(err) {
+    console.error('showPage Fehler:', err);
+  }
 }
 
 // ── Mobile Menu ───────────────────────────────────────────────
