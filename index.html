@@ -1106,17 +1106,17 @@ async function notifyAdmin(booking) {
     <div class="section-tag" style="margin-bottom:1.5rem;">// Meine Werte</div>
     <div class="about-values">
       <div class="value-card">
-        <div class="value-kanji">鍛</div>
+        <div class="value-kanji">鍛</div><!-- 鍛 = Stählen / Training -->
         <div class="value-title">Disziplin</div>
         <div class="value-desc">Kontinuität schlägt Intensität. Ich helfe dir, einen Plan zu entwickeln, den du wirklich durchhältst – nachhaltig und auf deinen Alltag abgestimmt.</div>
       </div>
       <div class="value-card">
-        <div class="value-kanji">誠</div>
+        <div class="value-kanji">誠</div><!-- 誠 = Aufrichtigkeit / Ehrlichkeit -->
         <div class="value-title">Ehrlichkeit</div>
         <div class="value-desc">Kein Blatt vor den Mund. Ich sage dir, was dich wirklich schneller macht – und was nicht. Evidenzbasiert, praxisnah, ohne Hype.</div>
       </div>
       <div class="value-card">
-        <div class="value-kanji">魂</div>
+        <div class="value-kanji">魂</div><!-- 魂 = Seele / Leidenschaft -->
         <div class="value-title">Leidenschaft</div>
         <div class="value-desc">Laufen ist mehr als Sport. Es ist Meditation, Freiheit und Selbstentdeckung. Diese Begeisterung gebe ich an jeden meiner Athleten weiter.</div>
       </div>
@@ -1292,7 +1292,7 @@ function showPage(p) {
     if (mob) mob.classList.add('active');
     if (p === 'booking') initCalendar();
     window.scrollTo(0, 0);
-  } catch(err) {
+    catch(err) {
     console.error('showPage Fehler:', err);
   }
 }
