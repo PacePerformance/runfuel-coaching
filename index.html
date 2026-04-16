@@ -1275,26 +1275,22 @@ const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August',
 // Wechselt zwischen den verschiedenen "Seiten" der App.
 // ============================================================
 function showPage(p) {
-  try {
-    // Alle Seiten ausblenden
-    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-    // Zielseite einblenden
-    const target = document.getElementById('page-' + p);
-    if (!target) { console.error('Seite nicht gefunden: page-' + p); return; }
-    target.classList.add('active');
-    // Desktop-Nav aktiv setzen
-    document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
-    const n = document.getElementById('nav-' + p);
-    if (n) n.classList.add('active');
-    // Mobile-Nav aktiv setzen
-    document.querySelectorAll('.mobile-menu a[id]').forEach(el => el.classList.remove('active'));
-    const mob = document.getElementById('mob-' + p);
-    if (mob) mob.classList.add('active');
-    if (p === 'booking') initCalendar();
-    window.scrollTo(0, 0);
-    catch(err) {
-    console.error('showPage Fehler:', err);
+   // Alle Seiten ausblenden
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  // Nur die gewählte Seite einblenden
+  document.getElementById('page-' + p).classList.add('active');
+  // Navigation aktualisieren (aktiver Link hervorheben)
+  document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
+  const n = document.getElementById('nav-' + p);
+  if (n) n.classList.add('active');
+  // Kalender initialisieren, wenn Buchungsseite aufgerufen wird
+  if (p === 'booking') initCalendar();
+  // Admin-Daten laden, wenn Admin-Seite aufgerufen wird und bereits eingeloggt
+  if (p === 'admin' && document.getElementById('admin-panel').classList.contains('visible')) {
+    renderAvailability();
+    renderBookingsTable();
   }
+  window.scrollTo(0, 0);
 }
 
 // ── Mobile Menu ───────────────────────────────────────────────
