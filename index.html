@@ -21,7 +21,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- ✏️ ANPASSEN: Seitentitel (erscheint im Browser-Tab) -->
-<title>Run & Fuel Coaching</title>
+<title>MATZE PERFORMANCE Run & Fuel Coaching</title>
 
 <!--
   SCHRIFTEN (Google Fonts)
@@ -781,8 +781,8 @@ async function notifyAdmin(booking) {
 
           <!-- Platzhalter — wird ausgeblendet, sobald ein echtes Bild geladen wird -->
           <div class="hv-placeholder">
-            <div class="hv-placeholder-icon">＋</div>
-            <div class="hv-placeholder-text">Bild einfügen:<img src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/LOGOMP.png" alt= "Logo" class= "hv-image">
+            <div class="hv-placeholder-icon">
+              <img src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/LOGOMP.png" alt= "Logo" class= "hv-image">
             </div>
           </div>
         </div>
@@ -798,7 +798,7 @@ async function notifyAdmin(booking) {
       <!-- Logo wird über LOGO_URL gesetzt -->
       <img id="logo-footer" class="footer-logo-img" alt="Logo" style="display:none">
       <!-- ✏️ ANPASSEN: Name im Footer -->
-      <span class="footer-name">RUN & FUEL COACHING</span>
+      <span class="footer-name">MATZE PERFORMANCE RUN & FUEL COACHING</span>
     </div>
     <div class="footer-kanji">走 · 食 · 力</div>
     <!-- Impressum und Datenschutz — öffnen sich als Modal -->
@@ -819,7 +819,7 @@ async function notifyAdmin(booking) {
       <a onclick="openModal('dsgvo')">Datenschutz</a>
     </div>
     <!-- ✏️ ANPASSEN: Copyright-Jahr -->
-    <div class="footer-copy">© 2026 Run & Fuel Coaching</div>
+    <div class="footer-copy">© 2026 MATZE PERFORMANCE Run & Fuel Coaching</div>
   </footer>
 </div>
 
@@ -1245,7 +1245,7 @@ const loadSlotDuration = () => _slotDur;
 // ── Einstellungen aus Supabase laden (Verfügbarkeit & PayPal) ─────────────
 let _avail = null;   // wird von fetchSettings befüllt
 let _slotDur = 60;
-let _paypal  = {email:'', currency:'EUR', desc:'Run & Fuel Coaching', mode:'full'};
+let _paypal  = {email:'', currency:'EUR', desc:'MATZE PERFORMANCE Run & Fuel Coaching', mode:'full'};
 
 async function fetchSettings() {
   if (SUPABASE_URL.includes('DEINE')) return;
