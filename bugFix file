@@ -99,7 +99,7 @@ nav ul li a:hover, nav ul li a.active { color:var(--accent); }
    JavaScript schaltet zwischen ihnen um.
    ============================================================ */
 .page { display:none; padding-top:66px; } /* padding-top = Höhe der fixen Nav */
-.page.active { display:block !important; }
+.page.active { display:block; }
 
 
 /* ============================================================
@@ -445,90 +445,15 @@ footer { border-top:1px solid var(--border); padding:2.5rem; display:flex; justi
    Unter 768px Breite werden mehrspaltige Layouts auf
    eine Spalte umgestellt.
    ============================================================ */
-/* ── Hamburger Button ─────────────────────────────────────── */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 26px;
-  height: 18px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  z-index: 200;
-}
-.hamburger span {
-  display: block;
-  height: 2px;
-  background: var(--text);
-  border-radius: 2px;
-  transition: all .25s ease;
-  transform-origin: center;
-}
-.hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
-
-/* ── Mobile Dropdown Menu ─────────────────────────────────── */
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 57px; left: 0; right: 0;
-  background: rgba(10,10,8,.98);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(20px);
-  z-index: 99;
-  flex-direction: column;
-  padding: .5rem 0 1rem;
-  animation: slideDown .2s ease;
-}
-.mobile-menu.open { display: flex; }
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.mobile-menu a {
-  display: flex;
-  align-items: center;
-  padding: .9rem 2rem;
-  font-size: .95rem;
-  color: var(--muted);
-  text-decoration: none;
-  cursor: pointer;
-  letter-spacing: .06em;
-  border-left: 2px solid transparent;
-  transition: all .15s;
-}
-.mobile-menu a:hover,
-.mobile-menu a.active {
-  color: var(--accent);
-  border-left-color: var(--accent);
-  background: rgba(212,245,60,.04);
-}
-.mobile-menu .mobile-divider {
-  height: 1px;
-  background: var(--border);
-  margin: .5rem 2rem;
-}
-
-/* ── Responsive ──────────────────────────────────────────── */
 @media(max-width:768px) {
   .hero { grid-template-columns:1fr; padding:1.5rem; }
-  .hero-visual { display:none; }
-  nav ul { display:none; }       /* Desktop-Nav versteckt auf Mobil */
-  .hamburger { display:flex; }   /* Hamburger sichtbar auf Mobil */
+  .hero-visual { display:none; } /* Grafik auf Mobil ausblenden */
+  nav ul { display:none; }       /* Navigation auf Mobil ausblenden */
   .about-hero { grid-template-columns:1fr; }
   .about-gallery { grid-template-columns:repeat(2,1fr); }
   .about-values { grid-template-columns:1fr; }
   .avail-week { grid-template-columns:1fr; }
   .form-grid { grid-template-columns:1fr; }
-  .booking-steps { flex-wrap: wrap; gap: .3rem; }
-  .step { padding: .6rem .8rem; font-size: .7rem; }
-  .hero h1 { font-size: clamp(2.8rem,12vw,4rem); }
-  .hero p { font-size: .92rem; }
-  .booking-wrap { padding: 2rem 1.2rem; }
-  section { padding: 4rem 1.2rem; }
 }
 </style>
 
@@ -639,39 +564,14 @@ async function notifyAdmin(booking) {
 
   <!-- Navigationslinks — jedes onclick="showPage('...')" öffnet die zugehörige Seite -->
   <ul>
-    <li><a href="javascript:void(0)" onclick="showPage('home')"    id="nav-home"    class="active">Home</a></li>
-    <li><a href="javascript:void(0)" onclick="showPage('about')"   id="nav-about"              >About Me</a></li>
-    <li><a href="javascript:void(0)" onclick="showPage('plans')"   id="nav-plans"              >Trainingspläne</a></li>
-    <li><a href="javascript:void(0)" onclick="showPage('booking')" id="nav-booking"            >Termin buchen</a></li>
+    <li><a onclick="showPage('home')"    id="nav-home"    class="active">Home</a></li>
+    <li><a onclick="showPage('about')"   id="nav-about"              >About Me</a></li>
+    <li><a onclick="showPage('plans')"   id="nav-plans"              >Trainingspläne</a></li>
+    <li><a onclick="showPage('booking')" id="nav-booking"            >Termin buchen</a></li>
   </ul>
 
-  <!-- Hamburger Button (nur Mobil sichtbar) -->
-  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menü">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
+  <!-- Admin-Button oben rechts -->
 </nav>
-
-<!-- Mobile Dropdown Menu ─────────────────────────────────── -->
-<div class="mobile-menu" id="mobile-menu">
-  <a href="javascript:void(0)" onclick="mobileNav('home')"    id="mob-home"    class="active">Home</a>
-  <a href="javascript:void(0)" onclick="mobileNav('about')"   id="mob-about"              >About Me</a>
-  <a href="javascript:void(0)" onclick="mobileNav('plans')"   id="mob-plans"              >Trainingspläne</a>
-  <a href="javascript:void(0)" onclick="mobileNav('booking')" id="mob-booking"            >Termin buchen</a>
-  <div class="mobile-divider"></div>
-  <!--
-    ✏️ INSTAGRAM — trage deinen Link hier ein (gleich wie im Footer)
-  -->
-  <a href="https://www.instagram.com/DEIN_USERNAME" target="_blank" rel="noopener">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="margin-right:.5rem;flex-shrink:0">
-      <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/>
-      <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.8"/>
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-    </svg>
-    Instagram
-  </a>
-</div>
 
 <!-- Benachrichtigungs-Toast (wird per JavaScript befüllt) -->
 <div class="notif" id="notif"></div>
@@ -702,9 +602,9 @@ async function notifyAdmin(booking) {
 
       <!-- ✏️ ANPASSEN: Statistik-Zahlen unten -->
       <div class="hero-stats">
-        <div class="stat-item"><div class="stat-num">Running</div><div class="stat-label">Halbmarathon-Marathon</div></div>
-        <div class="stat-item"><div class="stat-num">Strenght</div><div class="stat-label">Muskelaufbau&Stabilität</div></div>
-        <div class="stat-item"><div class="stat-num">Nutrition</div><div class="stat-label">Healthy&Energy</div></div>
+        <div class="stat-item"><div class="stat-num">42K</div><div class="stat-label">Marathon</div></div>
+        <div class="stat-item"><div class="stat-num">21K</div><div class="stat-label">Halbmarathon</div></div>
+        <div class="stat-item"><div class="stat-num">3in1</div><div class="stat-label">Trainer · Ernährung · Lauf</div></div>
       </div>
     </div>
 
@@ -802,23 +702,11 @@ async function notifyAdmin(booking) {
     <div class="footer-kanji">走 · 食 · 力</div>
     <!-- Impressum und Datenschutz — öffnen sich als Modal -->
     <div class="footer-links">
-      <!--
-        ✏️ INSTAGRAM — ersetze DEIN_USERNAME mit deinem Instagram-Nutzernamen
-        Beispiel: href="https://www.instagram.com/matzeperformance"
-      -->
-      <a href="https://www.instagram.com/matzeisrunning" target="_blank" rel="noopener" class="footer-instagram">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:.3rem">
-          <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/>
-          <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.8"/>
-          <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-        </svg>
-        Instagram
-      </a>
       <a onclick="openModal('impressum')">Impressum</a>
       <a onclick="openModal('dsgvo')">Datenschutz</a>
     </div>
     <!-- ✏️ ANPASSEN: Copyright-Jahr -->
-    <div class="footer-copy">© 2026 Run & Fuel Coaching</div>
+    <div class="footer-copy">© 2025 Run & Fuel Coaching</div>
   </footer>
 </div>
 
@@ -874,13 +762,13 @@ async function notifyAdmin(booking) {
         <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><circle cx="12" cy="4" r="2" fill="#d4f53c"/><line x1="12" y1="6" x2="10" y2="11" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round"/><line x1="11" y1="8" x2="8" y2="9.5" stroke="#d4f53c" stroke-width="1.1" stroke-linecap="round"/><line x1="11" y1="8" x2="13.5" y2="6.5" stroke="#d4f53c" stroke-width="1.1" stroke-linecap="round"/><line x1="10" y1="11" x2="7.5" y2="15" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round"/><line x1="10" y1="11" x2="12.5" y2="14.5" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round"/></svg></div>
         <div class="plan-name">Marathon Trainingsplan</div>
         <div class="plan-desc">12–20-Wochen Vorbereitung auf deinen Marathon. Strukturiert, progressiv, individuell.</div>
-        <div class="plan-price">ab 169 <span>€ / Plan</span></div>
+        <div class="plan-price">ab 149 <span>€ / Plan</span></div>
         <ul class="plan-features">
           <li>Individueller Trainingsplan</li>
           <li>Wöchentliche Anpassungen</li>
           <li>Wettkampf-Tapering</li>
           <li>Ernährungsplan inkl.</li>
-          <li>Direkter Kontakt mit Mir</li>
+          <li>Direkter Trainer-Kontakt</li>
         </ul>
         <button class="plan-cta">Jetzt anfragen</button>
       </div>
@@ -890,7 +778,7 @@ async function notifyAdmin(booking) {
         <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><path d="M3 15 L3 8 L9 4 L15 8 L15 15" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><rect x="7" y="10" width="4" height="5" stroke="#ff6b2b" stroke-width="1.1"/></svg></div>
         <div class="plan-name">Halbmarathon Paket</div>
         <div class="plan-desc">8–12-Wochen Vorbereitung auf den Halbmarathon. Ideal für Ein- und Umsteiger.</div>
-        <div class="plan-price">ab 129 <span>€ / Plan</span></div>
+        <div class="plan-price">ab 109 <span>€ / Plan</span></div>
         <ul class="plan-features">
           <li>Strukturierter Trainingsplan</li>
           <li>Laufökonomie-Tipps</li>
@@ -905,7 +793,7 @@ async function notifyAdmin(booking) {
         <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><rect x="2" y="7" width="3" height="4" rx=".5" stroke="#d4f53c" stroke-width="1.2"/><rect x="13" y="7" width="3" height="4" rx=".5" stroke="#d4f53c" stroke-width="1.2"/><line x1="5" y1="9" x2="13" y2="9" stroke="#d4f53c" stroke-width="1.2" stroke-linecap="round"/><rect x="7" y="6" width="4" height="6" rx=".5" stroke="#ff6b2b" stroke-width="1.1"/></svg></div>
         <div class="plan-name">Fitness & Krafttraining</div>
         <div class="plan-desc">Gezieltes Kraft- und Konditionstraining als Ergänzung zum Laufsport oder allgemein.</div>
-        <div class="plan-price">ab 69 <span>€ / Slot</span></div>
+        <div class="plan-price">ab 69 <span>€ / Einheit</span></div>
         <ul class="plan-features">
           <li>Persönliche Einheit (60 min)</li>
           <li>Plan für zuhause oder Gym</li>
@@ -919,8 +807,7 @@ async function notifyAdmin(booking) {
         <div class="plan-icon-wrap"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#d4f53c" stroke-width="1.2"/><circle cx="9" cy="9" r="3.5" stroke="#ff6b2b" stroke-width="1.1"/><circle cx="9" cy="9" r="1" fill="#d4f53c"/></svg></div>
         <div class="plan-name">Rundum-Paket</div>
         <div class="plan-desc">Training + Ernährung + Wettkampfvorbereitung als ganzheitliches Coaching-Paket.</div>
-        <div class="plan-price">"SOLD OUT" <span>currently </span></div>
-        <!--<div class="plan-price">ab 249 <span>€ / Monat</span></div>
+        <div class="plan-price">ab 249 <span>€ / Monat</span></div>
         <ul class="plan-features">
           <li>Alles aus Marathon-Plan</li>
           <li>Wöchentliche Beratung</li>
@@ -971,11 +858,11 @@ async function notifyAdmin(booking) {
           </div>
           <div class="service-option" data-svc="Marathon Trainingsplan" data-dur="90 Min" data-price="149" onclick="selectService(this)">
             <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><circle cx="20" cy="6" r="3" fill="#d4f53c"/><line x1="20" y1="9" x2="17.5" y2="17" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/><line x1="18.8" y1="12.5" x2="14" y2="15" stroke="#d4f53c" stroke-width="1.4" stroke-linecap="round"/><line x1="18.8" y1="12.5" x2="23" y2="10.5" stroke="#d4f53c" stroke-width="1.4" stroke-linecap="round"/><line x1="17.5" y1="17" x2="14" y2="23" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/><line x1="17.5" y1="17" x2="21" y2="22.5" stroke="#d4f53c" stroke-width="1.6" stroke-linecap="round"/></svg>
-            <div class="svc-name">Marathon Plan</div><div class="svc-dur">12-20 Wochen · ab 169€</div>
+            <div class="svc-name">Marathon Plan</div><div class="svc-dur">90 Min · ab 149€</div>
           </div>
           <div class="service-option" data-svc="Halbmarathon Paket" data-dur="60 Min" data-price="109" onclick="selectService(this)">
             <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><line x1="3" y1="24" x2="27" y2="24" stroke="#2a2a22" stroke-width="1.4" stroke-linecap="round"/><circle cx="3" cy="24" r="1.5" fill="#ff6b2b"/><circle cx="27" cy="24" r="1.5" fill="#d4f53c"/><path d="M3 24 Q15 8 27 24" stroke="#d4f53c" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
-            <div class="svc-name">Halbmarathon</div><div class="svc-dur">8-12 Wochen · ab 129€</div>
+            <div class="svc-name">Halbmarathon</div><div class="svc-dur">60 Min · ab 109€</div>
           </div>
           <div class="service-option" data-svc="Fitness & Krafttraining" data-dur="60 Min" data-price="69" onclick="selectService(this)">
             <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><rect x="1" y="12" width="5" height="6" rx="1" stroke="#d4f53c" stroke-width="1.3"/><rect x="24" y="12" width="5" height="6" rx="1" stroke="#d4f53c" stroke-width="1.3"/><line x1="6" y1="15" x2="24" y2="15" stroke="#d4f53c" stroke-width="1.3" stroke-linecap="round"/><rect x="11" y="10" width="8" height="10" rx="1" stroke="#ff6b2b" stroke-width="1.2"/></svg>
@@ -983,7 +870,7 @@ async function notifyAdmin(booking) {
           </div>
           <div class="service-option" data-svc="Rundum-Paket Beratung" data-dur="90 Min" data-price="249" onclick="selectService(this)">
             <svg class="svc-icon" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="12" stroke="#d4f53c" stroke-width="1.3"/><circle cx="15" cy="15" r="6" stroke="#ff6b2b" stroke-width="1.2"/><circle cx="15" cy="15" r="2" fill="#d4f53c"/></svg>
-            <div class="svc-name">Rundum-Paket</div><div class="svc-dur">"SOLD OUT" </div>
+            <div class="svc-name">Rundum-Paket</div><div class="svc-dur">90 Min · ab 249€/Mo</div>
           </div>
         </div>
         <div class="step-nav"><div></div><button class="btn-primary" onclick="goStep(2)">Weiter →</button></div>
@@ -1060,62 +947,74 @@ async function notifyAdmin(booking) {
   <div class="about-wrap">
     <div class="section-tag">// About Me</div>
 
+    <!-- Oberer Bereich: Profilbild + Text -->
     <div class="about-hero">
 
-      <!-- ✏️ PROFILBILD — src="" mit deiner GitHub-URL befüllen -->
+      <!-- ✏️ PROFILBILD — Bildpfad hier eintragen (GitHub-URL oder lokaler Dateiname)
+           Beispiel GitHub:  src="https://raw.githubusercontent.com/DEIN-USER/DEIN-REPO/main/bilder/profil.jpg"
+           Beispiel lokal:   src="bilder/profil.jpg"  (Datei muss im Repo liegen)
+      -->
       <div class="about-img-placeholder" id="about-main-img-wrap">
         <img id="about-main-img" alt="Profilbild"
-             src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon04.jpeg"
+             src=""
              onerror="this.style.display='none';document.getElementById('about-img-fallback').style.display='flex'">
-        <div id="about-img-fallback" style="display:none;position:absolute;inset:0;background:var(--surface2);flex-direction:column;align-items:center;justify-content:center;gap:.7rem;">
-          <div style="font-size:2rem;opacity:.4">📷</div>
-          <div style="font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);text-align:center;">Bild nicht gefunden</div>
+        <div id="about-img-fallback" class="hv-placeholder" style="display:flex;width:100%;height:100%;position:absolute;inset:0;border-radius:0;">
+          <div class="hv-placeholder-icon">📷</div>
+          <div class="hv-placeholder-text">Profilbild eintragen:<br>src="dein-bild.jpg"</div>
         </div>
       </div>
 
       <div class="about-text">
+        <!-- ✏️ ANPASSEN: Überschrift, Texte und Badges -->
         <h2>ICH BIN<br><em>DEIN COACH.</em></h2>
-        <p>Seit 2017 arbeite ich als Trainer und begleite Menschen dabei, fitter, gesünder und leistungsfähiger zu werden – als Fitness Trainer, Ernährungsberater und Running Coach.</p>
-        <p>Was mir dabei wichtig ist: Ich rede nicht nur darüber, ich lebe es selbst. Ob Halbmarathon, Marathon oder sogar Triathlon auf der Langdistanz – ich habe schon viele Wettkämpfe bestritten und weiß aus eigener Erfahrung, worauf es wirklich ankommt.</p>
-        <p>Genau diese Mischung aus Wissen und Praxis gebe ich an dich weiter. Egal ob es um Training, Ernährung oder die Vorbereitung auf deinen nächsten Lauf geht – bei mir bekommst du alles aus einer Hand.</p>
-        <p>Wenn du etwas erreichen willst und jemanden suchst, der dich wirklich versteht und motiviert, dann bist du bei mir genau richtig. 💪</p>
+        <p>Hier kannst du einen kurzen persönlichen Text über dich eintragen – dein Weg zum Laufsport, deine Motivation, warum Japan dich inspiriert, und was Kunden von dir erwarten können.</p>
+        <p>Als Lauf- und Ernährungscoach begleite ich Menschen dabei, ihre persönlichen Bestzeiten zu erreichen – ob beim ersten Halbmarathon oder beim nächsten Boston-Qualifier.</p>
+        <p>Meine Leidenschaft für Japan hat mich gelehrt: Disziplin, Kontinuität und Respekt vor dem Weg sind wichtiger als das Ziel. 一歩一歩 – Schritt für Schritt.</p>
+
+        <!-- ✏️ ANPASSEN: Badges — füge eigene hinzu oder entferne welche -->
         <div class="about-badges">
           <span class="about-badge accent">Laufcoach</span>
           <span class="about-badge accent">Ernährungsberater</span>
           <span class="about-badge accent">Fitnesstrainer</span>
           <span class="about-badge">Marathon</span>
           <span class="about-badge">Halbmarathon</span>
-          <span class="about-badge">Motivation 🔥</span>
+          <span class="about-badge">Japan 🗾</span>
           <span class="about-badge">Wettkampf-Ernährung</span>
         </div>
-      </div><!-- end about-text -->
-    </div><!-- end about-hero -->
-
-    <!-- ✏️ BILDERGALERIE — Leere src="" = Slot ausgeblendet -->
-    <div class="section-tag" style="margin-bottom:1.5rem;">// Impressionen</div>
-    <div class="about-gallery">
-      <div class="gallery-slot"><img id="gi0" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Hyrox.jpeg"           alt="Impression 1" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi1" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon03.jpeg"   alt="Impression 2" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi2" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/BerlinMarathon.jpg"      alt="Impression 3" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi3" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Challenge%20Roth.jpg"    alt="Impression 4" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi4" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/StockholmMarathon.jpg"   alt="Impression 5" onerror="this.parentElement.style.display='none'"></div>
-      <div class="gallery-slot"><img id="gi5" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/Hyrox2.jpeg"             alt="Impression 6" onerror="this.parentElement.style.display='none'"></div>
+      </div>
     </div>
 
+    <!-- ✏️ BILDERGALERIE — Trage deine Bildpfade in die src="" Attribute ein.
+         Beispiel GitHub: src="https://raw.githubusercontent.com/DEIN-USER/DEIN-REPO/main/bilder/TokyoMarathon04.jpeg"
+         Beispiel lokal:  src="bilder/foto1.jpg"   (Dateien müssen im Repo liegen)
+         Leere src="" = Slot wird automatisch ausgeblendet.
+    -->
+    <div class="section-tag" style="margin-bottom:1.5rem;">// Impressionen</div>
+    <div class="about-gallery">
+      <div class="gallery-slot"><img id="gi0" src="https://raw.githubusercontent.com/paceperformance/runfuel-coaching/main/bilder/TokyoMarathon04.jpeg" alt="Impression 1" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi1" src="" alt="Impression 2" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi2" src="" alt="Impression 3" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi3" src="" alt="Impression 4" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi4" src="" alt="Impression 5" onerror="this.parentElement.style.display='none'"></div>
+      <div class="gallery-slot"><img id="gi5" src="" alt="Impression 6" onerror="this.parentElement.style.display='none'"></div>
+    </div>
+
+    <!-- Werte-Karten mit japanischen Kanji -->
     <div class="section-tag" style="margin-bottom:1.5rem;">// Meine Werte</div>
     <div class="about-values">
+      <!-- ✏️ ANPASSEN: Kanji, Titel und Text der Werte-Karten -->
       <div class="value-card">
-        <div class="value-kanji">鍛</div>
+        <div class="value-kanji">鍛</div> <!-- 鍛 = Stählen / Training -->
         <div class="value-title">Disziplin</div>
         <div class="value-desc">Kontinuität schlägt Intensität. Ich helfe dir, einen Plan zu entwickeln, den du wirklich durchhältst – nachhaltig und auf deinen Alltag abgestimmt.</div>
       </div>
       <div class="value-card">
-        <div class="value-kanji">誠</div>
+        <div class="value-kanji">誠</div> <!-- 誠 = Aufrichtigkeit / Ehrlichkeit -->
         <div class="value-title">Ehrlichkeit</div>
         <div class="value-desc">Kein Blatt vor den Mund. Ich sage dir, was dich wirklich schneller macht – und was nicht. Evidenzbasiert, praxisnah, ohne Hype.</div>
       </div>
       <div class="value-card">
-        <div class="value-kanji">魂</div>
+        <div class="value-kanji">魂</div> <!-- 魂 = Seele / Leidenschaft -->
         <div class="value-title">Leidenschaft</div>
         <div class="value-desc">Laufen ist mehr als Sport. Es ist Meditation, Freiheit und Selbstentdeckung. Diese Begeisterung gebe ich an jeden meiner Athleten weiter.</div>
       </div>
@@ -1229,10 +1128,15 @@ const LOGO_URL = 'LOGOMP.png'; // ← Hier deinen Bildpfad eintragen
 const L = key => { try { return JSON.parse(localStorage.getItem(key)) || null; } catch(e) { return null; } };
 
 // Verfügbarkeiten laden (Standard: Mo, Di, Mi, Do aktiv)
-// _avail = {"2025-06-02": [["09:00","12:00"]], "2025-06-03": [...], ...}
-const loadAvail = () => _avail || {};
-// Hilfsfunktion: Hat ein bestimmtes Datum Verfügbarkeitsslots?
-const dateHasSlots = ds => { const a = loadAvail(); return a[ds] && a[ds].length > 0; };
+const loadAvail = () => _avail || L('rf_avail') || {
+  0: {active:false, slots:[]},
+  1: {active:true,  slots:[['08:00','12:00'],['14:00','18:00']]},
+  2: {active:true,  slots:[['08:00','12:00']]},
+  3: {active:true,  slots:[['15:00','19:00']]},
+  4: {active:true,  slots:[['08:00','12:00']]},
+  5: {active:false, slots:[]},
+  6: {active:true,  slots:[['09:00','13:00']]}
+};
 
 const loadBookings     = () => L('rf_bookings') || [];
 const loadPayPal       = () => _paypal;
@@ -1246,21 +1150,20 @@ let _slotDur = 60;
 let _paypal  = {email:'', currency:'EUR', desc:'Run & Fuel Coaching', mode:'full'};
 
 async function fetchSettings() {
-  if (SUPABASE_URL.includes('DEINE')) return;
+  if (SUPABASE_URL.includes('DEINE')) return; // noch nicht konfiguriert
   try {
     const { data } = await supabaseClient.from('settings').select('key,value');
     if (!data) return;
     data.forEach(row => {
       if (row.key === 'availability' && row.value) {
-        // Neues Format: {dates: {"2025-06-02": [["09:00","12:00"]]}, slotDur: 60}
-        if (row.value.dates)   _avail   = row.value.dates;
+        if (row.value.avail)   _avail   = row.value.avail;
         if (row.value.slotDur) _slotDur = row.value.slotDur;
       }
       if (row.key === 'paypal' && row.value && row.value.email) {
         _paypal = row.value;
       }
     });
-  } catch(e) { /* Supabase nicht erreichbar */ }
+  } catch(e) { /* Supabase nicht erreichbar — Standardwerte */ }
 }
 
 // Buchungs-Zustandsvariablen (temporär, wird bei Seiten-Reload zurückgesetzt)
@@ -1274,52 +1177,23 @@ const MONTHS = ['Januar','Februar','März','April','Mai','Juni','Juli','August',
 // Wechselt zwischen den verschiedenen "Seiten" der App.
 // ============================================================
 function showPage(p) {
-  try {
-    // Alle Seiten ausblenden
-    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-    // Zielseite einblenden
-    const target = document.getElementById('page-' + p);
-    if (!target) { console.error('Seite nicht gefunden: page-' + p); return; }
-    target.classList.add('active');
-    // Desktop-Nav aktiv setzen
-    document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
-    const n = document.getElementById('nav-' + p);
-    if (n) n.classList.add('active');
-    // Mobile-Nav aktiv setzen
-    document.querySelectorAll('.mobile-menu a[id]').forEach(el => el.classList.remove('active'));
-    const mob = document.getElementById('mob-' + p);
-    if (mob) mob.classList.add('active');
-    if (p === 'booking') initCalendar();
-    window.scrollTo(0, 0);
-  } catch(err) {
-    console.error('showPage Fehler:', err);
+  // Alle Seiten ausblenden
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  // Nur die gewählte Seite einblenden
+  document.getElementById('page-' + p).classList.add('active');
+  // Navigation aktualisieren (aktiver Link hervorheben)
+  document.querySelectorAll('nav ul li a').forEach(el => el.classList.remove('active'));
+  const n = document.getElementById('nav-' + p);
+  if (n) n.classList.add('active');
+  // Kalender initialisieren, wenn Buchungsseite aufgerufen wird
+  if (p === 'booking') initCalendar();
+  // Admin-Daten laden, wenn Admin-Seite aufgerufen wird und bereits eingeloggt
+  if (p === 'admin' && document.getElementById('admin-panel').classList.contains('visible')) {
+    renderAvailability();
+    renderBookingsTable();
   }
+  window.scrollTo(0, 0);
 }
-
-// ── Mobile Menu ───────────────────────────────────────────────
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobile-menu');
-  const btn  = document.getElementById('hamburger');
-  menu.classList.toggle('open');
-  btn.classList.toggle('open');
-}
-
-function mobileNav(p) {
-  document.getElementById('mobile-menu').classList.remove('open');
-  document.getElementById('hamburger').classList.remove('open');
-  showPage(p);
-}
-
-// Menü schließen wenn außerhalb geklickt
-document.addEventListener('click', function(e) {
-  const menu = document.getElementById('mobile-menu');
-  const btn  = document.getElementById('hamburger');
-  if (menu && menu.classList.contains('open') &&
-      !menu.contains(e.target) && !btn.contains(e.target)) {
-    menu.classList.remove('open');
-    btn.classList.remove('open');
-  }
-});
 
 
 // ============================================================
@@ -1387,6 +1261,7 @@ function goStep(n) {
     document.getElementById('conf-time').textContent  = selectedTime + ' Uhr';
     document.getElementById('conf-name').textContent  = fn + ' ' + ln;
     document.getElementById('conf-email').textContent = em;
+    renderPayPalOptions();
   }
   // Schritt wechseln
   currentStep = n;
@@ -1398,7 +1273,20 @@ function goStep(n) {
   });
 }
 
-// PayPal-Button entfernt — Zahlung erfolgt per E-Mail-Link nach Terminbestätigung
+// PayPal-Optionen in Schritt 4 anzeigen
+function renderPayPalOptions() {
+  const pp = loadPayPal();
+  const block = document.getElementById('paypal-block');
+  if (!pp.email || bookingData.price === 0) { block.style.display = 'none'; return; }
+  block.style.display = 'block';
+  const amount = pp.mode === 'deposit' ? bookingData.price * 0.5 : bookingData.price;
+  const url = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(pp.email)}&item_name=${encodeURIComponent(pp.desc + ' – ' + bookingData.service)}&currency_code=${pp.currency}&amount=${amount.toFixed(2)}`;
+  document.getElementById('paypal-options').innerHTML = `
+    <a href="${url}" target="_blank" class="paypal-opt selected" style="text-decoration:none;display:block;">
+      <div class="ppo-label">${pp.mode === 'deposit' ? 'Anzahlung (50%)' : 'Vollbetrag'}</div>
+      <div class="ppo-price">${amount.toFixed(2)} ${pp.currency}</div>
+    </a>`;
+}
 
 // ============================================================
 // BUCHUNG — Daten sicher an Supabase senden
@@ -1494,44 +1382,31 @@ function changeMonth(d) {
 }
 
 function renderCalendar() {
-  const today     = new Date();
-  const todayY    = today.getFullYear();
-  const todayM    = today.getMonth();
-  // Navigationsgrenzen: aktueller Monat und nächster Monat
-  const maxMonth  = todayM + 1;
-  const maxYear   = todayM === 11 ? todayY + 1 : todayY;
-  const minMonth  = todayM;
-  const minYear   = todayY;
-  // Clamp: nicht weiter als nächsten Monat, nicht vor aktuellem
-  if (calYear < minYear || (calYear === minYear && calMonth < minMonth)) {
-    calYear = minYear; calMonth = minMonth;
-  }
-  if (calYear > maxYear || (calYear === maxYear && calMonth > maxMonth)) {
-    calYear = maxYear; calMonth = maxMonth;
-  }
-  // Pfeile ein-/ausblenden
-  const prevBtn = document.querySelector('.cal-nav:first-of-type');
-  const nextBtn = document.querySelector('.cal-nav:last-of-type');
-  if (prevBtn) prevBtn.style.visibility = (calYear === minYear && calMonth === minMonth) ? 'hidden' : 'visible';
-  if (nextBtn) nextBtn.style.visibility = (calYear === maxYear && calMonth === maxMonth) ? 'hidden' : 'visible';
-
   document.getElementById('cal-month-label').textContent = MONTHS[calMonth] + ' ' + calYear;
+  const avail = loadAvail();
+  // Wochentag des ersten Tages im Monat (0=So → zu Mo-Basis umrechnen)
   let sd = new Date(calYear, calMonth, 1).getDay();
   sd = sd === 0 ? 6 : sd - 1;
-  const dim = new Date(calYear, calMonth + 1, 0).getDate();
+  const dim   = new Date(calYear, calMonth + 1, 0).getDate(); // Tage im Monat
+  const today = new Date();
   let html = '';
+  // Leere Zellen vor dem 1. des Monats
   for (let i = 0; i < sd; i++) html += '<div class="cal-day empty"></div>';
+  // Tage des Monats
   for (let d = 1; d <= dim; d++) {
-    const date     = new Date(calYear, calMonth, d);
-    const isPast   = date < new Date(todayY, todayM, today.getDate());
+    const date = new Date(calYear, calMonth, d);
+    let dow = date.getDay();
+    dow = dow === 0 ? 6 : dow - 1; // Montag = 0
+    const isPast   = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const da       = avail[dow];
+    const hasSlots = da && da.active && da.slots.length > 0;
     const ds       = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const hasSlots = dateHasSlots(ds);
     const isT      = date.toDateString() === today.toDateString();
     const isSel    = selectedDate === ds;
     let cls = 'cal-day';
     if (isPast || !hasSlots) cls += ' disabled';
     else cls += ' available';
-    if (isT)  cls += ' today';
+    if (isT)   cls += ' today';
     if (isSel) cls += ' selected';
     html += `<div class="${cls}" ${(!isPast && hasSlots) ? `onclick="selectDate('${ds}')"` : ''}>${d}</div>`;
   }
@@ -1542,13 +1417,18 @@ function renderCalendar() {
 function selectDate(ds) { selectedDate = ds; selectedTime = null; renderCalendar(); renderTimeSlots(ds); }
 
 function renderTimeSlots(ds) {
+  const avail = loadAvail();
+  const date  = new Date(ds);
+  let dow = date.getDay();
+  dow = dow === 0 ? 6 : dow - 1;
+  const da = avail[dow];
   document.getElementById('timeslots-date-label').textContent = 'Verfügbare Zeiten am ' + formatDate(ds);
   document.getElementById('timeslots-wrap').style.display = 'block';
-  const dateSlots = (loadAvail()[ds] || []);  // [["09:00","12:00"], ...]
-  const dur    = loadSlotDuration();
   const booked = loadBookings().filter(b => b.date === formatDate(ds)).map(b => b.time);
+  const dur = loadSlotDuration();
   let slots = [];
-  dateSlots.forEach(([s, e]) => {
+  // Zeitslots aus den definierten Zeitfenstern berechnen
+  if (da && da.active) da.slots.forEach(([s, e]) => {
     let cur = timeToMin(s), end = timeToMin(e);
     while (cur + dur <= end) { slots.push(minToTime(cur)); cur += dur; }
   });
@@ -1606,6 +1486,9 @@ window.addEventListener('DOMContentLoaded', async () => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
+    // Platzhalter im Hero ausblenden
+    const ph = document.querySelector('.hv-placeholder');
+    if (ph) ph.style.display = 'none';
     const heroImg = document.getElementById('logo-hero');
     if (heroImg) heroImg.style.display = 'block';
   }
