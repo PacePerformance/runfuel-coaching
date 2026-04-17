@@ -400,6 +400,41 @@ section { padding:6rem 2.5rem; max-width:1200px; margin:0 auto; }
 .value-desc { font-size:.84rem; color:var(--muted); line-height:1.7; font-weight:300; }
 
 
+<!-- ============================================================
+     GLOBALE FUSSZEILE — wird auf allen Seiten angezeigt
+     ============================================================ -->
+<div class="divider"></div>
+
+<footer>
+  <div class="footer-left">
+    <!-- Logo wird über LOGO_URL gesetzt -->
+    <img id="logo-footer" class="footer-logo-img" alt="Logo" style="display:none">
+    <!-- ✏️ ANPASSEN: Name im Footer -->
+    <span class="footer-name">RUN & FUEL COACHING</span>
+  </div>
+  <div class="footer-kanji">走 · 食 · 力</div>
+  <!-- Impressum, Datenschutz und Instagram — immer sichtbar -->
+  <div class="footer-links">
+    <!--
+      ✏️ INSTAGRAM — ersetze den Link mit deinem Instagram-Profil
+    -->
+    <a href="https://www.instagram.com/matzeisrunning" target="_blank" rel="noopener" class="footer-instagram">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:.3rem">
+        <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+      </svg>
+      Instagram
+    </a>
+    <a href="javascript:void(0)" onclick="openModal('impressum')">Impressum</a>
+    <a href="javascript:void(0)" onclick="openModal('dsgvo')">Datenschutz</a>
+  </div>
+  <!-- ✏️ ANPASSEN: Copyright-Jahr -->
+  <div class="footer-copy">© 2026 Run & Fuel Coaching</div>
+</footer>
+
+
+  
 /* ============================================================
    IMPRESSUM & DATENSCHUTZ (Modale Overlays)
    Öffnen sich über der aktuellen Seite, wenn man im Footer klickt.
