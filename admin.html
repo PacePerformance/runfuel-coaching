@@ -333,6 +333,27 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .emailjs-setup-hint code { background:var(--surface); color:var(--accent); padding:.1rem .4rem; font-family:'Space Mono',monospace; font-size:.8rem; }
 .emailjs-setup-hint a { color:var(--accent2); }
 
+/* ── Analytics ───────────────────────────────────────────────── */
+.analytics-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--border); margin-bottom:2.5rem; }
+.chart-section { margin-bottom:2.5rem; }
+.chart-title { font-family:'Space Mono',monospace; font-size:.65rem; color:var(--muted); letter-spacing:.15em; text-transform:uppercase; margin-bottom:1.2rem; }
+.bar-chart { display:flex; align-items:flex-end; gap:4px; height:140px; background:var(--surface); border:1px solid var(--border); padding:1rem 1rem .5rem; border-radius:2px; }
+.bar-col { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:0; }
+.bar-fill { width:100%; background:var(--accent); border-radius:2px 2px 0 0; transition:height .3s ease; min-height:2px; opacity:.85; }
+.bar-fill:hover { opacity:1; }
+.bar-label { font-family:'Space Mono',monospace; font-size:.55rem; color:var(--muted); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; }
+.bar-val { font-family:'Space Mono',monospace; font-size:.6rem; color:var(--accent); }
+.analytics-table { border:1px solid var(--border); overflow:hidden; }
+.analytics-row { display:flex; align-items:center; gap:1rem; padding:.65rem 1rem; border-bottom:1px solid var(--border); font-size:.85rem; }
+.analytics-row:last-child { border-bottom:none; }
+.analytics-row:hover { background:var(--surface2); }
+.analytics-rank { font-family:'Space Mono',monospace; font-size:.65rem; color:var(--muted); min-width:1.5rem; }
+.analytics-label { flex:1; }
+.analytics-count { font-family:'Space Mono',monospace; font-size:.78rem; color:var(--accent); }
+.analytics-bar-inline { height:4px; background:var(--accent); border-radius:2px; opacity:.4; margin-top:2px; }
+.date-filter { display:flex; gap:.5rem; margin-bottom:1.5rem; flex-wrap:wrap; align-items:center; }
+.analytics-empty { text-align:center; padding:3rem; color:var(--muted); font-size:.85rem; }
+
 </style>
 </head>
 <body>
@@ -420,6 +441,15 @@ tr:hover td { background:rgba(212,245,60,.02); }
           <polyline points="1,4 8,9 15,4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         E-Mail
+      </div>
+
+      <div class="nav-item" onclick="showView('analytics')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="9" width="3" height="6" rx=".5" stroke="currentColor" stroke-width="1.2"/>
+          <rect x="6" y="5" width="3" height="10" rx=".5" stroke="currentColor" stroke-width="1.2"/>
+          <rect x="11" y="2" width="3" height="13" rx=".5" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        Statistiken
       </div>
 
       <div class="nav-item" onclick="showView('setup')">
@@ -661,6 +691,91 @@ Matze</pre>
         </div>
       </div>
 
+      <!-- ── STATISTIKEN ──────────────────────────────────────── -->
+      <div class="view" id="view-analytics">
+        <div class="page-title-tag">// Auswertung</div>
+        <div class="page-title">STATISTIKEN</div>
+        <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;max-width:640px;">
+          Seitenaufrufe deiner Website. Land und Stadt werden über die IP-Adresse der Besucher ermittelt.
+        </p>
+
+        <!-- Zeitraum-Filter -->
+        <div class="date-filter">
+          <button class="filter-btn active" onclick="setDateFilter(7,this)">7 Tage</button>
+          <button class="filter-btn" onclick="setDateFilter(30,this)">30 Tage</button>
+          <button class="filter-btn" onclick="setDateFilter(90,this)">90 Tage</button>
+          <button class="filter-btn" onclick="setDateFilter(0,this)">Gesamt</button>
+          <button class="refresh-btn" onclick="loadAnalytics()" style="margin-left:auto">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M10.5 6A4.5 4.5 0 1 1 9 2.5L10.5 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              <polyline points="8,1 10.5,1 10.5,3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Aktualisieren
+          </button>
+        </div>
+
+        <!-- Kennzahlen -->
+        <div class="analytics-stats" id="analytics-stats">
+          <div class="stat-card"><div class="stat-card-label">Aufrufe gesamt</div><div class="stat-card-num" id="an-total">—</div></div>
+          <div class="stat-card"><div class="stat-card-label">Heute</div><div class="stat-card-num" id="an-today" style="color:var(--accent2)">—</div></div>
+          <div class="stat-card"><div class="stat-card-label">Diese Woche</div><div class="stat-card-num" id="an-week" style="color:var(--success)">—</div></div>
+          <div class="stat-card"><div class="stat-card-label">Länder</div><div class="stat-card-num" id="an-countries">—</div></div>
+        </div>
+
+        <!-- Aufrufe pro Tag (Balkendiagramm) -->
+        <div class="chart-section">
+          <div class="chart-title">// Aufrufe pro Tag</div>
+          <div class="bar-chart" id="bar-chart">
+            <div class="analytics-empty"><span class="spinner"></span> Lädt...</div>
+          </div>
+        </div>
+
+        <!-- 2 columns: Seiten + Länder -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2.5rem">
+
+          <!-- Top Seiten -->
+          <div>
+            <div class="chart-title">// Top Seiten</div>
+            <div class="analytics-table" id="top-pages">
+              <div class="analytics-empty"><span class="spinner"></span></div>
+            </div>
+          </div>
+
+          <!-- Herkunft nach Land -->
+          <div>
+            <div class="chart-title">// Herkunft (Land)</div>
+            <div class="analytics-table" id="top-countries">
+              <div class="analytics-empty"><span class="spinner"></span></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Herkunft nach Stadt -->
+        <div class="chart-section">
+          <div class="chart-title">// Herkunft (Stadt)</div>
+          <div class="analytics-table" id="top-cities">
+            <div class="analytics-empty"><span class="spinner"></span></div>
+          </div>
+        </div>
+
+        <!-- Letzte Aufrufe -->
+        <div class="chart-section">
+          <div class="chart-title">// Letzte 20 Aufrufe</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Zeitpunkt</th><th>Seite</th><th>Land</th><th>Stadt</th><th>Referrer</th>
+              </tr></thead>
+              <tbody id="recent-views">
+                <tr><td colspan="5" class="analytics-empty"><span class="spinner"></span> Lädt...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
       <!-- ── EINRICHTUNG ────────────────────────────────────── -->
       <div class="view" id="view-setup">
         <div class="page-title-tag">// Erste Schritte</div>
@@ -766,8 +881,8 @@ Matze</pre>
 // ══════════════════════════════════════════════════════════════
 // ✏️ ANPASSEN — Supabase Zugangsdaten
 // ══════════════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://vthhcgsfdsmgzqfeywbd.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_L6oa1uSdqitiA_okV8_i-A_11XzKw-I';
+const SUPABASE_URL = 'DEINE_SUPABASE_URL';
+const SUPABASE_KEY = 'DEIN_PUBLIC_ANON_KEY';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ══════════════════════════════════════════════════════════════
@@ -847,6 +962,7 @@ function showView(v) {
   });
   if (v === 'bookings')  loadBookings();
   if (v === 'dashboard') loadDashboard();
+  if (v === 'analytics') loadAnalytics();
 }
 
 // ── Dashboard ─────────────────────────────────────────────────
@@ -1311,7 +1427,153 @@ function showNotif(msg, isError = false) {
 }
 
 // ── Init ──────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────
 checkSession();
+
+// ══════════════════════════════════════════════════════════════
+// STATISTIKEN
+// ══════════════════════════════════════════════════════════════
+let analyticsDays = 7;  // aktiver Zeitraum-Filter
+
+function setDateFilter(days, btn) {
+  analyticsDays = days;
+  document.querySelectorAll('.date-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadAnalytics();
+}
+
+// Holt Daten aus Supabase und rendert alle Charts
+async function loadAnalytics() {
+  const now   = new Date();
+  const today = now.toISOString().slice(0,10);
+  const since = analyticsDays > 0
+    ? new Date(now - analyticsDays * 86400000).toISOString()
+    : '2000-01-01';
+
+  // Alle Aufrufe im Zeitraum laden
+  let query = sb.from('pageviews').select('*').order('created_at', { ascending: false });
+  if (analyticsDays > 0) query = query.gte('created_at', since);
+  const { data, error } = await query;
+
+  if (error) { showNotif('Fehler beim Laden der Statistiken', true); return; }
+  const rows = data || [];
+
+  // ── Kennzahlen ────────────────────────────────────────────
+  const todayRows  = rows.filter(r => r.created_at.slice(0,10) === today);
+  const weekAgo    = new Date(now - 7 * 86400000).toISOString();
+  const weekRows   = rows.filter(r => r.created_at >= weekAgo);
+  const countries  = new Set(rows.map(r => r.country).filter(c => c && c !== '—')).size;
+
+  document.getElementById('an-total').textContent     = rows.length;
+  document.getElementById('an-today').textContent     = todayRows.length;
+  document.getElementById('an-week').textContent      = weekRows.length;
+  document.getElementById('an-countries').textContent = countries || '—';
+
+  // ── Balkendiagramm: Aufrufe pro Tag ───────────────────────
+  renderBarChart(rows);
+
+  // ── Top Seiten ────────────────────────────────────────────
+  renderTopList('top-pages', countBy(rows, 'page'));
+
+  // ── Top Länder ────────────────────────────────────────────
+  renderTopList('top-countries', countBy(rows, 'country'));
+
+  // ── Top Städte ────────────────────────────────────────────
+  renderTopList('top-cities', countBy(rows, 'city'));
+
+  // ── Letzte 20 Aufrufe ─────────────────────────────────────
+  renderRecentViews(rows.slice(0, 20));
+}
+
+// Zählt Häufigkeit pro Feldwert
+function countBy(rows, field) {
+  const map = {};
+  rows.forEach(r => {
+    const val = r[field] || '—';
+    if (val === '—' || val === 'null') return;
+    map[val] = (map[val] || 0) + 1;
+  });
+  return Object.entries(map)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+}
+
+// Rendert das Balkendiagramm
+function renderBarChart(rows) {
+  const chart = document.getElementById('bar-chart');
+  if (!rows.length) {
+    chart.innerHTML = '<div class="analytics-empty">Noch keine Daten.</div>';
+    return;
+  }
+  // Tage aufbereiten
+  const days = Math.min(analyticsDays > 0 ? analyticsDays : 30, 30);
+  const dayMap = {};
+  const now = new Date();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now - i * 86400000).toISOString().slice(0,10);
+    dayMap[d] = 0;
+  }
+  rows.forEach(r => {
+    const d = r.created_at.slice(0,10);
+    if (d in dayMap) dayMap[d]++;
+  });
+  const entries = Object.entries(dayMap);
+  const maxVal  = Math.max(...entries.map(e => e[1]), 1);
+
+  chart.innerHTML = entries.map(([date, count]) => {
+    const pct   = Math.round((count / maxVal) * 100);
+    const label = date.slice(5); // MM-DD
+    return `<div class="bar-col" title="${date}: ${count} Aufrufe">
+      <div class="bar-val">${count || ''}</div>
+      <div class="bar-fill" style="height:${Math.max(pct, 2)}%"></div>
+      <div class="bar-label">${label}</div>
+    </div>`;
+  }).join('');
+}
+
+// Rendert eine sortierte Top-Liste
+function renderTopList(elId, entries) {
+  const el = document.getElementById(elId);
+  if (!entries.length) {
+    el.innerHTML = '<div class="analytics-empty">Keine Daten.</div>';
+    return;
+  }
+  const max = entries[0][1];
+  el.innerHTML = entries.map(([label, count], i) => `
+    <div class="analytics-row">
+      <span class="analytics-rank">${i + 1}</span>
+      <span class="analytics-label">
+        ${escHtml(label)}
+        <div class="analytics-bar-inline" style="width:${Math.round(count/max*100)}%"></div>
+      </span>
+      <span class="analytics-count">${count}</span>
+    </div>`).join('');
+}
+
+// Rendert die Tabelle der letzten Aufrufe
+function renderRecentViews(rows) {
+  const tbody = document.getElementById('recent-views');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="analytics-empty">Keine Daten.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const dt = new Date(r.created_at);
+    const ts = dt.toLocaleDateString('de-DE') + ' ' + dt.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+    return `<tr>
+      <td class="tbl-date">${ts}</td>
+      <td>${escHtml(r.page || '—')}</td>
+      <td>${escHtml(r.country || '—')}</td>
+      <td>${escHtml(r.city || '—')}</td>
+      <td class="tbl-email">${escHtml(r.referrer || '—')}</td>
+    </tr>`;
+  }).join('');
+}
+
+// HTML-Zeichen escapen
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 </script>
 </body>
 </html>
