@@ -1040,7 +1040,7 @@ async function notifyAdmin(booking) {
           <div class="confirm-row"><span class="confirm-label">E-Mail</span><span class="confirm-value" id="conf-email">–</span></div>
         </div>
 
-        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;">Nach dem Absenden prüfe ich deine Anfrage und melde mich innerhalb von 24 Stunden mit einem Zahlungslink per E-Mail.</p>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:1.5rem;">Nach dem Absenden prüfe ich deine Anfrage persönlich und gebe dir schnellstmöglich Rückmeldung, ob aktuell noch Kapazitäten frei sind. Ich bemühe mich um eine Antwort innerhalb von 48 Stunden.</p>
         <div class="step-nav">
           <button class="btn-outline" onclick="goStep(3)">← Zurück</button>
           <button class="btn-primary" onclick="submitBooking()">Anfrage absenden ✓</button>
@@ -1052,8 +1052,8 @@ async function notifyAdmin(booking) {
     <div class="success-screen" id="booking-success">
       <svg width="60" height="60" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="28" stroke="#d4f53c" stroke-width="1.5"/><path d="M17 30 L25 38 L43 20" stroke="#d4f53c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <h2>ANFRAGE EINGEGANGEN!</h2>
-      <p>Ich habe deine Terminanfrage erhalten und melde mich innerhalb von 24 Stunden.<br>
-      Du bekommst eine <strong>E-Mail mit dem Zahlungslink</strong>, sobald ich den Termin bestätigt habe.</p>
+      <p>Danke für deine Anfrage! Ich prüfe sie persönlich und gebe dir schnellstmöglich Rückmeldung, ob aktuell noch Kapazitäten frei sind.<br>
+      Ich bemühe mich, mich <strong>innerhalb von 48 Stunden</strong> per E-Mail bei dir zu melden.</p>
       <button class="btn-primary" onclick="resetBooking()">Weitere Anfrage</button>
     </div>
   </div>
