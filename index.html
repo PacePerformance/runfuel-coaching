@@ -47,7 +47,8 @@
   /* ✏️ ANPASSEN: Akzentfarben */
   --accent:   #d4f53c;   /* Hauptfarbe (Gelbgrün) — Buttons, Highlights */
   --accent2:  #ff6b2b;   /* Nebenfarbe (Orange)   — Läufer-Icon, Tags */
-
+  --accent3:  #4fc3f7;   /* Hellblau für IS(S) */
+  
   /* ✏️ ANPASSEN: Textfarben */
   --text:     #f0ede4;   /* Haupttext (fast weiß) */
   --muted:    #6b6b5a;   /* Nebentext (grau) */
@@ -129,6 +130,7 @@ nav ul li a:hover, nav ul li a.active { color:var(--accent); }
 .hero h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(3.5rem,7vw,6.5rem); line-height:.95; letter-spacing:.04em; margin-bottom:1.5rem; }
 .hero h1 em { color:var(--accent); font-style:normal; }       /* <em> → Akzentfarbe */
 .hero h1 .line2 { color:var(--accent2); display:block; }       /* Zweite Zeile → Orange */
+.hero h1 .line3 { color: var(--accent3); }
 
 /* ✏️ ANPASSEN: Beschreibungstext unter der Überschrift */
 .hero p { font-size:1rem; color:var(--muted); line-height:1.75; max-width:440px; margin-bottom:2.5rem; font-weight:300; }
@@ -708,6 +710,7 @@ async function notifyAdmin(booking) {
       <div class="hero-ctas">
         <button class="btn-primary" onclick="showPage('plans')">Trainingspläne</button>
         <button class="btn-outline" onclick="showPage('booking')">Termin anfragen</button>
+        <button class="btn-outline" onclick="showPage('about')">Your Coach</button>
       </div>
 
       <!-- ✏️ ANPASSEN: Statistik-Zahlen unten -->
