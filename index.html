@@ -421,6 +421,15 @@ section { padding:6rem 2.5rem; max-width:1200px; margin:0 auto; }
 .modal-box p { font-size:.9rem; color:var(--muted); line-height:1.85; margin-bottom:1rem; font-weight:300; }
 .modal-box a { color:var(--accent); }
 
+  /* ── FAQ Accordion ── */
+.faq-list { display:flex; flex-direction:column; gap:.7rem; }
+.faq-item { background:var(--surface2); border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.faq-item summary { cursor:pointer; list-style:none; padding:1rem 1.2rem; font-size:.95rem; font-weight:600; color:var(--text); display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.faq-item summary::-webkit-details-marker { display:none; }
+.faq-item summary:hover { color:var(--accent); }
+.faq-item summary::after { content:'+'; font-size:1.5rem; line-height:1; color:var(--accent); transition:transform .2s ease; }
+.faq-item[open] summary::after { transform:rotate(45deg); }
+.faq-item p { margin:0; padding:0 1.2rem 1.1rem; font-size:.9rem; color:var(--muted); line-height:1.85; font-weight:300; }
 
 /* ============================================================
    FUSSZEILE
@@ -830,6 +839,7 @@ async function notifyAdmin(booking) {
       </a>
       <a onclick="openModal('impressum')">Impressum</a>
       <a onclick="openModal('dsgvo')">Datenschutz</a>
+      <a onclick="openModal('faq')">FAQ</a>
     </div>
     <!-- ✏️ ANPASSEN: Copyright-Jahr -->
     <div class="footer-copy">© 2026 MATZE PERFORMANCE Run & Fuel Coaching</div>
@@ -1240,6 +1250,53 @@ E-Mail: <a href="mailto:matzesperformance@gmail.com">matzesperformance@gmail.com
   </div>
 </div>
 
+  <!-- ── FAQ MODAL ─────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-faq">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('faq')">✕ Schließen</button>
+    <div class="legal-tag">Gut zu wissen</div>
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.08em;margin-bottom:2rem;">FAQ</h1>
+
+    <div class="faq-list">
+
+      <details class="faq-item">
+        <summary>Im Kalender werden aktuell keine Termine angezeigt.</summary>
+        <p>Erstmal: Danke für dein Interesse – und sorry, dass gerade keine Termine frei sind! Ich möchte meine Athleten bestmöglich betreuen, deshalb haben alle, die bereits mit mir arbeiten, bei der Terminvergabe Vorrang. Außerdem betreue ich bewusst nur eine begrenzte Anzahl an Athleten gleichzeitig – Quality over Quantity. Schreib mir trotzdem gern direkt eine Mail: Vielleicht finden wir einen früheren Slot für dich, oder ich reserviere dir einen. Würde mich freuen!</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Ich will mich auf meinen ersten Wettkampf vorbereiten und habe noch keine Lauferfahrung – welches Paket passt zu mir?</summary>
+        <p>Klasse – den ersten wichtigen Schritt hast du schon gemacht! Wenn wir bisher noch keinen Kontakt hatten, buch am besten das kostenlose Erstgespräch. Wir analysieren deinen Ist-Zustand und finden den idealen Einstieg für dich. Alles Weitere kommt dann. ;)</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Was passiert nach dem Erstgespräch?</summary>
+        <p>Wenn beide Seiten das Gefühl haben, dass die Zusammenarbeit gut passen würde, erarbeiten wir – je nach Ziel – deinen ersten Plan. Falls nicht, entstehen für dich keine Kosten, und jeder geht seinen Weg weiter wie zuvor. Easy.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Ich wollte mich erst nur auf einen Halbmarathon vorbereiten – jetzt hat es mich gepackt und ich will gleich auf die Marathondistanz.</summary>
+        <p>Ehrlich? Das schauen wir uns gemeinsam an. Je nach verbleibender Zeit gebe ich dir eine ehrliche Einschätzung, ob das realistisch ist – oder eben noch nicht.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Wie läuft das Krafttraining ab?</summary>
+        <p>Je nachdem, was du brauchst, erstellen wir dir einen Plan, der genau auf deine Ziele zugeschnitten ist. Und falls du technische Einweisungen oder Erklärungen brauchst, finden wir individuelle Lösungen – von Athlet zu Athlet.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Wie läuft die Zahlung ab?</summary>
+        <p>Da ich aktuell noch ein One-Man-Team bin, läuft die Zahlung unkompliziert über PayPal. Alles Weitere entwickelt sich mit der Zeit – we will see.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Kurzfristig etwas dazwischengekommen?</summary>
+        <p>Kann immer mal passieren – und ist auch mal völlig okay. Gib mir idealerweise mindestens 24 Stunden vorher per Mail an <a href="mailto:matzesperformance@gmail.com">matzesperformance@gmail.com</a> Bescheid. Ich bin fair – erwarte das aber im Gegenzug genauso.</p>
+      </details>
+
+    </div>
+  </div>
+</div>
 
 <!-- ============================================================
      JAVASCRIPT — Funktionen der Website
