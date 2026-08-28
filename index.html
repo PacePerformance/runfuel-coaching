@@ -41,21 +41,21 @@
    ============================================================ */
 :root {
   /* ✏️ ANPASSEN: Hintergrundfarben (dunkel → fast schwarz) */
-  --bg:       #0a0a08;   /* Seiten-Hintergrund */
-  --surface:  #141410;   /* Karten-Hintergrund */
-  --surface2: #1e1e18;   /* Karten-Hover-Hintergrund */
+  --bg:       #16191F;   /* Seiten-Hintergrund */
+  --surface:  #1D222A;   /* Karten-Hintergrund */
+  --surface2: #262C35;   /* Karten-Hover-Hintergrund */
 
   /* ✏️ ANPASSEN: Akzentfarben */
-  --accent:   #d4f53c;   /* Hauptfarbe (Gelbgrün) — Buttons, Highlights */
-  --accent2:  #ff6b2b;   /* Nebenfarbe (Orange)   — Läufer-Icon, Tags */
-  --accent3:  #4fc3f7;   /* Hellblau für IS(S) */
+  --accent:   #E3A857;   /* Hauptfarbe (Gelbgrün) — Buttons, Highlights */
+  --accent2:  #62B6A4;   /* Nebenfarbe (Orange)   — Läufer-Icon, Tags */
+  --accent3:  #62B6A4;   /* Hellblau für IS(S) */
   
   /* ✏️ ANPASSEN: Textfarben */
-  --text:     #f0ede4;   /* Haupttext (fast weiß) */
-  --muted:    #6b6b5a;   /* Nebentext (grau) */
+  --text:     #ECEEF2;   /* Haupttext (fast weiß) */
+  --muted:    #8B929C;   /* Nebentext (grau) */
 
   /* ✏️ ANPASSEN: Rahmen- und Statusfarben */
-  --border:   #2a2a22;   /* Rahmenlinien */
+  --border:   #2E353F;   /* Rahmenlinien */
   --success:  #4caf82;   /* Grün (z.B. "Bestätigt") */
   --danger:   #e05252;   /* Rot (z.B. Fehler, "Abgesagt") */
 }
@@ -259,9 +259,9 @@ section { padding:6rem 2.5rem; max-width:1200px; margin:0 auto; }
 /* Schrittanzeige oben */
 .booking-steps { display:flex; margin-bottom:3rem; border-bottom:1px solid var(--border); }
 .step { padding:1rem 1.5rem; font-size:.78rem; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; font-family:'Space Mono',monospace; position:relative; cursor:default; }
-.step.active { color:var(--accent); }
-.step.active::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px; background:var(--accent); }
-.step-num { color:var(--accent2); margin-right:.4rem; }
+.step.active { color:var(--); }
+.step.active::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px; background:var(--); }
+.step-num { color:var(--2); margin-right:.4rem; }
 
 /* Jedes Panel (Schritt) wird per JavaScript ein-/ausgeblendet */
 .booking-panel { display:none; }
@@ -271,7 +271,7 @@ section { padding:6rem 2.5rem; max-width:1200px; margin:0 auto; }
 .service-select-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1px; background:var(--border); margin-bottom:2rem; }
 .service-option { background:var(--surface); padding:1.8rem; cursor:pointer; transition:background .2s; border:2px solid transparent; }
 .service-option:hover { background:var(--surface2); }
-.service-option.selected { background:var(--surface2); border-color:var(--accent); }
+.service-option.selected { background:var(--surface2); border-color:var(--); }
 .svc-icon { width:30px; height:30px; margin-bottom:.8rem; display:block; }
 /* ✏️ ANPASSEN: Name und Dauer in den Service-Karten (im HTML weiter unten) */
 .svc-name { font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:.08em; margin-bottom:.3rem; }
@@ -281,17 +281,17 @@ section { padding:6rem 2.5rem; max-width:1200px; margin:0 auto; }
 .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem; }
 .cal-month { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:.1em; }
 .cal-nav { background:var(--surface); border:1px solid var(--border); color:var(--text); width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1rem; transition:border-color .2s; }
-.cal-nav:hover { border-color:var(--accent); color:var(--accent); }
+.cal-nav:hover { border-color:var(--); color:var(--); }
 .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:4px; }
 .cal-wd { text-align:center; font-family:'Space Mono',monospace; font-size:.62rem; color:var(--muted); padding:.4rem 0; letter-spacing:.06em; }
 .cal-days { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:2rem; }
 .cal-day { aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:.86rem; cursor:pointer; border:1px solid transparent; transition:all .15s; position:relative; }
-.cal-day:hover:not(.disabled):not(.empty) { border-color:var(--accent); color:var(--accent); }
-.cal-day.available::after { content:''; position:absolute; bottom:4px; width:4px; height:4px; background:var(--accent); border-radius:50%; } /* Grüner Punkt = Termine verfügbar */
-.cal-day.selected { background:var(--accent); color:#0a0a08; border-color:var(--accent); font-weight:600; }
+.cal-day:hover:not(.disabled):not(.empty) { border-color:var(--); color:var(--); }
+.cal-day.available::after { content:''; position:absolute; bottom:4px; width:4px; height:4px; background:var(--); border-radius:50%; } /* Grüner Punkt = Termine verfügbar */
+.cal-day.selected { background:var(--); color:#0a0a08; border-color:var(--); font-weight:600; }
 .cal-day.selected::after { display:none; }
 .cal-day.disabled { color:var(--border); cursor:not-allowed; }
-.cal-day.today { border-color:var(--accent2); }
+.cal-day.today { border-color:var(--2); }
 
 /* Uhrzeiten-Auswahl */
 .timeslots-wrap { margin-bottom:2rem; }
