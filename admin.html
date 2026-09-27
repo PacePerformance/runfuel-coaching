@@ -797,16 +797,23 @@ let currentFilter = 'all';
 let modalBookingId = null;
 
 // ── Auth ──────────────────────────────────────────────────────
+async function isAdminUser() {
+  const { data, error } = await sb.rpc('is_admin');
+  return !error && data === true;
+}
+
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pw    = document.getElementById('login-pw').value;
   document.getElementById('login-err').textContent = '';
-
   if (!email || !pw) { document.getElementById('login-err').textContent = 'Bitte E-Mail und Passwort eingeben.'; return; }
 
   const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
-  if (error) {
-    document.getElementById('login-err').textContent = 'Falsche Zugangsdaten.';
+  if (error) { document.getElementById('login-err').textContent = 'Falsche Zugangsdaten.'; return; }
+
+  if (!(await isAdminUser())) {
+    await sb.auth.signOut();
+    document.getElementById('login-err').textContent = 'Dieser Zugang hat keine Admin-Berechtigung.';
     return;
   }
   enterApp(data.user);
@@ -820,8 +827,10 @@ async function doLogout() {
 
 async function checkSession() {
   const { data: { session } } = await sb.auth.getSession();
-  if (session) {
+  if (session && await isAdminUser()) {
     enterApp(session.user);
+  } else if (session) {
+    await sb.auth.signOut();  // eingeloggter Nicht-Admin -> nicht ins Admin-Panel
   }
 }
 
