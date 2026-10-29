@@ -237,7 +237,8 @@ nav.main a.on::after{content:"";position:absolute;left:50%;bottom:-6px;width:6px
 /* Alle Fotokacheln: kräftigere Abdunklung unter dem Text */
 .tile.photo:not(.dense)::after{background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.55) 58%,rgba(0,0,0,.9) 100%)}
 .tile.photo > :not(img){text-shadow:0 1px 12px rgba(0,0,0,.45)}
-.tile.photo.dense .races{grid-template-columns:1fr}
+.tile.photo.dense .races{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}
+@media (max-width:480px){.tile.photo.dense .races{grid-template-columns:1fr}}
 .tile.photo .races li{border-top-color:rgba(255,255,255,.22)}
 .tile.photo .races li span:first-child{color:#FFFFFF;font-weight:600;flex:none}
 .tile.photo .races li span:last-child{color:rgba(255,255,255,.78);text-align:right}
