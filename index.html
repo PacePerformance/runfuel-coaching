@@ -46,22 +46,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- TITEL: steht im Browser-Tab und als Überschrift in den Google-Ergebnissen.
      DESCRIPTION: der kurze Text unter dem Titel bei Google (ideal: max. ca. 155 Zeichen). -->
-<title>Matze Performance · Run &amp; Fuel Coaching</title>
-<meta name="description" content="Individuelles Coaching für Laufen, Ernährung und Kraft von Matze, Marathon-Bestzeit 2:35 h, Langdistanz-Triathlet und lizenzierter Trainer. Kostenloses Erstgespräch.">
+<title>Laufcoach &amp; Fitnesstrainer in Ingolstadt | Matze Performance</title>
+<meta name="description" content="Lauf-, Marathon-, Kraft- und Ernährungscoaching in Ingolstadt und Lenting. Von einem Coach mit 2:35 h Marathon-Bestzeit. Kostenloses Erstgespräch.">
 <!-- Die "offizielle" Adresse der Seite (für Google, damit es keine Doppel-Einträge gibt) -->
 <link rel="canonical" href="https://matzeperformance.de/">
 <!-- og: = Vorschau, wenn jemand den Link in WhatsApp, Instagram, LinkedIn usw. teilt:
      og:title = Überschrift, og:description = Text, og:image = Vorschaubild.
      Anderes Vorschaubild? Einfach den Dateinamen bei og:image tauschen (Bild muss in img/ liegen). -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Matze Performance · Run &amp; Fuel Coaching">
-<meta property="og:description" content="Individuelles Coaching für Laufen, Ernährung und Kraft. Athletes are made, not born.">
+<meta property="og:title" content="Matze Performance · Laufcoach &amp; Fitnesstrainer in Ingolstadt">
+<meta property="og:description" content="Individuelles Coaching für Laufen, Ernährung und Kraft in Ingolstadt. Athletes are made, not born.">
+<meta property="og:locale" content="de_DE">
 <meta property="og:url" content="https://matzeperformance.de/">
 <meta property="og:image" content="https://matzeperformance.de/img/berlinmarathon.jpg">
 <!-- theme-color = Farbe der Browserleiste auf dem Handy.
      icon = kleines Logo im Browser-Tab (favicon.svg), apple-touch-icon = Symbol, wenn man die Seite auf den iPhone-Homescreen legt.
      preload = lädt die Hauptschrift schon früh, damit die Seite nicht "springt". -->
 <meta name="theme-color" content="#FBFBFA">
+<!-- Steckbrief für Google (strukturierte Daten): Wer, was, wo. Unsichtbar für Besucher. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Matze Performance – Run & Fuel Coaching",
+  "alternateName": "Matze Performance",
+  "url": "https://matzeperformance.de/",
+  "logo": "https://matzeperformance.de/img/logo.png",
+  "image": "https://matzeperformance.de/img/berlinmarathon.jpg",
+  "description": "Individuelles Coaching für Laufen, Marathon, Halbmarathon, Krafttraining und Ernährung in Ingolstadt und Lenting.",
+  "email": "matzesperformance@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Lenting",
+    "postalCode": "85101",
+    "addressRegion": "Bayern",
+    "addressCountry": "DE"
+  },
+  "areaServed": [
+    {"@type": "City", "name": "Ingolstadt"},
+    {"@type": "City", "name": "Lenting"}
+  ],
+  "founder": {"@type": "Person", "name": "Matze", "jobTitle": "Laufcoach, Fitnesstrainer und Ernährungsberater"},
+  "sameAs": ["https://www.instagram.com/matzeisrunning"],
+  "priceRange": "0–150 €",
+  "makesOffer": [
+    {"@type": "Offer", "name": "Kostenloses Erstgespräch", "price": "0", "priceCurrency": "EUR"},
+    {"@type": "Offer", "name": "Marathon-Trainingsplan", "price": "150", "priceCurrency": "EUR"},
+    {"@type": "Offer", "name": "Halbmarathon-Trainingsplan", "price": "120", "priceCurrency": "EUR"},
+    {"@type": "Offer", "name": "Ernährungsberatung", "price": "79", "priceCurrency": "EUR"},
+    {"@type": "Offer", "name": "Fitness- und Krafttraining", "price": "79", "priceCurrency": "EUR"}
+  ]
+}
+</script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="img/logo.png">
 <link rel="preload" href="fonts-mp/archivo-latin-k3kQo8UD.woff2" as="font" type="font/woff2" crossorigin>
@@ -628,6 +664,20 @@ details.racelist .races{margin-top:8px}
 @media (max-width:900px){.road-grid{grid-template-columns:1fr}.road figure{aspect-ratio:4/3}}
 @media (max-width:480px){.tl li{grid-template-columns:1fr;gap:4px}}
 
+
+/* Race Fueling Guide (Kaufbereich) */
+.rf-grid{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:56px;align-items:center}
+.rf-cover{margin:0;position:relative}
+.rf-cover img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);box-shadow:0 24px 48px -24px rgba(0,0,0,.35)}
+.rf-cover figcaption{display:inline-block;margin-top:14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:6px 10px;border-radius:999px}
+.rf-buy{display:flex;align-items:center;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;padding:20px 24px;border:2px solid var(--ink);border-radius:12px}
+.rf-price{font-family:var(--f-mono);font-size:14px;color:var(--muted)}
+.rf-price b{display:block;font-size:34px;font-weight:600;color:var(--ink);line-height:1.1}
+.rf-facts{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rf-facts span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--signal);margin-right:8px;vertical-align:middle}
+@media (max-width:1180px){nav.main{gap:14px}}
+@media (max-width:900px){.rf-grid{grid-template-columns:1fr;gap:32px}.rf-cover{max-width:260px}}
+
 /* E-Book */
 /* Stile für einen E-Book-Bereich (gratis + kostenpflichtig).
    Aktuell gibt es diesen Bereich im Inhalt NICHT, die Regeln sind
@@ -796,6 +846,7 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
       <a href="#methode">Methode</a>
       <a href="#coaching">Coaching</a>
       <a href="#app">App</a>
+      <a href="#race-fueling">E-Book</a>
       <a href="#ueber-mich">Über mich</a>
       <a href="#road">Sub 2:30</a>
     </nav>
@@ -829,6 +880,7 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
     <a href="#methode">Methode <span>km 10</span></a>
     <a href="#coaching">Coaching <span>km 15</span></a>
     <a href="#app">App <span>km 21</span></a>
+    <a href="#race-fueling">E-Book <span>km 24</span></a>
     <a href="#ueber-mich">Über mich <span>km 26</span></a>
     <a href="#road">Sub 2:30 <span>km 32</span></a>
     <a href="#faq">FAQ <span>km 37</span></a>
@@ -853,7 +905,7 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
     <h1 class="claim" aria-label="Athletes are made, not born.">Athletes are<span class="l2"><s class="strike">born</s> <span class="made">made</span><span class="red">.</span></span></h1>
     <div class="hero-grid">
       <div class="hero-copy">
-        <div class="eyebrow">Run &amp; Fuel Coaching</div>
+        <div class="eyebrow">Run &amp; Fuel Coaching · Ingolstadt</div>
         <h2 class="hero-sub">Individuelles Coaching. Dein Level. Dein Ziel. Dein Plan.</h2>
         <p class="lead muted">Von einem Coach, der selbst beim Marathon am Start steht, Gewichte im Fitnessstudio bewegt, durch eigene Erfahrung weiß worauf es bei der Triathlon Langdistanz ankommt und auch spontan neues wie Hyrox ausprobiert.</p>
         <div class="ctas">
@@ -1112,6 +1164,33 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
   </div>
 </section>
 
+<!-- RACE FUELING GUIDE: E-Book-Verkauf über Digistore24 (Produkt 757334). Preis hier und im Digistore24-Zahlungsplan immer gleich halten! -->
+<section class="sec" id="race-fueling">
+  <div class="wrap rf-grid">
+    <figure class="rf-cover">
+      <img src="img/race-fueling-cover.jpg" alt="Cover des Race Fueling Guide von Matze Performance" loading="lazy">
+      <figcaption>PDF · 36 Seiten</figcaption>
+    </figure>
+    <div class="stack">
+      <div class="eyebrow">E-Book · Sofort-Download</div>
+      <h2 class="display">Race<br>Fueling<span class="red">.</span></h2>
+      <p class="lead muted">Der Ernährungs-Guide für Marathon und Halbmarathon: wie viel Kohlenhydrate du brauchst, wie du deinen Darm trainierst und wie dein Plan vom Carb Loading bis zur Ziellinie aussieht.</p>
+      <ul class="feat-list">
+        <li><b>Grundlagen</b><span>Wie viel Kohlenhydrate pro Stunde – und warum dein Darm wie zwei Drehkreuze funktioniert.</span></li>
+        <li><b>Darmtraining</b><span>Dein 8-Wochen-Plan von 35 auf 80 g pro Stunde.</span></li>
+        <li><b>Renntag</b><span>Carb Loading, Frühstück, Gel-Rechner und Fahrplan Kilometer für Kilometer.</span></li>
+        <li><b>Tools</b><span>Koffein-Dosis, Cheat Sheet, Checkliste und Arbeitsblatt zum Ausfüllen.</span></li>
+      </ul>
+      <div class="rf-buy">
+        <div class="rf-price"><b>16,99 €</b>inkl. MwSt.</div>
+        <a class="btn signal" href="https://www.checkout-ds24.com/product/757334" rel="noopener">Jetzt kaufen <span class="arr">↗</span></a>
+      </div>
+      <div class="rf-facts"><span>Digital als PDF-Download</span><span>Sofort nach dem Kauf</span><span>14 Tage Rückgaberecht</span><span>35 Studien als Quellen</span></div>
+      <p class="note">Bezahlung und Rechnung über Digistore24. Es gelten die AGB und die Datenschutzerklärung von Digistore24.</p>
+    </div>
+  </div>
+</section>
+
 <!-- ÜBER MICH -->
 <!-- ===================================================================
      ÜBER MICH: Foto links (figcaption = kleines Etikett unten auf dem Foto),
@@ -1293,7 +1372,7 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
         <a class="brand" href="#start"><svg aria-hidden="true"><use href="#logo"/></svg>MATZE PERFORMANCE</a>
         <p class="claimf" aria-label="Athletes are made, not born.">Athletes are<br><s class="strike">born</s> made<span class="red">.</span></p>
       </div>
-      <div><h4>Seite</h4><nav aria-label="Seite"><a href="#staerken">Stärken</a><a href="#coaching">Coaching</a><a href="#app">App</a><a href="#ueber-mich">Über mich</a><a href="#faq">FAQ</a></nav></div>
+      <div><h4>Seite</h4><nav aria-label="Seite"><a href="#staerken">Stärken</a><a href="#coaching">Coaching</a><a href="#app">App</a><a href="#race-fueling">E-Book</a><a href="#ueber-mich">Über mich</a><a href="#faq">FAQ</a></nav></div>
       <div><h4>Kontakt</h4><nav aria-label="Kontakt"><a href="https://www.instagram.com/matzeisrunning" target="_blank" rel="noopener">Instagram</a><a href="#kontakt">Erstgespräch</a><button type="button" class="linkbtn" data-dialog="impressum">Impressum</button><button type="button" class="linkbtn" data-dialog="dsgvo">Datenschutz</button><a href="https://app.matzeperformance.de" target="_blank" rel="noopener">Mein Training</a></nav></div>
     </div>
     <div class="fbot"><span>© 2026 Matze Performance · Run &amp; Fuel Coaching</span><span>Lenting · Ingolstadt</span></div>
@@ -1366,23 +1445,26 @@ Deutschland</p>
     <h2>6. Zahlungsabwicklung via PayPal</h2>
     <p>Für die Zahlungsabwicklung nutzen wir PayPal (PayPal (Europe) S.à.r.l. et Cie, S.C.A., 22-24 Boulevard Royal, L-2449 Luxembourg). Zahlungsdaten werden ausschließlich auf PayPal-Servern verarbeitet. Weitere Infos: <a href="https://www.paypal.com/de/webapps/mpp/ua/privacy-full" target="_blank">paypal.com/de/privacy</a>.</p>
     
-    <h2>7. Registrierung &amp; individueller Trainingsplan</h2>
+    <h2>7. Verkauf digitaler Produkte über Digistore24</h2>
+    <p>Für den Verkauf unseres E-Books nutzen wir Digistore24 (Digistore24 GmbH, St.-Godehard-Straße 32, 31139 Hildesheim). Klickst du auf „Jetzt kaufen“, wirst du zum Bestellformular von Digistore24 weitergeleitet. Digistore24 ist Vertragspartner des Kaufs und verarbeitet deine Bestell- und Zahlungsdaten in eigener Verantwortung. Weitere Infos: <a href="https://www.digistore24.com/page/privacy/1/de" target="_blank" rel="noopener">digistore24.com/page/privacy</a>.</p>
+
+    <h2>8. Registrierung &amp; individueller Trainingsplan</h2>
     <p>Für den Trainingsbereich („Mein Training") verarbeiten wir deinen Namen, deine E-Mail-Adresse und dein Passwort sowie deine Trainingsangaben (Ziel, Zielzeit, Erfahrung, Trainingstage, Arbeitszeiten, Chronotyp, bisheriges Pensum), um deinen individuellen Trainingsplan zu erstellen. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO.</p>
     <p>Machst du freiwillig Angaben zu Verletzungen oder gesundheitlichen Einschränkungen, handelt es sich um besondere Kategorien personenbezogener Daten (Gesundheitsdaten, Art. 9 DSGVO). Diese verarbeiten wir ausschließlich auf Grundlage deiner ausdrücklichen Einwilligung (Art. 9 Abs. 2 lit. a DSGVO).</p>
     
-    <h2>8. Speicherung im Browser</h2>
+    <h2>9. Speicherung im Browser</h2>
     <p>Für die Anmeldung im Trainingsbereich speichern wir eine Sitzungskennung lokal in deinem Browser (localStorage). Sie ist technisch notwendig und dient ausschließlich Funktionszwecken. Du kannst sie durch Abmelden oder Löschen des Browser-Speichers entfernen.</p>
     
-    <h2>9. Cookies</h2>
+    <h2>10. Cookies</h2>
     <p>Diese Website verwendet keine Tracking- oder Werbe-Cookies. Es wird ausschließlich der lokale Browser-Speicher (localStorage) für Funktionszwecke genutzt.</p>
     
-    <h2>10. Social Media</h2>
+    <h2>11. Social Media</h2>
     <p>Wir verlinken auf unser Instagram-Profil. Erst wenn du den Link anklickst, verlässt du unsere Seite; ab dann gelten die Datenschutzbestimmungen von Instagram (Meta).</p>
     
-    <h2>11. Speicherdauer &amp; Löschung</h2>
+    <h2>12. Speicherdauer &amp; Löschung</h2>
     <p>Wir speichern personenbezogene Daten nur so lange, wie es für die genannten Zwecke oder aufgrund gesetzlicher Aufbewahrungspflichten erforderlich ist. Auf Wunsch löschen wir deine Daten – wende dich dazu an die oben genannte Kontaktadresse.</p>
     
-    <h2>12. Beschwerderecht</h2>
+    <h2>13. Beschwerderecht</h2>
     <p>Zuständige Aufsichtsbehörde in Bayern: Bayerisches Landesamt für Datenschutzaufsicht (BayLDA), Promenade 18, 91522 Ansbach.</p>
     
     <p><em>Stand: August 2026</em></p>

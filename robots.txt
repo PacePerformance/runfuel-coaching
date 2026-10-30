@@ -1,0 +1,7 @@
+# Suchmaschinen dürfen die Website lesen, nur den Admin-Bereich und das alte Backup nicht.
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /index-alt-2026-09.html
+
+Sitemap: https://matzeperformance.de/sitemap.xml
