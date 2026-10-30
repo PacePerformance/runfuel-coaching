@@ -1,21 +1,95 @@
 <!doctype html>
+<!--
+=====================================================================
+  MATZE PERFORMANCE · Startseite (matzeperformance.de)
+=====================================================================
+  Das ist die LIVE-Seite. Alles, was hier gespeichert und zu GitHub
+  hochgeladen (gepusht) wird, ist nach 1-2 Minuten online.
+
+  Die ganze Seite steckt in DIESER einen Datei. Sie hat drei Teile:
+
+    1. <head> mit <style>   = DAS AUSSEHEN (Farben, Schriften, Abstände)
+                               ab ca. Zeile 80
+    2. <body>               = DER INHALT (Texte, Bilder, Preise, FAQ ...)
+                               ab ca. Zeile 760
+    3. <script> ganz unten  = DAS VERHALTEN (Menü, Filter, Buchung,
+                               Kalender, Formkurve ...)
+
+  SCHNELL FINDEN (mit Strg+F im Editor nach dem Begriff suchen):
+    Texte im Kopfbereich ........ "HERO"
+    Bestzeit / Kennzahlen ....... "proof"
+    Rennliste + Formkurve ....... "race-data"
+    Preise / Angebote ........... "COACHING"
+    Buchungs-Auswahl (Preise!) .. "data-svc"
+    FAQ-Fragen .................. "FAQ"
+    Impressum / Datenschutz ..... "dlg-impressum" / "dlg-dsgvo"
+    Farben ...................... ":root"
+    Bilder ...................... "img/"
+
+  GOLDENE REGELN BEIM ÄNDERN:
+    - Text zwischen > und < darfst du frei ändern.
+    - Alles in spitzen Klammern < > (Tags) und "class=..." lieber
+      nicht anfassen, außer du weißt, was es tut.
+    - Sonderzeichen: & schreibt man im HTML als &amp;
+    - Jeder geöffnete Tag braucht sein Gegenstück, z. B. <p> ... </p>
+    - Nach jeder Änderung die Datei im Browser öffnen und prüfen.
+
+  Kommentare wie dieser hier (zwischen den Kommentar-Klammern) sieht
+  der Besucher NICHT. Sie sind nur Notizen für dich.
+=====================================================================
+-->
 <html lang="de">
+<!-- ===== HEAD: unsichtbare Infos für Browser und Google ===== -->
 <head>
+<!-- Zeichensatz (damit Umlaute wie ä, ö, ü richtig angezeigt werden) und Handy-Darstellung -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- TITEL: steht im Browser-Tab und als Überschrift in den Google-Ergebnissen.
+     DESCRIPTION: der kurze Text unter dem Titel bei Google (ideal: max. ca. 155 Zeichen). -->
 <title>Matze Performance · Run &amp; Fuel Coaching</title>
 <meta name="description" content="Individuelles Coaching für Laufen, Ernährung und Kraft von Matze, Marathon-Bestzeit 2:35 h, Langdistanz-Triathlet und lizenzierter Trainer. Kostenloses Erstgespräch.">
+<!-- Die "offizielle" Adresse der Seite (für Google, damit es keine Doppel-Einträge gibt) -->
 <link rel="canonical" href="https://matzeperformance.de/">
+<!-- og: = Vorschau, wenn jemand den Link in WhatsApp, Instagram, LinkedIn usw. teilt:
+     og:title = Überschrift, og:description = Text, og:image = Vorschaubild.
+     Anderes Vorschaubild? Einfach den Dateinamen bei og:image tauschen (Bild muss in img/ liegen). -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Matze Performance · Run &amp; Fuel Coaching">
 <meta property="og:description" content="Individuelles Coaching für Laufen, Ernährung und Kraft. Athletes are made, not born.">
 <meta property="og:url" content="https://matzeperformance.de/">
 <meta property="og:image" content="https://matzeperformance.de/img/berlinmarathon.jpg">
+<!-- theme-color = Farbe der Browserleiste auf dem Handy.
+     icon = kleines Logo im Browser-Tab (favicon.svg), apple-touch-icon = Symbol, wenn man die Seite auf den iPhone-Homescreen legt.
+     preload = lädt die Hauptschrift schon früh, damit die Seite nicht "springt". -->
 <meta name="theme-color" content="#FBFBFA">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="img/logo.png">
 <link rel="preload" href="fonts-mp/archivo-latin-k3kQo8UD.woff2" as="font" type="font/woff2" crossorigin>
+<!-- ===================================================================
+     STYLE: hier ist das komplette AUSSEHEN der Seite festgelegt.
+     Aufbau einer Regel:   .name { eigenschaft: wert; }
+       .name   = für welche Elemente (alle mit class="name")
+       z. B.   color = Textfarbe, background = Hintergrund,
+               font-size = Schriftgröße, padding = Innenabstand,
+               margin = Außenabstand, gap = Abstand zwischen Elementen,
+               border-radius = runde Ecken
+     @media (max-width:820px) { ... } = gilt nur, wenn das Fenster
+     schmaler als 820 Pixel ist (also Handy / kleines Tablet).
+     clamp(38px,6vw,76px) = Größe passt sich der Bildschirmbreite an,
+     aber nie kleiner als 38px und nie größer als 76px.
+     =================================================================== -->
 <style>
+/* ---------------------------------------------------------------
+   SCHRIFTEN (@font-face)
+   Hier werden die drei Schriften der Seite aus dem Ordner fonts-mp/
+   geladen. Die Dateien liegen auf deinem eigenen Server (nicht bei
+   Google), das ist gut für den Datenschutz.
+     Archivo         = große, fette Überschriften
+     Instrument Sans = normaler Fließtext
+     JetBrains Mono  = "Technik-Schrift" für Zahlen, Zeiten, kleine Labels
+   "latin" = normale Buchstaben, "latin-ext" = Sonderzeichen (é, ł ...).
+   Diesen Block musst du normalerweise NIE ändern.
+   --------------------------------------------------------------- */
 /* latin-ext */
 @font-face {
   font-family: 'Archivo';
@@ -133,8 +207,32 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* Grund-Einstellungen: kein Rand um die Seite, Knöpfe nutzen dieselbe Schrift wie der Text */
 html,body{margin:0}
 button{font:inherit}
+/* ---------------------------------------------------------------
+   FARBEN & GRUNDWERTE (:root)
+   Das ist die WICHTIGSTE Stelle fürs Design: Jede Farbe ist hier
+   EINMAL festgelegt und wird überall per var(--name) benutzt.
+   Änderst du hier eine Farbe, ändert sie sich auf der ganzen Seite.
+     --paper     = Seitenhintergrund (fast weiß)
+     --panel     = Hintergrund der grauen Kacheln/Kästen
+     --ink       = Haupt-Textfarbe (fast schwarz)
+     --muted     = grauer Nebentext
+     --line      = feine Trennlinien
+     --signal    = das ROT (Logo-Punkt, Ziel, Knöpfe "Erstgespräch")
+     --on-signal = Textfarbe AUF rotem Grund
+     --photo-ink = Textfarbe auf Fotos (weiß)
+     --photo-bg  = dunkler Hintergrund hinter Fotos
+     --f-display / --f-body / --f-mono = die drei Schriften
+                   (Name in Anführungszeichen, danach Ersatzschriften,
+                   falls die erste nicht lädt)
+     --gutter-l / --gutter-r = Seitenrand links/rechts (mind. 20px,
+                   auf dem iPhone mehr wegen der "Notch")
+     --header-h  = Höhe der Menüleiste oben
+   Farben sind Hex-Codes: # + 6 Zeichen. Farbwähler z. B. bei Google
+   "color picker" eingeben.
+   --------------------------------------------------------------- */
 /* Layout: lange Scroll-Seite, festes Menü oben, darunter die Fortschrittslinie km 0 bis 42,195. Rot nur für Ziel und Handlung. */
 :root{
   --paper:#FBFBFA; --panel:#F1F1EF; --ink:#0E0E10; --muted:#64646A; --line:#E2E2DF; --signal:#E30A17; --on-signal:#FFFFFF;
@@ -146,10 +244,22 @@ button{font:inherit}
   --gutter-r:max(20px,env(safe-area-inset-right,0px));
   --header-h:64px;
 }
+/* DUNKELMODUS: Wenn das Handy/der Computer des Besuchers auf "Dunkel"
+   steht, werden automatisch diese Farben statt der hellen benutzt.
+   Wichtig: Änderst du oben eine Farbe, prüfe ob du sie hier (zweimal,
+   in beiden Zeilen) auch anpassen willst. */
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --paper:#0C0C0D; --panel:#161618; --ink:#F2F2EF; --muted:#9D9DA3; --line:#2A2A2E; --signal:#FF2B38; --on-signal:#0C0C0D; color-scheme:dark}}
 :root[data-theme="dark"]{--paper:#0C0C0D; --panel:#161618; --ink:#F2F2EF; --muted:#9D9DA3; --line:#2A2A2E; --signal:#FF2B38; --on-signal:#0C0C0D; color-scheme:dark}
 
+/* ---------------------------------------------------------------
+   ALLGEMEINE REGELN für die ganze Seite
+     scroll-behavior:smooth = sanftes Scrollen beim Klick auf Menüpunkte
+     prefers-reduced-motion = wer am Gerät "weniger Bewegung" eingestellt
+                              hat, bekommt keine Animationen
+     body = Grundschrift: 17px groß, Zeilenabstand 1.6
+     .wrap = der mittlere Inhaltsbereich, max. 1200px breit, zentriert
+   --------------------------------------------------------------- */
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 12px)}
@@ -162,6 +272,17 @@ img{display:block}
 .wrap{max-width:1200px;margin:0 auto;padding-left:var(--gutter-l);padding-right:var(--gutter-r)}
 
 /* Typo */
+/* ---------------------------------------------------------------
+   TYPOGRAFIE = Schrift-Stile, die überall wiederverwendet werden:
+     .display  = die großen, schmalen GROSSBUCHSTABEN-Überschriften
+     .lead     = etwas größerer Einleitungstext
+     .muted    = grauer Text        .red  = roter Text
+     .mono     = Zahlen-Schrift
+     .eyebrow  = kleine Zeile über Überschriften mit rotem Punkt davor
+                 (z. B. "• WAS ICH MITBRINGE")
+     .sec      = ein Abschnitt der Seite (Abstand oben/unten + Linie)
+     .sec-head = Kopf eines Abschnitts: links Überschrift, rechts Text
+   --------------------------------------------------------------- */
 h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
 .display{font-weight:850;font-stretch:76%;text-transform:uppercase;line-height:.9;letter-spacing:-.01em}
 h2.display{font-size:clamp(38px,6vw,76px)}
@@ -179,6 +300,11 @@ p{margin:0;max-width:62ch}
 @media (max-width:820px){.sec-head{grid-template-columns:1fr}}
 
 /* Knöpfe */
+/* .btn        = normaler Knopf (Umriss, wird beim Drüberfahren gefüllt)
+   .btn.signal = roter Knopf (für die wichtigste Handlung: Erstgespräch)
+   .btn.small  = kleiner Knopf (z. B. oben im Menü)
+   .arr        = der Pfeil → im Knopf
+   999px bei border-radius = komplett runde "Pillen"-Form */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--f-body);font-weight:600;font-size:15px;padding:13px 22px;border-radius:999px;text-decoration:none;border:1.5px solid var(--ink);color:var(--ink);background:transparent;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s,border-color .2s}
 .btn:hover{background:var(--ink);color:var(--paper)}
 .btn.signal{background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
@@ -187,6 +313,16 @@ p{margin:0;max-width:62ch}
 .btn .arr{font-family:var(--f-mono)}
 
 /* Header */
+/* Die Menüleiste oben. "sticky" = sie bleibt beim Scrollen oben kleben.
+     .brand    = Logo + Schriftzug links
+     nav.main  = die Menüpunkte (der aktive bekommt einen roten Punkt: .on)
+     .menu-btn = das "Hamburger"-Symbol (zwei Striche) fürs Handy
+     .course   = die dünne Linie unter dem Menü: zeigt beim Scrollen den
+                 Fortschritt als "km 0 bis 42,195" (wie ein Marathon).
+                 .done = schwarzer bereits gelaufener Teil, .dot = roter
+                 Läufer-Punkt, .km = Kilometer-Anzeige rechts.
+   Unter 980px Breite werden Menüpunkte + Knopf ausgeblendet und dafür das
+   Hamburger-Symbol gezeigt. */
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--paper)}
 .hbar{display:flex;align-items:center;gap:28px;height:var(--header-h)}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-weight:800;font-stretch:115%;letter-spacing:.05em;font-size:14px;white-space:nowrap;margin-right:auto}
@@ -203,6 +339,8 @@ nav.main a.on::after{content:"";position:absolute;left:50%;bottom:-6px;width:6px
 @media (max-width:980px){nav.main,.hbar .btn{display:none}.menu-btn{display:block}}
 
 /* Mobiles Menü */
+/* Das Vollbild-Menü, das sich auf dem Handy öffnet (große Schrift,
+   rechts daneben die "km"-Angaben). */
 .overlay{position:fixed;inset:0;z-index:70;background:var(--paper);display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 16px) var(--gutter-r) calc(env(safe-area-inset-bottom,0px) + 24px) var(--gutter-l)}
 .overlay .top{display:flex;align-items:center;justify-content:space-between;height:48px}
 .overlay nav{display:flex;flex-direction:column;margin-top:32px}
@@ -211,6 +349,10 @@ nav.main a.on::after{content:"";position:absolute;left:50%;bottom:-6px;width:6px
 .overlay .btn{margin-top:auto}
 
 /* Mobile CTA-Leiste */
+/* CTA = "Call to Action". Auf dem Handy klebt unten ein roter Knopf
+   "Kostenloses Erstgespräch". Er versteckt sich (.hide) ganz oben auf der
+   Seite und sobald man beim Kontaktformular angekommen ist.
+   Am Computer (breiter als 980px) ist er unsichtbar. */
 .mcta{display:none}
 @media (max-width:980px){
   .mcta{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px var(--gutter-r) calc(env(safe-area-inset-bottom,0px) + 10px) var(--gutter-l);background:var(--paper);border-top:1px solid var(--line);transition:transform .3s}
@@ -220,6 +362,12 @@ nav.main a.on::after{content:"";position:absolute;left:50%;bottom:-6px;width:6px
 }
 
 /* Hero */
+/* HERO = der erste große Bereich ganz oben.
+     .claim  = der riesige Spruch "Athletes are born made."
+     .l2     = zweite Zeile des Spruchs (grau)
+     .strike = das rot durchgestrichene Wort "born"
+               (rotate(-5deg) = Strich leicht schräg)
+     .made   = das Wort "made" in Schwarz */
 .hero{padding-top:clamp(40px,6vw,72px);padding-bottom:0}
 .claim{font-family:var(--f-display);font-weight:900;font-stretch:72%;text-transform:uppercase;font-size:clamp(44px,7.6vw,112px);line-height:.88;letter-spacing:-.015em;margin:0}
 .claim .l2{display:block;color:var(--muted)}
@@ -229,6 +377,23 @@ nav.main a.on::after{content:"";position:absolute;left:50%;bottom:-6px;width:6px
 .claim .made{color:var(--ink)}
 
 
+/* ---------------------------------------------------------------
+   BOSTON-KACHEL mit Formkurve (im Bereich "Stärken")
+   Diese Kachel hat die Klasse "dense" (= viel Inhalt). Das Foto ist oben,
+   darunter dunkle Fläche mit Text, Kennzahlen und Kurve.
+     padding-top:230px      = so viel Platz bekommt das Foto oben
+     img height:250px       = Höhe des Fotos
+     ::after linear-gradient = weicher Übergang vom Foto ins Dunkle
+     .kpis   = die drei Zahlen "Start / Bestzeit / Ziel"
+     .formchart = die gezeichnete Kurve (Linien, Punkte, Beschriftung):
+         .ax = Achsenbeschriftung, .gl = Gitterlinien,
+         .fgoal = rote gestrichelte Ziel-Linie "SUB 2:30",
+         .ln = die weiße Kurve, .pt = Punkte, .pt.pb = roter Bestzeit-Punkt,
+         .hit = unsichtbare größere Kreise, damit man Punkte leichter
+                antippen kann
+     .formtip = die kleine weiße Info-Box beim Antippen eines Punkts
+     details.racelist = die aufklappbare Liste "Alle Zeiten als Liste"
+   --------------------------------------------------------------- */
 /* Foto-Kachel mit viel Text (Tokyo): dunklere Fläche, helle Rennliste */
 /* Boston-Kachel: Foto oben, Text unten auf dunkler Fläche (bessere Lesbarkeit) */
 .tile.photo.dense{padding-top:230px;background:var(--photo-bg)}
@@ -268,6 +433,16 @@ details.racelist .races{margin-top:8px}
 .tile.photo .races li span:last-child{color:rgba(255,255,255,.78);text-align:right}
 
 /* Alle Fotos: schwarz-weiß, farbig bei Mouse-over */
+/* grayscale(1) = schwarz-weiß, grayscale(0) = farbig.
+   Fotos sollen IMMER farbig sein? Dann bei den Foto-Regeln weiter unten
+   "filter:grayscale(1)" jeweils durch "filter:none" ersetzen.
+   Danach folgen die Regeln für den Hero-Bereich:
+     .hero-grid  = links Text, rechts Foto (auf dem Handy untereinander,
+                   Foto zuerst)
+     .hero-photo = das große Foto; object-position = welcher Bildteil
+                   sichtbar ist (50% 22% = Mitte, eher oben)
+     .proof      = die Zahlenleiste "2:35 h / Sub 2:30 / 3/6 / seit 2017"
+                   (Computer: 4 nebeneinander, Handy: 2x2) */
 .hero-photo img,.about figure img,.road figure img,.tile.photo img{transition:filter .6s,transform .8s}
 .hero-photo:hover img,.about figure:hover img,.road figure:hover img,.tile.photo:hover img{filter:grayscale(0) contrast(1);transform:scale(1.02)}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:40px;margin-top:clamp(32px,4vw,56px);align-items:stretch}
@@ -286,6 +461,17 @@ details.racelist .races{margin-top:8px}
 @media (max-width:720px){.proof{grid-template-columns:repeat(2,minmax(0,1fr))}.proof div{padding:18px 16px}.proof div:nth-child(3){border-left:0;padding-left:0}.proof div:nth-child(n+3){border-top:1px solid var(--line)}}
 
 /* Stärken */
+/* Der Bereich "Alles selbst erlebt" mit den Kacheln (Bento-Raster).
+   Das Raster hat 6 Spalten. Jede Kachel bekommt eine Größe:
+     .t-a = Tokyo   (3 Spalten breit, 2 Reihen hoch = groß links)
+     .t-b = Boston  (3 Spalten)      .t-c = Ernährung (3 Spalten)
+     .t-d = Hyrox   (2 Spalten)      .t-e = Roth      (4 Spalten)
+   Unter 900px stehen alle Kacheln einfach untereinander.
+     .tile       = eine Kachel, .tile.photo = Kachel mit Hintergrundfoto
+     .tag        = kleine Zeile oben ("RUNNING")
+     .pb         = "2:35 ——• 2:30" Anzeige in der Tokyo-Kachel
+     .races      = Rennliste (Name links, Zeit rechts)
+     .split      = zwei Spalten "Alltag / Wettkampf" in der Ernährungs-Kachel */
 .bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
 .tile{position:relative;border-radius:12px;overflow:hidden;background:var(--panel);display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:28px;min-height:260px;min-width:0}
 .tile.photo{color:var(--photo-ink);background:var(--photo-bg)}
@@ -318,6 +504,12 @@ details.racelist .races{margin-top:8px}
 @media (max-width:480px){.races,.split{grid-template-columns:1fr}.tile{padding:22px}}
 
 /* Methode */
+/* .pillars / .pillar = die drei Spalten RUN / FUEL / STRENGTH
+     .word = das große Wort, li::before = Strich "— " vor jedem Punkt
+   .steps = der Ablauf 01-05 als Zeitstrahl mit Kreisen.
+     Die Nummern (01, 02 ...) zählt der Browser automatisch (counter),
+     du musst sie also nicht selbst schreiben.
+     Der letzte Kreis ist rot (= Ziel). Auf dem Handy senkrecht. */
 .pillars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--ink)}
 .pillar{padding:28px 28px 32px 0;display:flex;flex-direction:column;gap:14px;border-right:1px solid var(--line)}
 .pillar + .pillar{padding-left:28px}
@@ -341,6 +533,13 @@ details.racelist .races{margin-top:8px}
 }
 
 /* Coaching */
+/* .goals / .goal = die Filter-Knöpfe ("Mein erster Marathon" ...).
+     Der gewählte ist schwarz gefüllt (aria-pressed="true").
+   .offers = Raster der Angebots-Karten (3 / 2 / 1 Spalten je nach Breite)
+   .offer  = eine Karte, .offer.feat = hervorgehobene Karte (dicker Rand),
+             .offer.dim = ausgegraut, weil sie nicht zum Filter passt
+   .badge  = kleines Etikett oben ("Kostenlos"), .badge.red = rotes Etikett
+   .dur    = Dauer rechts oben, .price = Preis */
 .goals{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:32px}
 .goal{font-size:15px;border:1.5px solid var(--line);background:transparent;color:var(--ink);padding:10px 18px;border-radius:999px;cursor:pointer;font-family:var(--f-body);transition:border-color .2s,background .2s}
 .goal:hover{border-color:var(--ink)}
@@ -364,6 +563,8 @@ details.racelist .races{margin-top:8px}
 @media (max-width:640px){.offers{grid-template-columns:1fr}}
 
 /* App */
+/* Bereich "Dein Plan in der App": links Text + Liste, rechts ein
+   Screenshot im "Browserfenster"-Rahmen (.device mit drei Pünktchen in .bar). */
 .app-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:56px;align-items:center}
 .device{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel);box-shadow:0 30px 60px -30px rgba(0,0,0,.35);max-width:100%}
 .device .bar{display:flex;gap:6px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
@@ -378,6 +579,9 @@ details.racelist .races{margin-top:8px}
 @media (max-width:480px){.feat-list li{grid-template-columns:1fr;gap:4px}}
 
 /* Über mich */
+/* Links Foto (.about figure, Hochformat 3:4), rechts Text.
+   .creds  = die runden Etiketten "Laufcoach", "Fitnesstrainer" ...
+   .values = die drei Werte Disziplin / Ehrlichkeit / Leidenschaft */
 .about{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:56px;align-items:start}
 .about figure{margin:0;position:relative;border-radius:12px;overflow:hidden;aspect-ratio:3/4;background:var(--photo-bg);max-width:100%}
 .about figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05)}
@@ -392,6 +596,12 @@ details.racelist .races{margin-top:8px}
 @media (max-width:560px){.values{grid-template-columns:1fr}}
 
 /* Road to Sub 2:30 */
+/* Der dunkle Bereich (Farben sind hier umgedreht: Hintergrund = --ink).
+   .gap230  = "2:35 ——•—— 2:30" mit dem roten Punkt (.runner), der hin
+              und her läuft. Die Animation heißt "run" und dauert 6s.
+   .tl      = Zeitleiste (Timeline) mit den Stationen.
+              li.next = der nächste Schritt, wird rot hervorgehoben.
+   .road figure = das Foto rechts. */
 .road{background:var(--ink);color:var(--paper)}
 .road .eyebrow{color:var(--paper);opacity:.75}
 .road .muted{color:var(--paper);opacity:.68}
@@ -419,6 +629,9 @@ details.racelist .races{margin-top:8px}
 @media (max-width:480px){.tl li{grid-template-columns:1fr;gap:4px}}
 
 /* E-Book */
+/* Stile für einen E-Book-Bereich (gratis + kostenpflichtig).
+   Aktuell gibt es diesen Bereich im Inhalt NICHT, die Regeln sind
+   aber schon vorbereitet, falls du ihn wieder einbauen willst. */
 .ebook{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .ebox{border-radius:12px;padding:clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:18px;min-width:0}
 .ebox.free{background:var(--panel)}
@@ -433,6 +646,8 @@ details.racelist .races{margin-top:8px}
 @media (max-width:820px){.ebook{grid-template-columns:1fr}}
 
 /* FAQ */
+/* Aufklappbare Fragen. Rechts steht ein "+", das sich beim Öffnen zu
+   einem roten "×" dreht (rotate 45deg). */
 .faq{border-top:2px solid var(--ink)}
 .faq details{border-bottom:1px solid var(--line)}
 .faq summary{list-style:none;cursor:pointer;padding:22px 0;display:flex;justify-content:space-between;gap:20px;font-family:var(--f-display);font-weight:700;font-size:clamp(18px,2vw,22px);font-stretch:95%}
@@ -442,6 +657,12 @@ details.racelist .races{margin-top:8px}
 .faq details p{padding-bottom:24px;color:var(--muted)}
 
 /* Kontakt */
+/* Kontakt- und Buchungsformular in 3 Schritten.
+   .stepbar = Fortschritt "01 Angebot / 02 Termin / 03 Kontakt" (aktiv = rot)
+   .chips / .chip = die Auswahl-Kästchen für das Angebot (gewählt = roter Rand)
+   .field   = ein Eingabefeld mit Beschriftung darüber
+   .row2    = zwei Felder nebeneinander (Handy: untereinander)
+   .err     = rote Fehlermeldung */
 .contact{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:56px;align-items:start}
 .contact h2{font-size:clamp(40px,6.5vw,88px)}
 .cform{border:1px solid var(--line);border-radius:12px;padding:clamp(22px,3vw,36px);display:flex;flex-direction:column;gap:22px;background:var(--paper)}
@@ -465,11 +686,19 @@ details.racelist .races{margin-top:8px}
 @media (max-width:480px){.chips,.row2{grid-template-columns:1fr}}
 
 /* Header-Login */
+/* Der Link "Mein Training ↗" oben im Menü (führt zur App). */
 .login{font-size:14px;text-decoration:none;color:var(--muted);white-space:nowrap}
 .login:hover{color:var(--ink)}
 @media (max-width:980px){.login{display:none}}
 
 /* Kalender */
+/* Der Buchungskalender in Schritt 2 des Formulars.
+   .cal-day     = ein Tag (blass = nicht buchbar)
+   .cal-day.av  = verfügbarer Tag (klickbar)
+   .cal-day.sel = ausgewählter Tag (schwarz)
+   .cal-day.today = heute (rot unterstrichen)
+   .slot        = Uhrzeit-Knopf, gewählt = rot
+   .linkbtn     = Knopf, der wie ein Link aussieht (Impressum, Datenschutz) */
 .cal{border:1px solid var(--line);border-radius:10px;padding:14px}
 .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:600}
 .cal-nav{background:none;border:1.5px solid var(--line);color:var(--ink);border-radius:999px;width:36px;height:36px;cursor:pointer;font-family:var(--f-mono)}
@@ -492,6 +721,9 @@ details.racelist .races{margin-top:8px}
 .btn[disabled]{opacity:.5;cursor:wait}
 
 /* Rechtstexte */
+/* Impressum und Datenschutz öffnen sich als Fenster über der Seite
+   (dialog). ::backdrop = der abgedunkelte Hintergrund dahinter.
+   body.locked = verhindert, dass die Seite dahinter mitscrollt. */
 dialog.legal{width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 48px);border:1px solid var(--line);border-radius:12px;padding:0;background:var(--paper);color:var(--ink)}
 dialog.legal::backdrop{background:rgba(0,0,0,.55)}
 .legal-in{padding:clamp(22px,4vw,44px);display:flex;flex-direction:column;gap:12px}
@@ -514,6 +746,8 @@ body.locked{overflow:hidden}
 .is-color img{filter:grayscale(0) contrast(1)!important}
 
 /* Footer */
+/* Der Fußbereich ganz unten: Logo + Spruch, zwei Link-Spalten
+   ("Seite" und "Kontakt"), darunter Copyright und Ort (.fbot). */
 footer{border-top:1px solid var(--line);padding-block:56px 40px}
 .fgrid{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr));gap:32px}
 .fgrid .claimf{font-family:var(--f-display);font-weight:900;font-stretch:74%;text-transform:uppercase;font-size:clamp(30px,4vw,48px);line-height:.92}
@@ -527,7 +761,21 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </style>
 </head>
 <body>
+<!-- ===================================================================
+     BODY: ab hier kommt alles, was man auf der Seite SIEHT.
+     Reihenfolge von oben nach unten:
+       Logo-Vorlage > Menü (header) > Handy-Menü (overlay) >
+       HERO > STÄRKEN > METHODE > COACHING > APP > ÜBER MICH >
+       ROAD TO SUB 2:30 > FAQ > KONTAKT > Footer >
+       Impressum/Datenschutz-Fenster > Skript
+     Jeder Abschnitt hat eine id (z. B. id="coaching"). Ein Link mit
+     href="#coaching" springt genau dorthin.
+     =================================================================== -->
 
+<!-- LOGO-VORLAGE: Das Logo (Kreis + Läufer-Beine + roter Punkt) ist hier
+     einmal als Zeichnung (SVG) gespeichert. Überall wo
+     <use href="#logo"/> steht, wird es wiederverwendet.
+     Der rote Punkt nimmt automatisch die Signalfarbe aus :root. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="logo" viewBox="0 0 340 340">
     <path d="M258 183 A107 107 0 1 0 185 242" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round"/>
@@ -536,6 +784,10 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
   </symbol>
 </svg>
 
+<!-- ===== MENÜLEISTE OBEN (bleibt beim Scrollen sichtbar) =====
+     Neuer Menüpunkt? Eine Zeile wie <a href="#faq">FAQ</a> in nav.main
+     ergänzen. Das Ziel (hier faq) muss als id="faq" an einem Abschnitt
+     existieren. Denk auch an das Handy-Menü weiter unten (overlay). -->
 <header>
   <div class="wrap hbar">
     <a class="brand" href="#start" aria-label="Matze Performance, zum Seitenanfang"><svg aria-hidden="true"><use href="#logo"/></svg>MATZE PERFORMANCE</a>
@@ -547,15 +799,24 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
       <a href="#ueber-mich">Über mich</a>
       <a href="#road">Sub 2:30</a>
     </nav>
+    <!-- Link zur Trainings-App. target="_blank" = öffnet in neuem Tab -->
     <a class="login" href="https://app.matzeperformance.de" target="_blank" rel="noopener">Mein Training ↗</a>
+    <!-- Roter Knopf oben rechts, springt zum Kontaktformular -->
     <a class="btn signal small" href="#kontakt">Erstgespräch</a>
+    <!-- Hamburger-Knopf: nur auf Handy/Tablet sichtbar, öffnet das Vollbild-Menü -->
+
     <button class="menu-btn" id="menu-open" aria-label="Menü öffnen" aria-expanded="false" aria-controls="overlay">
       <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M3 8h20M3 18h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
   </div>
+  <!-- Fortschrittslinie "km 0,0 bis 42,2": wird vom Skript unten beim Scrollen bewegt -->
   <div class="course" aria-hidden="true"><div class="done" id="done"></div><div class="dot" id="dot"></div><span class="km" id="km">km 0,0</span></div>
 </header>
 
+<!-- ===== HANDY-MENÜ (Vollbild) =====
+     Ist versteckt (hidden), bis man auf das Hamburger-Symbol tippt.
+     Die "km"-Angaben rechts sind nur Deko (Marathon-Thema), du kannst sie
+     frei ändern. -->
 <div class="overlay" id="overlay" hidden>
   <div class="top">
     <a class="brand" href="#start"><svg aria-hidden="true"><use href="#logo"/></svg>MATZE PERFORMANCE</a>
@@ -579,6 +840,14 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 <main>
 
 <!-- HERO -->
+<!-- ===================================================================
+     HERO = erster Bereich ganz oben.
+     Großer Spruch: "Athletes are" + durchgestrichenes "born" + "made."
+       <s class="strike">born</s> = Wort mit rotem Strich
+       aria-label = so liest ein Vorleseprogramm (für Blinde) den Spruch vor
+     Danach: Untertitel, Einleitungstext, zwei Knöpfe, großes Foto,
+     und die Zahlenleiste (proof).
+     =================================================================== -->
 <section class="hero" id="start">
   <div class="wrap">
     <h1 class="claim" aria-label="Athletes are made, not born.">Athletes are<span class="l2"><s class="strike">born</s> <span class="made">made</span><span class="red">.</span></span></h1>
@@ -592,10 +861,17 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
           <a class="btn" href="#coaching">Angebote ansehen</a>
         </div>
       </div>
+      <!-- HERO-FOTO. Anderes Bild: Datei in den Ordner img/ legen und bei src="..." den Namen eintragen.
+           alt="..." = Bildbeschreibung (für Google und Vorleseprogramme), bitte immer ausfüllen.
+           object-position:50% 25% = welcher Bildausschnitt gezeigt wird
+           (1. Zahl: links 0% bis rechts 100%, 2. Zahl: oben 0% bis unten 100%). -->
       <figure class="hero-photo" style="margin:0">
         <img src="img/berlinmarathon.jpg" alt="Matze mit Medaille nach dem Berlin Marathon" style="object-position:50% 25%">
       </figure>
     </div>
+    <!-- ZAHLENLEISTE: <b> = große Zahl, <small> = Beschriftung darunter.
+         Neue Bestzeit? Hier "2:35 h" ändern, und auch in STÄRKEN (Tokyo-Kachel),
+         in ROAD TO SUB 2:30 und in der description ganz oben. Tipp: nach 2:35 suchen. -->
     <div class="proof">
       <div><b>2:35 h</b><small>Marathon-Bestzeit</small></div>
       <div><b class="red">Sub 2:30</b><small>Nächstes Ziel</small></div>
@@ -606,6 +882,14 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </section>
 
 <!-- STÄRKEN -->
+<!-- ===================================================================
+     STÄRKEN = "Alles selbst erlebt." mit 5 Kacheln:
+       t-a Tokyo (Running), t-b Boston (Formkurve), t-c Ernährung,
+       t-d Hyrox (Kraft), t-e Challenge Roth (Triathlon)
+     Jede Kachel ist ein <article class="tile ...">.
+     "photo" in der class = Kachel mit Foto im Hintergrund.
+     loading="lazy" = Bild wird erst geladen, wenn man hinscrollt (schneller).
+     =================================================================== -->
 <section class="sec" id="staerken" style="border-top:0">
   <div class="wrap">
     <div class="sec-head">
@@ -613,6 +897,7 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
       <p class="lead muted">Ich schreibe dir keine Einheit in den Plan, die ich nicht selbst kenne. Egal ob Marathon, Langdistanz oder Krafttraining.</p>
     </div>
     <div class="bento">
+      <!-- Kachel 1: TOKYO / Running. Die "pb"-Zeile zeigt Bestzeit → Ziel. -->
       <article class="tile photo t-a">
         <img src="img/tokyomarathon04.jpg" alt="Matze nach dem Tokyo Marathon mit erhobener Faust" loading="lazy" style="object-position:50% 35%">
         <span class="tag">Running</span>
@@ -620,6 +905,10 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
         <h3>Keep Grinding & beat yesterday</h3>
         <p>Meine Bestzeit liegt bei 2:35 Stunden, jetzt greife ich die 2:30 an. Ich weiß, wie sich harte Wochen, Tempoläufe und die letzten zehn Kilometer anfühlen.</p>
       </article>
+      <!-- Kachel 2: BOSTON mit Formkurve.
+           Die zwei leeren Bereiche race-kpis (Zahlen) und formchart (Kurve)
+           werden AUTOMATISCH vom Skript gefüllt, und zwar aus der Rennliste
+           (race-data) direkt darunter. Du pflegst also nur die Liste! -->
       <article class="tile photo t-b dense">
         <img src="img/bostonmarathon.jpg" alt="Matze strahlt im Ziel des Boston Marathon und zeigt seine Medaille" loading="lazy" style="object-position:50% 25%">
         <span class="tag">Erfahrung · Boston Marathon</span>
@@ -629,6 +918,18 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
         <div class="formchart" id="formchart"></div>
         <details class="racelist"><summary>Alle Zeiten als Liste</summary>
         <!-- Die Kurve wird automatisch aus dieser Liste gezeichnet. Neues Rennen: einfach eine Zeile ergänzen. -->
+        <!-- SO GEHT'S:
+               - Eine Zeile = ein Rennen:  <li><span>Stadt Jahr</span><span>Zeit</span></li>
+               - Stadt + Jahr, z. B. "Valencia 2026". Das Jahr am Ende ist optional,
+                 ohne Jahr fehlt nur die Jahreszahl unter dem Punkt.
+               - Zeit als Stunden:Minuten, z. B. "2:33h" (das h ist egal).
+               - Reihenfolge = Reihenfolge in der Kurve (links alt, rechts neu),
+                 also neue Rennen UNTEN anhängen.
+               - Unter dem Punkt stehen die ersten 3 Buchstaben der Stadt.
+               - Die schnellste Zeit wird automatisch rot als Bestzeit markiert.
+               - Das Ziel (2:30) ist im Skript bei "goal=150" eingestellt
+                 (150 Minuten = 2:30). -->
+
         <ul class="races" id="race-data">
           <li><span>München 2021</span><span>2:48h</span></li>
           <li><span>Hamburg 2022</span><span>2:39h</span></li>
@@ -642,6 +943,7 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
         </ul>
         </details>
       </article>
+      <!-- Kachel 3: ERNÄHRUNG (ohne Foto, graue Kachel) mit zwei Spalten Alltag / Wettkampf -->
       <article class="tile t-c">
         <span class="tag">Fuel · Ernährungsberater</span>
         <h3>Ernährung für Alltag und Rennen</h3>
@@ -651,12 +953,14 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
           <div><b>Wettkampf</b><span>Carbo-Loading, Frühstück am Renntag, Verpflegung unterwegs</span></div>
         </div>
       </article>
+      <!-- Kachel 4: HYROX / Kraft -->
       <article class="tile photo t-d">
         <img src="img/hyrox2.jpg" alt="Matze schiebt beim Hyrox einen beladenen Schlitten" loading="lazy">
         <span class="tag">Strength · Fitnesstrainer</span>
         <h3>Kraft &amp; Functional</h3>
         <p>Krafttraining, das dich stärker und schneller macht.</p>
       </article>
+      <!-- Kachel 5: CHALLENGE ROTH / Triathlon -->
       <article class="tile photo t-e">
         <img src="img/challenge-roth.jpg" alt="Matze auf der Laufstrecke der Challenge Roth" loading="lazy">
         <span class="tag">Triathlon · Langdistanz</span>
@@ -668,6 +972,14 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </section>
 
 <!-- METHODE -->
+<!-- ===================================================================
+     METHODE = "Drei Bereiche, ein Plan."
+       1) Drei Säulen RUN / FUEL / STRENGTH, jeweils mit Text und
+          Stichpunkten (<li>...</li> = ein Stichpunkt).
+       2) Ablauf in 5 Schritten (<ol class="steps">). Jeder Schritt:
+          <span class="n">kleines Label</span><h3>Titel</h3><p>Text</p>
+          Die Nummern 01-05 kommen automatisch.
+     =================================================================== -->
 <section class="sec" id="methode">
   <div class="wrap">
     <div class="sec-head">
@@ -693,6 +1005,27 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </section>
 
 <!-- COACHING -->
+<!-- ===================================================================
+     COACHING & PREISE
+     1) FILTER-KNÖPFE (goals): Jeder Knopf hat ein Kürzel in data-goal:
+          all = alle, first = erster Marathon, pb = neue Bestzeit,
+          fit = fit neben dem Job
+     2) ANGEBOTS-KARTEN (offer): In data-goals="first pb" steht, bei welchen
+        Filtern die Karte sichtbar bleibt (Kürzel mit Leerzeichen getrennt).
+        Die anderen Karten werden beim Filtern blass.
+
+     PREIS ÄNDERN: In der Karte die Zahl in <b>150 €</b> ändern UND
+     zusätzlich unten im KONTAKT-Formular beim passenden "chip"
+     (data-price="150" und der Text "ab 150 €"). Sonst stimmen Karte und
+     Formular nicht überein.
+
+     NEUES ANGEBOT: Eine ganze <article class="offer"> ... </article>
+     kopieren, Texte anpassen. data-pick="..." muss genau dem data-val
+     eines chips im Kontaktformular entsprechen, damit der Knopf dort das
+     richtige Angebot vorauswählt.
+
+     Hervorgehobene Karte: class="offer feat". Rotes Etikett: class="badge red".
+     =================================================================== -->
 <section class="sec" id="coaching">
   <div class="wrap">
     <div class="sec-head">
@@ -753,6 +1086,12 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </section>
 
 <!-- APP -->
+<!-- ===================================================================
+     APP = Vorstellung der MyPerformance-Web-App.
+     Liste: <b>Stichwort</b><span>Erklärung</span>.
+     Screenshot: img/app.png. Neuer Screenshot? Einfach die Datei im
+     Ordner img/ mit gleichem Namen ersetzen.
+     =================================================================== -->
 <section class="sec" id="app">
   <div class="wrap app-grid">
     <div class="stack">
@@ -774,6 +1113,11 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </section>
 
 <!-- ÜBER MICH -->
+<!-- ===================================================================
+     ÜBER MICH: Foto links (figcaption = kleines Etikett unten auf dem Foto),
+     rechts Text, Etiketten (creds: eine <span> = ein Etikett) und die drei
+     Werte (values: <b>Titel</b><p>Text</p>).
+     =================================================================== -->
 <section class="sec" id="ueber-mich">
   <div class="wrap about">
     <figure><img src="img/hyroxflex.jpg" alt="Matze zeigt beim Hyrox München seinen Bizeps" loading="lazy" style="object-position:55% 60%"><figcaption>Hyrox München</figcaption></figure>
@@ -793,6 +1137,14 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </section>
 
 <!-- ROAD TO SUB 2:30 -->
+<!-- ===================================================================
+     ROAD TO SUB 2:30 (dunkler Bereich)
+       gap230 = "2:35 Bestzeit → 2:30 Ziel 2027" mit laufendem roten Punkt
+       tl     = Zeitleiste. Eine Station:
+                <li><span class="when">Label links</span><div><b>Titel</b><p>Text</p></div></li>
+                class="next" an einem <li> = rot hervorgehoben (nächstes Ziel).
+       Nach einem neuen Rennen: "Letzter Wettkampf" aktualisieren.
+     =================================================================== -->
 <section class="road" id="road">
   <div class="wrap sec" style="padding-bottom:clamp(72px,10vw,128px)">
     <div class="stack">
@@ -822,6 +1174,12 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </section>
 
 <!-- FAQ -->
+<!-- ===================================================================
+     FAQ = häufige Fragen. Eine Frage = eine Zeile:
+       <details><summary>FRAGE</summary><p>ANTWORT</p></details>
+     Neue Frage: eine solche Zeile kopieren und Texte ändern.
+     Die Reihenfolge hier = Reihenfolge auf der Seite.
+     =================================================================== -->
 <section class="sec" id="faq">
   <div class="wrap">
     <div class="sec-head">
@@ -840,6 +1198,19 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </section>
 
 <!-- KONTAKT -->
+<!-- ===================================================================
+     KONTAKT / BUCHUNG: Formular in 3 Schritten + Danke-Meldung.
+       step1 = Angebot wählen (chips) + Ziel
+       step2 = Termin im Kalender wählen (oder "Ohne Termin weiter")
+       step3 = Name, E-Mail, Telefon, Nachricht
+       done-msg = "Danke, ...!" nach dem Absenden
+     Immer nur ein Schritt ist sichtbar, das Umschalten macht das Skript.
+     Die Anfrage wird in der Datenbank (Supabase, Tabelle "bookings")
+     gespeichert. Du siehst sie in admin.html.
+     Die freien Termine kommen ebenfalls aus der Datenbank und werden in
+     admin.html eingestellt, NICHT hier.
+     Die ids (z. B. id="c-mail") braucht das Skript, bitte nicht ändern.
+     =================================================================== -->
 <section class="sec" id="kontakt">
   <div class="wrap contact">
     <div class="stack">
@@ -851,6 +1222,13 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
       <div class="stepbar" aria-hidden="true"><span class="on" id="sb1">01 Angebot</span><span id="sb2">02 Termin</span><span id="sb3">03 Kontakt</span></div>
       <div id="step1" class="stack">
         <h3>Was interessiert dich?</h3>
+        <!-- ANGEBOTS-AUSWAHL. Jeder chip hat versteckte Infos, die mit der Anfrage gespeichert werden:
+               data-val   = Kurzname (muss zu data-pick bei den Angebots-Karten passen)
+               data-svc   = Name der Leistung, wie er in der Datenbank / admin.html erscheint
+               data-dur   = Dauer des Termins
+               data-price = Preis in Euro (nur Zahl)
+               aria-pressed="true" = dieser chip ist am Anfang ausgewählt
+             Der sichtbare Text steht zwischen > und < bzw. in <small>. -->
         <div class="chips" role="group" aria-label="Angebot wählen">
           <button type="button" class="chip" data-val="Erstgespräch" data-svc="Erstgespräch (kostenlos)" data-dur="30 Min" data-price="0" aria-pressed="true">Erstgespräch<small>30 Min · kostenlos</small></button>
           <button type="button" class="chip" data-val="Marathon" data-svc="Marathon Trainingsplan" data-dur="90 Min" data-price="150" aria-pressed="false">Marathon<small>12–20 Wochen · ab 150 €</small></button>
@@ -862,6 +1240,7 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
         <div class="field"><label for="c-goal">Dein Ziel (optional)</label><input id="c-goal" type="text" placeholder="z. B. Berlin Marathon 2027 unter 3:30"></div>
         <div class="formnav"><span></span><button type="button" class="btn signal" id="next">Weiter <span class="arr">→</span></button></div>
       </div>
+      <!-- SCHRITT 2: Kalender. Tage und Uhrzeiten zeichnet das Skript (renderCal / renderSlots). -->
       <div id="step2" class="stack" hidden>
         <h3>Wann passt es dir?</h3>
         <div class="cal">
@@ -874,6 +1253,7 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
         <p class="err" id="t-err" hidden>Bitte wähle einen Tag und eine Uhrzeit.</p>
         <div class="formnav"><button type="button" class="btn" id="back1">Zurück</button><span style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn" id="skip">Ohne Termin weiter</button><button type="button" class="btn signal" id="next2">Weiter <span class="arr">→</span></button></span></div>
       </div>
+      <!-- SCHRITT 3: Kontaktdaten. Vorname, Nachname und E-Mail sind Pflicht (prüft das Skript). -->
       <div id="step3" class="stack" hidden>
         <h3>Wie erreiche ich dich?</h3>
         <p class="note" id="sum"></p>
@@ -890,6 +1270,7 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
         <p class="err" id="c-err" hidden>Bitte gib Vorname, Nachname und eine gültige E-Mail-Adresse ein.</p>
         <div class="formnav"><button type="button" class="btn" id="back2">Zurück</button><button type="submit" class="btn signal" id="send">Anfrage senden</button></div>
       </div>
+      <!-- DANKE-MELDUNG nach erfolgreichem Absenden. Name und Angebot setzt das Skript ein. -->
       <div id="done-msg" class="stack" hidden>
         <h3>Danke, <span id="d-name"></span>!</h3>
         <p class="muted">Deine Anfrage zum Thema <b id="d-pick"></b> ist bei mir angekommen. Ich melde mich so schnell wie möglich per E-Mail bei dir.</p>
@@ -901,6 +1282,10 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 
 </main>
 
+<!-- ===== FOOTER (Fußbereich) =====
+     Impressum und Datenschutz sind Knöpfe mit data-dialog="impressum" bzw.
+     "dsgvo". Sie öffnen die Fenster dlg-impressum / dlg-dsgvo weiter unten.
+     Jahreszahl im Copyright (© 2026) jedes Jahr von Hand anpassen. -->
 <footer>
   <div class="wrap">
     <div class="fgrid">
@@ -916,6 +1301,12 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
 </footer>
 
 
+<!-- ===================================================================
+     IMPRESSUM (Fenster). Rechtlich wichtig, Änderungen bitte sorgfältig.
+     Hinweis: Die eckigen Klammern [ ... ] um Name und Adresse werden auf
+     der Seite mit angezeigt. Wenn das nicht gewollt ist, Klammern entfernen.
+     <h2> = Zwischenüberschrift, <p> = Absatz, <br> = Zeilenumbruch.
+     =================================================================== -->
 <dialog class="legal" id="dlg-impressum" aria-labelledby="dlg-impressum-t">
   <div class="legal-in">
     <button type="button" class="legal-x" data-close>Schließen ✕</button>
@@ -947,6 +1338,11 @@ Deutschland</p>
 <p>Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt. Für Richtigkeit, Vollständigkeit und Aktualität kann ich jedoch keine Gewähr übernehmen. Als Diensteanbieter bin ich für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.</p>
   </div>
 </dialog>
+<!-- ===================================================================
+     DATENSCHUTZERKLÄRUNG (Fenster). Wenn du einen neuen Dienst einbaust
+     (z. B. Google Analytics, Newsletter, Zahlungsanbieter), muss er hier
+     erwähnt werden. Danach "Stand:" ganz unten aktualisieren.
+     =================================================================== -->
 <dialog class="legal" id="dlg-dsgvo" aria-labelledby="dlg-dsgvo-t">
   <div class="legal-in">
     <button type="button" class="legal-x" data-close>Schließen ✕</button>
@@ -993,14 +1389,40 @@ Deutschland</p>
   </div>
 </dialog>
 
+<!-- Roter Erstgespräch-Knopf, der auf dem Handy unten klebt -->
 <div class="mcta" id="mcta"><a class="btn signal" href="#kontakt">Kostenloses Erstgespräch</a></div>
 
+<!-- ===================================================================
+     SKRIPTE = das VERHALTEN der Seite (JavaScript).
+     1) Erst wird die Supabase-Bibliothek geladen (fertiger Baustein, um mit
+        der Datenbank zu sprechen). @2.45.4 = feste Version, damit sich
+        nichts unerwartet ändert.
+     2) Darunter steht der eigene Code, aufgeteilt in Blöcke:
+          Fortschrittslinie > Aktiver Menüpunkt > Handy-Menü > Ziel-Filter >
+          Buchung (Formular, Kalender, Speichern) > Impressum/Datenschutz >
+          Formkurve > Fotos farbig am Handy > alte Links > Sprung zum Abschnitt
+     Hier musst du normalerweise nur selten etwas ändern. Typische Stellen:
+       - Ziel der Formkurve:   goal=150   (Minuten, 150 = 2:30)
+       - Monatsnamen:          MONTHS
+       - Texte von Fehlermeldungen: nach "Bitte gib" bzw. "nicht geklappt" suchen
+     =================================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
+// Alles steckt in einer "Klammer" (function(){ ... })(); damit die eigenen
+// Namen nicht mit anderen Skripten kollidieren. Läuft einmal beim Laden.
 (function(){
+  // Zwei Abkürzungen, die überall benutzt werden:
+  //   $('#id')      = findet EIN Element (z. B. $('#kontakt'))
+  //   $$('.klasse') = findet ALLE passenden Elemente als Liste
   var $=function(s,c){return (c||document).querySelector(s)}, $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
 
   /* Fortschrittslinie km 0 bis 42,195 */
+  // onScroll läuft bei JEDEM Scrollen:
+  //  - p = wie weit man gescrollt hat (0 = ganz oben, 1 = ganz unten)
+  //  - daraus: Breite der schwarzen Linie, Position des roten Punkts und
+  //    die km-Anzeige (p × 42,195 km, mit Komma statt Punkt)
+  //  - der Handy-Knopf unten (mcta) wird versteckt, wenn man weniger als
+  //    300 Pixel gescrollt hat ODER das Kontaktformular schon sichtbar ist
   var done=$('#done'),dot=$('#dot'),km=$('#km'),mcta=$('#mcta');
   function onScroll(){
     var h=document.documentElement,max=h.scrollHeight-h.clientHeight;
@@ -1013,6 +1435,10 @@ Deutschland</p>
   addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
 
   /* Aktiver Menüpunkt */
+  // spy ("Spion") schaut beim Scrollen, welcher Abschnitt gerade im oberen
+  // Drittel des Bildschirms ist, und gibt dem passenden Menüpunkt die
+  // Klasse "on" (= roter Punkt darunter). Ab dem FAQ ist keiner mehr aktiv,
+  // weil FAQ nicht im oberen Menü steht.
   var links=$$('nav.main a');
   var ids=links.map(function(a){return a.getAttribute('href').slice(1)});
   function spy(){
@@ -1024,6 +1450,9 @@ Deutschland</p>
   addEventListener('scroll',spy,{passive:true});spy();
 
   /* Mobiles Menü */
+  // Öffnen: Overlay zeigen und das Scrollen der Seite dahinter sperren.
+  // Schließen: per X-Knopf, per Klick auf einen Menüpunkt oder mit der
+  // Escape-Taste.
   var ov=$('#overlay'),ob=$('#menu-open');
   function closeMenu(){ov.hidden=true;ob.setAttribute('aria-expanded','false');document.body.style.overflow=''}
   ob.addEventListener('click',function(){ov.hidden=false;ob.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';$('#menu-close').focus()});
@@ -1032,6 +1461,10 @@ Deutschland</p>
   addEventListener('keydown',function(e){if(e.key==='Escape'&&!ov.hidden)closeMenu()});
 
   /* Ziel-Filter */
+  // Klick auf einen Filter-Knopf:
+  //  1. Nur dieser Knopf wird als "gedrückt" markiert.
+  //  2. Jede Angebots-Karte, deren data-goals das Kürzel NICHT enthält,
+  //     bekommt die Klasse "dim" (= blass). Bei "all" ist keine blass.
   $$('.goal').forEach(function(b){b.addEventListener('click',function(){
     $$('.goal').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
     var g=b.dataset.goal;
@@ -1039,27 +1472,66 @@ Deutschland</p>
   })});
 
   /* Buchung: Angebot → Termin → Kontakt. Gespeichert in Supabase, Tabelle "bookings", wie auf der alten Seite. */
+  // VERBINDUNG ZUR DATENBANK (Supabase)
+  //   SUPABASE_URL = Adresse deines Supabase-Projekts
+  //   SUPABASE_KEY = der "publishable" (öffentliche) Schlüssel. Der DARF
+  //                  im Code stehen, jeder Besucher kann ihn sehen. Was
+  //                  damit erlaubt ist (z. B. nur Buchungen anlegen, aber
+  //                  nicht lesen), regeln die Sicherheitsregeln (RLS) in
+  //                  Supabase. Den geheimen "service_role"/"secret"-Schlüssel
+  //                  NIEMALS hier eintragen!
+  //   sb = die fertige Verbindung (oder null, falls Supabase nicht geladen hat)
   var SUPABASE_URL='https://fpmywbucovaadqvdaary.supabase.co';
   var SUPABASE_KEY='sb_publishable_GNIqKvMRNcCCyE_unVR1vA_-a_TRpy-';
   var sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
+  // Merkzettel (Variablen) für das Formular:
+  //   avail   = freie Zeiten aus der Datenbank, Form:
+  //             { "2026-11-05": [["09:00","12:00"], ["17:00","19:00"]], ... }
+  //   slotDur = Länge eines Termins in Minuten (Standard 60, kommt aus admin.html)
+  //   selDate / selTime = vom Besucher gewählter Tag / gewählte Uhrzeit
+  //   calY / calM = gerade angezeigter Monat im Kalender (Monat 0 = Januar!)
   var avail={},slotDur=60,selDate=null,selTime=null,calY,calM;
   var MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  // ANGEBOT WÄHLEN
+  //   pick(v)  = markiert den chip mit data-val = v als ausgewählt
+  //   picked() = gibt den aktuell gewählten chip zurück (sonst den ersten)
+  //   Klick auf einen chip wählt ihn aus.
+  //   Klick auf "Anfragen" bei einer Angebots-Karte (data-pick) wählt das
+  //   passende Angebot im Formular vor und springt zu Schritt 1.
   var chips=$$('.chip');
   function pick(v){chips.forEach(function(c){c.setAttribute('aria-pressed',c.dataset.val===v?'true':'false')})}
   function picked(){return chips.filter(function(c){return c.getAttribute('aria-pressed')==='true'})[0]||chips[0]}
   chips.forEach(function(c){c.addEventListener('click',function(){pick(c.dataset.val)})});
   $$('[data-pick]').forEach(function(a){a.addEventListener('click',function(){pick(a.dataset.pick);show(1)})});
+  // show(n) zeigt Schritt n des Formulars (1, 2, 3 oder 4 = Danke-Meldung)
+  // und blendet die anderen aus. Färbt dabei die Schritt-Leiste oben rot.
+  // Bei Schritt 2 wird der Kalender neu gezeichnet.
   function show(n){
     [1,2,3].forEach(function(i){$('#step'+i).hidden=n!==i;$('#sb'+i).classList.toggle('on',n>=i&&n<4)});
     $('#done-msg').hidden=n!==4;
     if(n===2)renderCal();
   }
+  // Kleine Helfer für Datum und Uhrzeit:
+  //   pad(5)          = "05" (immer zweistellig)
+  //   fmt("2026-11-05") = "05.11.2026" (deutsches Datum)
+  //   toMin("09:30")  = 570 (Minuten seit Mitternacht)
+  //   toTime(570)     = "09:30"
+  //   hasSlots(tag)   = hat dieser Tag freie Zeiten?
+  //   anyFree()       = gibt es ab heute überhaupt irgendeinen freien Tag?
   function pad(x){return String(x).padStart(2,'0')}
   function fmt(ds){if(!ds)return '';var p=ds.split('-');return p[2]+'.'+p[1]+'.'+p[0]}
   function toMin(t){var p=t.split(':');return (+p[0])*60+(+p[1])}
   function toTime(m){return pad(Math.floor(m/60))+':'+pad(m%60)}
   function hasSlots(ds){return avail[ds]&&avail[ds].length>0}
   function anyFree(){var t=new Date();t.setHours(0,0,0,0);return Object.keys(avail).some(function(ds){var p=ds.split('-');return new Date(+p[0],p[1]-1,+p[2])>=t&&hasSlots(ds)})}
+  // renderCal() ZEICHNET DEN KALENDER:
+  //  - Man kann nur den aktuellen und den NÄCHSTEN Monat ansehen
+  //    (minM / maxM). Mehr Monate? Dafür müsste maxM geändert werden.
+  //  - Die Woche beginnt am Montag (sd wird entsprechend verschoben).
+  //  - Ein Tag ist klickbar ("av"), wenn er heute oder später ist UND in der
+  //    Datenbank freie Zeiten hat.
+  //  - Gibt es gar keine freien Tage, erscheint der Hinweis "Aktuell sind
+  //    keine Termine frei".
   function renderCal(){
     var now=new Date(),minY=now.getFullYear(),minM=now.getMonth(),maxM=(minM+1)%12,maxY=minM===11?minY+1:minY;
     if(calY===undefined){calY=minY;calM=minM}
@@ -1078,6 +1550,9 @@ Deutschland</p>
     $('#cal-empty').hidden=anyFree();
     renderSlots();
   }
+  // renderSlots() ZEIGT DIE UHRZEITEN des gewählten Tages.
+  // Beispiel: freie Zeit 09:00 bis 12:00 und slotDur 60
+  //   → Knöpfe 09:00, 10:00, 11:00 (ein Termin muss komplett hineinpassen).
   function renderSlots(){
     var w=$('#slots-wrap');if(!selDate){w.hidden=true;return}
     w.hidden=false;$('#slots-label').textContent='Freie Zeiten am '+fmt(selDate);
@@ -1085,8 +1560,13 @@ Deutschland</p>
     $('#slots').innerHTML=out.length?out.map(function(t){return '<button type="button" class="slot" data-t="'+t+'" aria-pressed="'+(t===selTime)+'">'+t+'</button>'}).join(''):'<span class="note">Keine Zeiten verfügbar.</span>';
     $$('#slots .slot').forEach(function(b){b.addEventListener('click',function(){selTime=b.dataset.t;renderSlots()})});
   }
+  // Pfeile ← → im Kalender: einen Monat zurück / vor
   $('#cal-prev').addEventListener('click',function(){calM--;if(calM<0){calM=11;calY--}renderCal()});
   $('#cal-next').addEventListener('click',function(){calM++;if(calM>11){calM=0;calY++}renderCal()});
+  // summary() schreibt in Schritt 3 die Zusammenfassung,
+  // z. B. "Marathon · 05.11.2026 um 18:00 Uhr" oder "... · ohne festen Termin".
+  // Danach: was die Knöpfe Weiter / Zurück / Ohne Termin weiter / Neue Anfrage tun.
+  // "Weiter" in Schritt 2 geht nur, wenn Tag UND Uhrzeit gewählt sind.
   function summary(){var c=picked();$('#sum').textContent=c.dataset.val+' · '+(selDate&&selTime?fmt(selDate)+' um '+selTime+' Uhr':'ohne festen Termin')}
   $('#next').addEventListener('click',function(){show(2)});
   $('#back1').addEventListener('click',function(){show(1)});
@@ -1094,6 +1574,16 @@ Deutschland</p>
   $('#skip').addEventListener('click',function(){selDate=null;selTime=null;$('#t-err').hidden=true;summary();show(3);$('#c-fname').focus()});
   $('#back2').addEventListener('click',function(){show(2)});
   $('#again').addEventListener('click',function(){$('#cform').reset();$('#c-err').hidden=true;selDate=null;selTime=null;pick('Erstgespräch');show(1)});
+  // ABSENDEN DES FORMULARS
+  //  1. Prüfen: Vorname, Nachname und E-Mail (muss wie name@domain.de aussehen).
+  //     Fehlt etwas → rote Fehlermeldung, nichts wird gesendet.
+  //  2. Ziel (aus Schritt 1) und Nachricht werden zu einem Text zusammengefügt.
+  //  3. Knopf zeigt "Wird gesendet …" und ist so lange gesperrt.
+  //  4. Eine neue Zeile wird in der Datenbank-Tabelle "bookings" angelegt.
+  //     Die Spalten (fname, lname, email, phone, service, duration, date, time,
+  //     message, paid, status, created_at) müssen in Supabase so existieren.
+  //     status ist immer "neu", das kannst du später in admin.html ändern.
+  //  5. Hat es geklappt → Danke-Meldung. Sonst → Fehlermeldung mit E-Mail-Adresse.
   $('#cform').addEventListener('submit',async function(e){
     e.preventDefault();
     var fn=$('#c-fname').value.trim(),ln=$('#c-lname').value.trim(),m=$('#c-mail').value.trim();
@@ -1113,6 +1603,10 @@ Deutschland</p>
     if(err){console.error('Buchung fehlgeschlagen:',err);$('#c-err').textContent='Das Senden hat nicht geklappt. Bitte versuch es noch einmal oder schreib an matzesperformance@gmail.com.';$('#c-err').hidden=false;return}
     $('#d-name').textContent=fn;$('#d-pick').textContent=c.dataset.val;show(4);
   });
+  // loadSettings() holt beim Laden der Seite die FREIEN TERMINE aus der
+  // Datenbank (Tabelle "settings", Eintrag "availability"). Diese stellst du
+  // in admin.html ein. Darin stehen die freien Tage/Zeiten (dates) und die
+  // Termindauer (slotDur). Klappt das nicht, bleibt der Kalender einfach leer.
   async function loadSettings(){
     if(!sb)return;
     try{var r=await sb.from('settings').select('key,value');(r.data||[]).forEach(function(row){if(row.key==='availability'&&row.value){if(row.value.dates)avail=row.value.dates;if(row.value.slotDur)slotDur=row.value.slotDur}})}catch(x){}
@@ -1121,6 +1615,9 @@ Deutschland</p>
   loadSettings();
 
   /* Impressum und Datenschutz */
+  // Jeder Knopf mit data-dialog="xyz" öffnet das Fenster mit id="dlg-xyz".
+  // Schließen: per Knopf "Schließen ✕", Klick auf den dunklen Rand
+  // oder Escape-Taste (macht der Browser selbst).
   $$('[data-dialog]').forEach(function(b){b.addEventListener('click',function(){var d=$('#dlg-'+b.dataset.dialog);if(d.showModal){d.showModal();document.body.classList.add('locked')}})});
   $$('dialog.legal').forEach(function(d){
     d.addEventListener('close',function(){document.body.classList.remove('locked')});
@@ -1129,6 +1626,22 @@ Deutschland</p>
   });
 
   /* Formkurve: liest die Rennliste aus dem HTML und zeichnet daraus die Kurve (schneller = weiter oben) */
+  // Ablauf:
+  //  1. Jede Zeile der Rennliste (race-data) wird gelesen: Stadt, Jahr,
+  //     Zeit. Die Zeit wird in Minuten umgerechnet (2:35 → 155).
+  //     Zeilen ohne gültige Zeit werden übersprungen.
+  //  2. Mindestens 2 Rennen nötig, sonst wird keine Kurve gezeichnet.
+  //  3. best = schnellste Zeit, goal = Ziel in Minuten (150 = 2:30).
+  //     ZIEL ÄNDERN: z. B. goal=148 für Sub 2:28.
+  //  4. Die drei Kennzahlen oben (Start / Bestzeit / Ziel) werden geschrieben.
+  //  5. Die Kurve wird als SVG-Grafik gebaut:
+  //       W/H = Breite/Höhe, L/R/T/B = Ränder links/rechts/oben/unten
+  //       x(i) = waagrechte Position von Rennen Nr. i
+  //       y(m) = senkrechte Position für m Minuten (schneller = weiter oben)
+  //     Gezeichnet werden: Gitterlinien alle 10 Minuten, rote Ziel-Linie,
+  //     die Kurve, Punkte (Bestzeit rot), Städtekürzel + Jahr darunter,
+  //     Zeit über dem ersten und letzten Punkt.
+  //  6. Tippen/Drüberfahren über einen Punkt zeigt eine Info-Box (formtip).
   (function(){
     var src=$('#race-data'),box=$('#formchart');if(!src||!box)return;
     var races=$$('li',src).map(function(li){
@@ -1168,17 +1681,26 @@ Deutschland</p>
   })();
 
   /* Handy/Tablet ohne Maus: Foto in der Bildschirmmitte wird farbig */
+  // Am Computer werden Fotos beim Drüberfahren farbig. Am Handy gibt es
+  // kein "Drüberfahren", deshalb beobachtet ein IntersectionObserver, welches
+  // Foto gerade im mittleren Bereich des Bildschirms ist (oben und unten je
+  // 30% abgezogen), und gibt ihm die Klasse "is-color".
   if(window.matchMedia&&matchMedia('(hover: none)').matches&&'IntersectionObserver' in window){
     var io=new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('is-color',e.isIntersecting)})},{rootMargin:'-30% 0px -30% 0px'});
     $$('.hero-photo,.tile.photo,.about figure,.road figure').forEach(function(el){io.observe(el)});
   }
 
   /* Alte Links der früheren Seite umleiten (z. B. #booking) */
+  // Falls irgendwo noch alte Links wie matzeperformance.de/#booking stehen
+  // (z. B. in der Instagram-Bio), werden sie auf die neuen Abschnitte
+  // umgeschrieben: links alter Name, rechts neue id.
   var legacy={home:'start',plans:'coaching',about:'ueber-mich',booking:'kontakt'};
   var hh=location.hash.slice(1);
   if(legacy[hh])history.replaceState(null,'','#'+legacy[hh]);
 
   /* Abschnitt aus dem Link öffnen */
+  // Kommt jemand über einen Link mit #abschnitt (z. B. #coaching), wird nach
+  // dem Laden direkt dorthin gescrollt.
   if(location.hash&&document.getElementById(location.hash.slice(1))){
     setTimeout(function(){document.getElementById(location.hash.slice(1)).scrollIntoView()},50);
   }

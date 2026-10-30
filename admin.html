@@ -1,55 +1,159 @@
 <!DOCTYPE html>
+<!--
+  ================================================================
+  ADMIN-BEREICH von matzeperformance.de   (Datei: admin.html)
+  ================================================================
+
+  WOFÜR IST DIESE SEITE?
+  Das ist dein internes "Cockpit". Nur du als Admin kannst dich hier
+  einloggen. Kunden kommen hier nicht weiter: ohne Admin-Login sieht man
+  nur das Login-Fenster, und alle Daten sind zusätzlich in der Datenbank
+  geschützt. Hier kannst du:
+    * Buchungsanfragen ansehen, bestätigen oder absagen
+    * festlegen, an welchen Tagen und Uhrzeiten man dich buchen kann
+      (diese Zeiten liest die öffentliche Startseite index.html für ihren
+      Buchungskalender)
+    * PayPal-Daten für den Zahlungslink hinterlegen
+    * den E-Mail-Versand (EmailJS) testen
+
+  AUFBAU DER DATEI (von oben nach unten):
+    1. head   : Seitentitel, Schriftarten, externe Programm-Bausteine
+    2. style  : das komplette Aussehen (Farben, Abstände, Schriften)
+    3. body   : der sichtbare Inhalt
+         a) Login-Fenster ........................ id="screen-login"
+         b) die eigentliche Admin-App ............ id="screen-app"
+              * Kopfleiste oben (Logo, Abmelden)
+              * Seitenleiste links (Navigation)
+              * Inhaltsbereich mit 6 "Ansichten" (views).
+                Es ist immer nur eine davon sichtbar:
+                  Dashboard ......... id="view-dashboard"
+                  Buchungen ......... id="view-bookings"
+                  Verfügbarkeit ..... id="view-availability"
+                  PayPal ............ id="view-paypal"
+                  E-Mail ............ id="view-email"
+                  Einrichtung ....... id="view-setup"
+         c) Detail-Fenster zu einer Buchung ...... id="detail-modal"
+         d) kleine Hinweis-Box unten rechts ...... id="notif"
+    4. script : die ganze Logik (Login, Daten laden und speichern,
+                E-Mails senden). Steht ganz unten in der Datei.
+
+  EXTERNE DIENSTE:
+    * Supabase (supabase.com): Online-Datenbank plus Login-System.
+        Tabelle "bookings" = alle Buchungsanfragen der Kunden
+        Tabelle "settings" = Einstellungen, mit den Zeilen
+            "availability" = deine buchbaren Zeiten
+            "paypal"       = deine PayPal-Daten
+    * EmailJS (emailjs.com): verschickt E-Mails direkt aus dem Browser,
+        ganz ohne eigenen Mail-Server.
+    * Google Fonts: liefert die Schriftarten.
+    * PayPal: hier wird nur ein Zahlungslink zusammengebaut,
+        es gibt keine direkte Verbindung zu deinem PayPal-Konto.
+
+  WAS KANN ICH WO ÄNDERN?  (In der Datei mit Strg+F nach dem Suchbegriff suchen)
+    * Farben der ganzen Seite ............ ":root"
+    * Menüpunkte links ................... "nav-item"
+    * Auswahl Slot-Länge (30/60/90 Min) .. "slot-dur"
+    * Standardzeit für neue Zeitfenster .. "09:00"
+    * Währungen bei PayPal ............... "pp-currency"
+    * Texte der Status-Etiketten ......... "function statusBadge"
+    * EmailJS-Zugangsdaten ............... "EMAILJS_SERVICE_ID"
+    * Supabase-Zugangsdaten .............. "SUPABASE_URL"
+    * Inhalte der Bestätigungs-Mail ...... "templateParams" (die Werte);
+                                            den Mailtext selbst im EmailJS-Konto
+    * Texte der Hinweis-Meldungen ........ "showNotif("
+    * Anzeige-Dauer der Hinweis-Meldung .. "function showNotif"
+
+  TIPPS:
+    * Vor jeder Änderung eine Kopie dieser Datei anlegen.
+    * Nach dem Hochladen die Seite mit Strg+F5 neu laden und kurz testen.
+    * Zeilen, die mit dem Kommentar-Zeichen beginnen (wie dieser Block),
+      sind nur Erklärungen und haben keine Wirkung auf die Seite.
+  ================================================================
+-->
 <html lang="de">
 <head>
+<!-- Grundeinstellungen: Zeichensatz (damit Umlaute klappen), richtige Darstellung auf dem Handy und der Titel im Browser-Tab. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Run & Fuel Coaching</title>
+<!-- Schriftarten von Google Fonts: Bebas Neue (große Überschriften), DM Sans (normaler Text), Space Mono (kleine Schreibmaschinen-Schrift für Labels). -->
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
+<!--
+  Externe Programm-Bausteine (Bibliotheken), die aus dem Internet geladen werden:
+    * Supabase: damit spricht die Seite mit deiner Datenbank und dem Login.
+    * EmailJS: damit werden Bestätigungs-Mails an Kunden verschickt.
+-->
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <!-- EmailJS — für Bestätigungs-E-Mails an Kunden -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
+<!-- Ab hier beginnt das Aussehen der Seite (CSS). Hier steht nur Optik, keine Logik. -->
 <style>
+/* CSS = die Gestaltungsregeln. Aufbau immer:  .name { eigenschaft:wert; }
+   Der Name vor der Klammer sagt, WELCHE Elemente gemeint sind (Punkt = Klasse,
+   Raute = einzelnes Element mit dieser id). In den Klammern steht WIE sie aussehen. */
 /* ── CSS Variables (gleich wie Homepage) ─────────────────────── */
+/* Farbvariablen: Hier werden alle Farben EINMAL festgelegt und dann überall
+   mit var(--name) verwendet. Wenn du hier eine Farbe änderst, ändert sie sich
+   auf der ganzen Admin-Seite. Farben sind als Hex-Code angegeben (#rrggbb). */
 :root {
+  /* Hintergrund der ganzen Seite (fast schwarz) */
   --bg:      #0a0a08;
+  /* Fläche von Boxen und Karten (etwas heller als der Hintergrund) */
   --surface: #141410;
+  /* zweite, noch etwas hellere Fläche (z. B. beim Drüberfahren mit der Maus) */
   --surface2:#1e1e18;
+  /* Hauptakzent: das Neon-Gelbgrün (Buttons, Zahlen, aktiver Menüpunkt) */
   --accent:  #d4f53c;
+  /* Zweitakzent: Orange (kleine Überschriften, Nummern, Links) */
   --accent2: #ff6b2b;
+  /* normale Textfarbe (warmes Weiß) */
   --text:    #f0ede4;
+  /* gedämpfte, graue Schrift für Nebeninfos und Beschriftungen */
   --muted:   #6b6b5a;
+  /* Farbe der feinen Rahmenlinien */
   --border:  #2a2a22;
+  /* Grün für Erfolg (z. B. Status Bestätigt, Gespeichert) */
   --success: #4caf82;
+  /* Rot für Fehler und Absagen */
   --danger:  #e05252;
+  /* Orange-Gelb für Warnhinweise */
   --warn:    #f0a030;
 }
+/* Grund-Reset: entfernt die Standard-Abstände des Browsers, damit alles einheitlich aussieht. */
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+/* Grundschrift und Grundfarben für die ganze Seite. */
 body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
 /* ── Login Screen ────────────────────────────────────────────── */
+/* LOGIN-FENSTER: der Bildschirm, den man vor dem Einloggen sieht.
+   #screen-login zentriert die Login-Box mitten auf dem Bildschirm. */
 #screen-login {
   min-height:100vh; display:flex; align-items:center; justify-content:center;
   padding:2rem;
   background:radial-gradient(ellipse at 50% 50%, rgba(212,245,60,.04) 0%, transparent 60%);
 }
+/* Die Login-Box selbst (max. 380 Pixel breit, oben gelbgrüne Linie). */
 .login-box {
   width:100%; max-width:380px;
   border:1px solid var(--border); border-top:2px solid var(--accent);
   background:var(--surface); padding:3rem 2.5rem;
 }
+/* Logo-Schrift, Untertitel und die kleinen Feld-Beschriftungen im Login. */
 .login-logo { font-family:'Bebas Neue',sans-serif; font-size:1.6rem; letter-spacing:.14em; margin-bottom:.3rem; }
 .login-logo span { color:var(--accent); }
 .login-sub  { font-size:.78rem; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-family:'Space Mono',monospace; margin-bottom:2.5rem; }
 .login-label { font-size:.68rem; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-family:'Space Mono',monospace; display:block; margin-bottom:.4rem; margin-top:1.2rem; }
+/* Eingabefelder für E-Mail und Passwort (Rahmen wird beim Anklicken gelbgrün). */
 .login-input {
   width:100%; background:var(--bg); border:1px solid var(--border);
   color:var(--text); padding:.8rem 1rem; font-family:'DM Sans',sans-serif;
   font-size:.95rem; outline:none; transition:border-color .2s;
 }
 .login-input:focus { border-color:var(--accent); }
+/* Der Einloggen-Button. #c8e830 ist ein etwas dunkleres Gelbgrün beim Drüberfahren. */
 .login-btn {
   width:100%; margin-top:1.8rem; background:var(--accent); color:#0a0a08;
   border:none; padding:.9rem; font-family:'DM Sans',sans-serif; font-weight:600;
@@ -57,12 +161,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
   transition:background .2s;
 }
 .login-btn:hover { background:#c8e830; }
+/* Rote Fehlermeldung unter dem Button (z. B. Falsche Zugangsdaten). */
 .login-err { font-size:.8rem; color:var(--danger); margin-top:.8rem; min-height:1.2rem; font-family:'Space Mono',monospace; }
 
 /* ── App Shell (nach Login) ──────────────────────────────────── */
+/* Die eigentliche Admin-App ist anfangs unsichtbar (display:none) und wird erst nach erfolgreichem Login eingeblendet. */
 #screen-app { display:none; min-height:100vh; }
 
 /* Topbar */
+/* KOPFLEISTE oben: bleibt beim Scrollen stehen (sticky), leicht durchsichtig. */
 .topbar {
   position:sticky; top:0; z-index:100;
   background:rgba(10,10,8,.96); border-bottom:1px solid var(--border);
@@ -83,15 +190,18 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .topbar-btn:hover { border-color:var(--danger); color:var(--danger); }
 
 /* Layout: Sidebar + Content */
+/* Grundraster: links Seitenleiste (220 Pixel breit), rechts der Inhalt. Für eine breitere Seitenleiste die 220px ändern. */
 .app-layout { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 56px); }
 
 /* Sidebar */
+/* SEITENLEISTE links mit den Menüpunkten. */
 .sidebar {
   background:var(--surface); border-right:1px solid var(--border);
   padding:1.5rem 0;
   position:sticky; top:56px; height:calc(100vh - 56px); overflow-y:auto;
 }
 .sidebar-section { font-family:'Space Mono',monospace; font-size:.58rem; color:var(--muted); letter-spacing:.2em; text-transform:uppercase; padding:.5rem 1.5rem; margin-top:1rem; }
+/* Ein Menüpunkt. .active = der gerade geöffnete Punkt (gelbgrün mit Strich links). */
 .nav-item {
   display:flex; align-items:center; gap:.75rem;
   padding:.7rem 1.5rem; cursor:pointer; transition:all .15s;
@@ -102,18 +212,22 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .nav-item.active { background:var(--surface2); color:var(--accent); border-left-color:var(--accent); }
 .nav-icon { width:16px; height:16px; opacity:.7; flex-shrink:0; }
 .nav-item.active .nav-icon { opacity:1; }
+/* Kleines gelbgrünes Zahlen-Etikett neben Buchungen (Anzahl neuer Anfragen). */
 .nav-badge { margin-left:auto; background:var(--accent); color:#0a0a08; font-family:'Space Mono',monospace; font-size:.58rem; padding:.15rem .45rem; font-weight:700; border-radius:2px; }
 
 /* Main content area */
+/* Inhaltsbereich rechts (max. 1100 Pixel breit) und die großen Seitenüberschriften. */
 .main { padding:2.5rem; max-width:1100px; }
 .page-title-tag { font-family:'Space Mono',monospace; font-size:.65rem; color:var(--accent2); letter-spacing:.2em; text-transform:uppercase; margin-bottom:.5rem; }
 .page-title { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:.08em; margin-bottom:2rem; }
 
 /* Views */
+/* Ansichten (Dashboard, Buchungen, ...): standardmäßig versteckt, nur die mit .active wird gezeigt. */
 .view { display:none; }
 .view.active { display:block; }
 
 /* ── Stats Cards ─────────────────────────────────────────────── */
+/* Die vier Zahlen-Kacheln auf dem Dashboard (Anfragen gesamt, Neu, Bestätigt, Umsatz). */
 .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; background:var(--border); margin-bottom:2.5rem; }
 .stat-card { background:var(--surface); padding:1.5rem; }
 .stat-card-label { font-family:'Space Mono',monospace; font-size:.62rem; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; margin-bottom:.5rem; }
@@ -121,6 +235,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 .stat-card-sub { font-size:.75rem; color:var(--muted); margin-top:.3rem; }
 
 /* ── Buchungs-Tabelle ────────────────────────────────────────── */
+/* Tabellen (Buchungsliste und Neueste Anfragen): Kopfzeile, Zellen, Trennlinien. */
 .table-wrap { overflow-x:auto; border:1px solid var(--border); }
 table { width:100%; border-collapse:collapse; }
 th {
@@ -134,17 +249,20 @@ td { padding:.85rem 1rem; font-size:.87rem; border-bottom:1px solid var(--border
 tr:last-child td { border-bottom:none; }
 tr:hover td { background:rgba(212,245,60,.02); }
 
+/* Farbige Status-Etiketten: neu = gelbgrün, bestätigt = grün, abgesagt = rot. */
 .badge { padding:.2rem .6rem; font-family:'Space Mono',monospace; font-size:.58rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }
 .badge-new       { background:rgba(212,245,60,.1);  color:var(--accent); }
 .badge-confirmed { background:rgba(76,175,130,.12); color:var(--success); }
 .badge-cancelled { background:rgba(224,82,82,.1);   color:var(--danger); }
 
+/* Schrift der einzelnen Tabellenspalten (Name, E-Mail, Datum, Leistung, Preis). */
 .tbl-name  { font-weight:500; }
 .tbl-email { font-size:.78rem; color:var(--muted); font-family:'Space Mono',monospace; }
 .tbl-date  { font-family:'Space Mono',monospace; font-size:.8rem; white-space:nowrap; }
 .tbl-svc   { font-size:.8rem; color:var(--muted); max-width:160px; }
 .tbl-price { font-family:'Space Mono',monospace; font-size:.82rem; color:var(--accent); }
 
+/* Kleine Aktions-Buttons in der Tabelle (Haken, Kreuz, Detail). */
 .act-btn {
   background:none; border:1px solid var(--border); color:var(--muted);
   padding:.28rem .6rem; font-size:.72rem; cursor:pointer; transition:all .15s;
@@ -154,10 +272,12 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .act-btn.del:hover   { border-color:var(--danger);  color:var(--danger); }
 .act-btn.confirm:hover { border-color:var(--success); color:var(--success); }
 
+/* Anzeige, wenn eine Tabelle leer ist (Noch keine Buchungen). */
 .empty-state { text-align:center; padding:4rem 2rem; color:var(--muted); }
 .empty-icon  { font-size:2rem; margin-bottom:1rem; opacity:.4; }
 
 /* Filter row */
+/* Filter-Leiste über der Buchungstabelle (Alle / Neu / Bestätigt / Abgesagt). */
 .filter-row { display:flex; gap:.8rem; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; }
 .filter-btn {
   font-family:'Space Mono',monospace; font-size:.65rem; background:transparent;
@@ -169,6 +289,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .filter-count { font-family:'Space Mono',monospace; font-size:.6rem; color:var(--muted); margin-left:auto; }
 
 /* Refresh */
+/* Aktualisieren-Button (auch für den Heute-Button im Kalender genutzt). */
 .refresh-btn {
   font-family:'Space Mono',monospace; font-size:.65rem; background:transparent;
   border:1px solid var(--border); color:var(--muted); padding:.4rem .9rem;
@@ -178,6 +299,8 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .refresh-btn:hover { border-color:var(--accent); color:var(--accent); }
 
 /* ── Verfügbarkeit — Wochenkalender ─────────────────────────── */
+/* VERFÜGBARKEIT: Wochen-Navigation mit Pfeilen links/rechts und der
+   Anzeige des Datumsbereichs plus Kalenderwoche (KW). */
 .week-nav { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
 .week-nav-btn {
   background:var(--surface); border:1px solid var(--border); color:var(--text);
@@ -187,13 +310,18 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .week-nav-btn:hover { border-color:var(--accent); color:var(--accent); }
 .week-label { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:.1em; }
 .week-num   { font-family:'Space Mono',monospace; font-size:.7rem; color:var(--muted); margin-left:.5rem; }
+/* Das Wochenraster mit 7 Spalten (Mo bis So).
+   Die @media-Zeile darunter sorgt dafür, dass auf schmalen Bildschirmen
+   (unter 860 Pixel) die Tage untereinander statt nebeneinander stehen. */
 .week-grid  { display:grid; grid-template-columns:repeat(7,1fr); gap:1px; background:var(--border); margin-bottom:1.5rem; }
 @media(max-width:860px){ .week-grid { grid-template-columns:1fr; } }
+/* Eine Tages-Spalte; der heutige Tag bekommt einen gelbgrünen Namen. */
 .avail-day  { background:var(--surface); padding:1.1rem; }
 .avail-day-name { font-family:'Bebas Neue',sans-serif; font-size:1rem; letter-spacing:.08em; text-align:center; margin-bottom:.3rem; }
 .avail-day-date { font-family:'Space Mono',monospace; font-size:.62rem; color:var(--muted); text-align:center; margin-bottom:.7rem; }
 .avail-day.today-col .avail-day-name { color:var(--accent); }
 .avail-toggle-row { display:flex; align-items:center; justify-content:center; gap:.5rem; margin-bottom:.8rem; }
+/* Der An/Aus-Schalter pro Tag. Ist er an, wird er gelbgrün und der Knopf rutscht nach rechts. */
 .toggle { position:relative; width:40px; height:22px; cursor:pointer; }
 .toggle input { display:none; }
 .toggle-track { position:absolute; inset:0; background:var(--border); border-radius:11px; transition:background .2s; }
@@ -201,6 +329,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .toggle input:checked ~ .toggle-track { background:var(--accent); }
 .toggle input:checked ~ .toggle-thumb { left:21px; background:#0a0a08; }
 .toggle-lbl { font-size:.68rem; color:var(--muted); font-family:'Space Mono',monospace; }
+/* Liste der Zeitfenster eines Tages und die Uhrzeit-Eingabefelder (von / bis). */
 .slot-list { display:flex; flex-direction:column; gap:.35rem; }
 .slot-row { display:flex; align-items:center; gap:.3rem; font-size:.76rem; }
 .time-inp {
@@ -209,23 +338,29 @@ tr:hover td { background:rgba(212,245,60,.02); }
   width:76px; outline:none; transition:border-color .2s;
 }
 .time-inp:focus { border-color:var(--accent); }
+/* Das kleine Kreuz zum Löschen eines Zeitfensters. */
 .del-slot { background:none; border:none; color:var(--muted); cursor:pointer; font-size:.95rem; padding:0 .15rem; transition:color .2s; }
 .del-slot:hover { color:var(--danger); }
+/* Der gestrichelte Button + Zeit zum Hinzufügen eines Zeitfensters. */
 .add-slot-btn {
   width:100%; margin-top:.4rem; background:none; border:1px dashed var(--border);
   color:var(--muted); font-size:.7rem; padding:.3rem; cursor:pointer; transition:all .2s;
 }
 .add-slot-btn:hover { border-color:var(--accent); color:var(--accent); }
+/* Zeile mit der Auswahl Minuten pro Slot. */
 .slot-dur-row { display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
 .slot-dur-row label { font-family:'Space Mono',monospace; font-size:.7rem; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; }
 .slot-dur-row select {
   background:var(--surface); border:1px solid var(--border); color:var(--text);
   padding:.5rem .8rem; font-family:'DM Sans',sans-serif; font-size:.9rem; outline:none; cursor:pointer;
 }
+/* Zeile mit dem Button Vorwoche übernehmen. */
 .avail-copy-row { display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; flex-wrap:wrap; }
 .copy-hint { font-family:'Space Mono',monospace; font-size:.65rem; color:var(--muted); }
 
 /* ── PayPal Einstellungen ────────────────────────────────────── */
+/* PAYPAL-Einstellungen: zweispaltiges Formular (auf dem Handy einspaltig)
+   sowie allgemeine Formular-Felder und Beschriftungen. */
 .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; max-width:600px; }
 @media(max-width:600px){ .settings-grid { grid-template-columns:1fr; } }
 .form-group { display:flex; flex-direction:column; gap:.4rem; }
@@ -239,6 +374,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .form-input:focus, .form-select:focus { border-color:var(--accent); }
 .form-select option { background:var(--surface); }
 
+/* Box mit der Vorschau des erzeugten PayPal-Links (orange Linie links). */
 .pp-preview-box {
   margin-top:1.5rem; padding:1rem; background:var(--surface);
   border:1px solid var(--border); border-left:3px solid var(--accent2);
@@ -248,6 +384,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .pp-preview-url   { font-family:'Space Mono',monospace; font-size:.72rem; color:var(--accent); word-break:break-all; }
 
 /* ── Buttons ─────────────────────────────────────────────────── */
+/* Großer gelbgrüner Speichern-Button und der grüne Text Gespeichert, der kurz erscheint. */
 .btn-save {
   margin-top:1.5rem; background:var(--accent); color:#0a0a08; border:none;
   padding:.82rem 2.2rem; font-family:'DM Sans',sans-serif; font-weight:600;
@@ -258,6 +395,8 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .save-ok { display:none; color:var(--success); font-size:.82rem; margin-left:1rem; font-family:'Space Mono',monospace; vertical-align:middle; }
 
 /* ── Notif Toast ─────────────────────────────────────────────── */
+/* HINWEIS-BOX (Toast): kleine Meldung unten rechts, die kurz hereinfährt.
+   Normal mit gelbgrüner Linie, bei Fehlern (.error) mit roter Linie. */
 .notif {
   position:fixed; bottom:2rem; right:2rem; z-index:999;
   background:var(--surface2); border:1px solid var(--border); border-left:3px solid var(--accent);
@@ -268,11 +407,14 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .notif.error { border-left-color:var(--danger); }
 
 /* ── Loading ─────────────────────────────────────────────────── */
+/* Lädt...-Anzeige mit dem drehenden Kreis (spinner). */
 .loading { color:var(--muted); font-family:'Space Mono',monospace; font-size:.78rem; padding:2rem; }
 .spinner { display:inline-block; width:14px; height:14px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; margin-right:.6rem; vertical-align:middle; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
 /* ── Booking-Detail Modal ────────────────────────────────────── */
+/* DETAIL-FENSTER (Modal): legt sich mit dunklem Hintergrund über die Seite,
+   wenn man bei einer Buchung auf Detail klickt. .open = sichtbar. */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:200; overflow-y:auto; }
 .modal-overlay.open { display:block; }
 .modal-box {
@@ -294,6 +436,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .modal-close-btn:hover { border-color:var(--danger); color:var(--danger); }
 
 /* ── Onboarding steps ────────────────────────────────────────── */
+/* EINRICHTUNG: die nummerierten Schritt-Kästen und der orange Warnhinweis. */
 .setup-steps { max-width:700px; }
 .setup-step {
   display:flex; gap:1.2rem; padding:1.5rem;
@@ -314,6 +457,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
 .setup-warn strong { color:var(--warn); }
 
 /* ── E-Mail Vorschau Modal ───────────────────────────────────── */
+/* E-MAIL-Ansicht: Vorschau-Box, Statuszeile (grün = ok, rot = Fehler) und Anleitungs-Box. */
 .email-preview {
   margin-top:1.5rem; padding:1.5rem;
   background:var(--surface2); border:1px solid var(--border);
@@ -337,7 +481,18 @@ tr:hover td { background:rgba(212,245,60,.02); }
 </head>
 <body>
 
+<!--
+  Ab hier: der sichtbare Inhalt der Seite (body).
+  Tipp: onclick="..." bedeutet: beim Klick wird die genannte JavaScript-Funktion
+  aus dem script-Teil ganz unten ausgeführt.
+-->
 <!-- ── LOGIN SCREEN ───────────────────────────────────────────── -->
+<!--
+  LOGIN-FENSTER: Erscheint beim Öffnen der Seite. Hier gibst du die E-Mail
+  und das Passwort deines Admin-Kontos ein (angelegt in Supabase unter
+  Authentication, Users). Die Enter-Taste in den Feldern löst ebenfalls den
+  Login aus (doLogin).
+-->
 <div id="screen-login">
   <div class="login-box">
     <div class="login-logo">RUN<span>&</span>FUEL</div>
@@ -348,15 +503,22 @@ tr:hover td { background:rgba(212,245,60,.02); }
     <label class="login-label">Passwort</label>
     <input type="password" id="login-pw" class="login-input" placeholder="••••••••"
            onkeydown="if(event.key==='Enter')doLogin()">
+    <!-- Einloggen-Button: startet die Funktion doLogin im Script-Teil. -->
     <button class="login-btn" onclick="doLogin()">Einloggen</button>
+    <!-- Hier erscheinen Fehlermeldungen (z. B. Falsche Zugangsdaten). -->
     <div class="login-err" id="login-err"></div>
   </div>
 </div>
 
 <!-- ── APP SHELL ──────────────────────────────────────────────── -->
+<!--
+  ADMIN-APP: Alles ab hier ist erst nach dem Login sichtbar.
+  Besteht aus Kopfleiste, Seitenleiste und Inhaltsbereich.
+-->
 <div id="screen-app">
 
   <!-- Topbar -->
+  <!-- Kopfleiste: links Logo, rechts deine E-Mail-Adresse und der Abmelden-Button. -->
   <div class="topbar">
     <div style="display:flex;align-items:center">
       <span class="topbar-logo">RUN<span>&</span>FUEL</span>
@@ -370,9 +532,15 @@ tr:hover td { background:rgba(212,245,60,.02); }
 
   <div class="app-layout">
     <!-- Sidebar -->
+    <!--
+      SEITENLEISTE: Jeder Menüpunkt (nav-item) ruft showView('name') auf und
+      zeigt damit die Ansicht mit der id="view-name". Das kleine Bild vor dem Text
+      ist ein Icon (svg). Die Menü-Texte (z. B. Dashboard) kannst du einfach ändern.
+    -->
     <div class="sidebar">
       <div class="sidebar-section">Navigation</div>
 
+      <!-- Menüpunkt Dashboard (Übersicht mit Zahlen) -->
       <div class="nav-item active" onclick="showView('dashboard')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <rect x="1" y="1" width="6" height="6" stroke="currentColor" stroke-width="1.3" rx=".5"/>
@@ -383,6 +551,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
         Dashboard
       </div>
 
+      <!-- Menüpunkt Buchungen (Liste aller Anfragen) -->
       <div class="nav-item" onclick="showView('bookings')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <rect x="2" y="1" width="12" height="14" rx="1" stroke="currentColor" stroke-width="1.3"/>
@@ -391,9 +560,11 @@ tr:hover td { background:rgba(212,245,60,.02); }
           <line x1="5" y1="11" x2="8"  y2="11" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
         </svg>
         Buchungen
+        <!-- Zahlen-Etikett mit der Anzahl neuer Anfragen; wird vom Script ein- und ausgeblendet. -->
         <span class="nav-badge" id="nav-badge-new" style="display:none">0</span>
       </div>
 
+      <!-- Menüpunkt Verfügbarkeit (deine buchbaren Zeiten) -->
       <div class="nav-item" onclick="showView('availability')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <rect x="1" y="3" width="14" height="12" rx="1" stroke="currentColor" stroke-width="1.3"/>
@@ -404,6 +575,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
         Verfügbarkeit
       </div>
 
+      <!-- Menüpunkt PayPal (Zahlungs-Einstellungen) -->
       <div class="nav-item" onclick="showView('paypal')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/>
@@ -414,6 +586,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
 
       <div class="sidebar-section">System</div>
 
+      <!-- Menüpunkt E-Mail (EmailJS-Anleitung und Test-Mail) -->
       <div class="nav-item" onclick="showView('email')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <rect x="1" y="3" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/>
@@ -422,6 +595,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
         E-Mail
       </div>
 
+      <!-- Menüpunkt Einrichtung (Anleitung für Supabase) -->
       <div class="nav-item" onclick="showView('setup')">
         <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
           <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.3"/>
@@ -432,9 +606,15 @@ tr:hover td { background:rgba(212,245,60,.02); }
     </div>
 
     <!-- Main Content -->
+    <!-- INHALTSBEREICH rechts: enthält alle 6 Ansichten. Immer nur eine ist sichtbar. -->
     <div class="main">
 
       <!-- ── DASHBOARD ─────────────────────────────────────── -->
+      <!--
+        ANSICHT DASHBOARD: Startseite nach dem Login.
+        Oben vier Zahlen-Kacheln, darunter die 5 neuesten Anfragen.
+        Die Striche (&mdash;) werden vom Script (loadDashboard) durch echte Zahlen ersetzt.
+      -->
       <div class="view active" id="view-dashboard">
         <div class="page-title-tag">// Übersicht</div>
         <div class="page-title">DASHBOARD</div>
@@ -463,6 +643,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
         </div>
 
         <!-- Letzte 5 Anfragen -->
+        <!-- Tabelle Neueste Anfragen: Inhalt (tbody) wird vom Script automatisch gefüllt. -->
         <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem;">
           // Neueste Anfragen
         </div>
@@ -484,15 +665,26 @@ tr:hover td { background:rgba(212,245,60,.02); }
       </div>
 
       <!-- ── BUCHUNGEN ──────────────────────────────────────── -->
+      <!--
+        ANSICHT BUCHUNGEN: alle Anfragen als Tabelle.
+        Die Tabelle wird vom Script (loadBookings / renderBookingsTable) gefüllt.
+      -->
       <div class="view" id="view-bookings">
         <div class="page-title-tag">// Anfragen</div>
         <div class="page-title">BUCHUNGEN</div>
 
+        <!--
+          Filter-Buttons: zeigen nur Buchungen mit einem bestimmten Status.
+          Die Wörter in setFilter('...') müssen genau den Status-Werten in der
+          Datenbank entsprechen: neu, bestaetigt, abgesagt. Nur den sichtbaren
+          Text (z. B. Bestätigt) ändern, nicht das Wort in den Klammern.
+        -->
         <div class="filter-row">
           <button class="filter-btn active" onclick="setFilter('all',this)">Alle</button>
           <button class="filter-btn" onclick="setFilter('neu',this)">Neu</button>
           <button class="filter-btn" onclick="setFilter('bestaetigt',this)">Bestätigt</button>
           <button class="filter-btn" onclick="setFilter('abgesagt',this)">Abgesagt</button>
+          <!-- Aktualisieren: lädt die Buchungen neu aus der Datenbank. -->
           <button class="refresh-btn" onclick="loadBookings()">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path d="M10.5 6A4.5 4.5 0 1 1 9 2.5L10.5 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
@@ -503,6 +695,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
           <span class="filter-count" id="filter-count"></span>
         </div>
 
+        <!-- Die Buchungstabelle (Spaltenüberschriften hier, Zeilen kommen vom Script). -->
         <div class="table-wrap">
           <table>
             <thead><tr>
@@ -517,6 +710,11 @@ tr:hover td { background:rgba(212,245,60,.02); }
       </div>
 
       <!-- ── VERFÜGBARKEIT ──────────────────────────────────── -->
+      <!--
+        ANSICHT VERFÜGBARKEIT: Hier legst du pro Tag fest, wann man dich buchen kann.
+        Gespeichert wird in Supabase, Tabelle settings, Zeile availability.
+        Die Startseite index.html liest genau diese Daten für ihren Buchungskalender.
+      -->
       <div class="view" id="view-availability">
         <div class="page-title-tag">// Kalender</div>
         <div class="page-title">VERFÜGBARKEIT</div>
@@ -525,6 +723,12 @@ tr:hover td { background:rgba(212,245,60,.02); }
           Kunden sehen nur den aktuellen und den nächsten Monat.
         </p>
 
+        <!--
+          Auswahl, wie lang ein buchbarer Termin (Slot) ist. Die Zahl in value="..."
+          sind Minuten. Weitere Option ergänzen z. B. so:
+            option value="45" ... 45 Min ... (gleiches Muster wie die Zeilen darunter).
+          selected = diese Option ist vorausgewählt.
+        -->
         <div class="slot-dur-row">
           <label>Minuten pro Slot:</label>
           <select id="slot-dur" class="form-select" style="width:auto">
@@ -535,6 +739,7 @@ tr:hover td { background:rgba(212,245,60,.02); }
           </select>
         </div>
 
+        <!-- Wochen-Navigation: Pfeile = Woche zurück/vor, Heute = zur aktuellen Woche springen. -->
         <div class="week-nav">
           <button class="week-nav-btn" onclick="changeWeek(-1)">‹</button>
           <div>
@@ -545,13 +750,16 @@ tr:hover td { background:rgba(212,245,60,.02); }
           <button class="refresh-btn" onclick="goToCurrentWeek()" style="margin-left:.5rem">Heute</button>
         </div>
 
+        <!-- Kopiert alle Zeiten der Vorwoche in die gerade angezeigte Woche (danach noch speichern!). -->
         <div class="avail-copy-row">
           <span class="copy-hint">Vorwoche kopieren:</span>
           <button class="filter-btn" onclick="copyPrevWeek()">Vorwoche übernehmen</button>
         </div>
 
+        <!-- Hier baut das Script (buildWeekGrid) die 7 Tages-Spalten mit Schaltern und Uhrzeiten ein. -->
         <div class="week-grid" id="week-grid"></div>
 
+        <!-- Speichern: schreibt die Zeiten in die Datenbank. Ohne Klick hierauf geht nichts online! -->
         <div style="display:flex;align-items:center;gap:1rem;margin-top:1rem;">
           <button class="btn-save" onclick="saveAvailability()">Woche speichern</button>
           <span class="save-ok" id="avail-ok">✓ Gespeichert!</span>
@@ -559,6 +767,10 @@ tr:hover td { background:rgba(212,245,60,.02); }
       </div>
 
       <!-- ── PAYPAL ─────────────────────────────────────────── -->
+      <!--
+        ANSICHT PAYPAL: deine PayPal-Daten für den Zahlungslink.
+        Gespeichert in Supabase, Tabelle settings, Zeile paypal.
+      -->
       <div class="view" id="view-paypal">
         <div class="page-title-tag">// Zahlungen</div>
         <div class="page-title">PAYPAL EINSTELLUNGEN</div>
@@ -567,6 +779,11 @@ tr:hover td { background:rgba(212,245,60,.02); }
           Kunden werden direkt zu PayPal weitergeleitet.
         </p>
 
+        <!--
+          Formular: PayPal-E-Mail, Währung, Zahlungsmodus (voll oder 50 % Anzahlung)
+          und der Verwendungszweck. Bei den Auswahllisten ist value="..." der technische
+          Wert (nicht ändern), der Text dahinter ist nur die Anzeige.
+        -->
         <div class="settings-grid">
           <div class="form-group full">
             <label class="form-label">PayPal Business E-Mail *</label>
@@ -593,16 +810,19 @@ tr:hover td { background:rgba(212,245,60,.02); }
           </div>
         </div>
 
+        <!-- Vorschau des Zahlungslinks; aktualisiert sich live beim Tippen. XX steht für den späteren Betrag. -->
         <div class="pp-preview-box">
           <div class="pp-preview-label">Generierter Zahlungslink (Vorschau)</div>
           <div class="pp-preview-url" id="pp-preview-url">— Erst nach dem Eintragen der E-Mail sichtbar —</div>
         </div>
 
+        <!-- Speichern-Button für die PayPal-Daten (Funktion savePayPal). -->
         <div style="display:flex;align-items:center;gap:1rem;">
           <button class="btn-save" onclick="savePayPal()">PayPal speichern</button>
           <span class="save-ok" id="paypal-ok">✓ Gespeichert!</span>
         </div>
 
+        <!-- Kurze Anleitung zum Einrichten eines PayPal-Business-Kontos (nur Text). -->
         <div style="margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border);max-width:600px;">
           <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent2);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem;">// PayPal Business einrichten</div>
           <div style="font-size:.85rem;color:var(--muted);line-height:1.85;">
@@ -615,6 +835,11 @@ tr:hover td { background:rgba(212,245,60,.02); }
       </div>
 
       <!-- ── E-MAIL EINSTELLUNGEN ─────────────────────────────── -->
+      <!--
+        ANSICHT E-MAIL: Anleitung für EmailJS und ein Formular für eine Test-Mail.
+        Wichtig: Die Bestätigungs-Mail wird erst verschickt, wenn die drei
+        EmailJS-Werte im Script-Teil eingetragen sind (Suchbegriff EMAILJS_SERVICE_ID).
+      -->
       <div class="view" id="view-email">
         <div class="page-title-tag">// Benachrichtigungen</div>
         <div class="page-title">E-MAIL EINRICHTUNG</div>
@@ -623,6 +848,10 @@ tr:hover td { background:rgba(212,245,60,.02); }
           Dafür wird <strong style="color:var(--text)">EmailJS</strong> genutzt — kostenlos bis 200 Mails/Monat.
         </p>
 
+        <!--
+          Anleitungs-Box (nur Text). Die Wörter in doppelten geschweiften Klammern
+          sind Platzhalter, die EmailJS beim Versand durch echte Werte ersetzt.
+        -->
         <div class="emailjs-setup-hint">
           <strong style="color:var(--accent)">Einrichtung in 3 Schritten:</strong><br><br>
           <strong>1.</strong> Gehe zu <a href="https://www.emailjs.com" target="_blank">emailjs.com</a> → kostenloses Konto erstellen<br>
@@ -650,6 +879,7 @@ Matze</pre>
           <strong>5.</strong> Alle drei Werte ganz oben in der <code>admin.html</code> eintragen
         </div>
 
+        <!-- Test-Mail: Adresse eintragen, auf Test senden klicken (Funktion sendTestEmail). -->
         <div style="margin-top:2rem;padding:1.5rem;background:var(--surface);border:1px solid var(--border);max-width:620px;">
           <div style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;">// Test-E-Mail senden</div>
           <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem;">Sende eine Test-Mail an dich selbst um zu prüfen, ob EmailJS korrekt eingerichtet ist.</p>
@@ -662,6 +892,11 @@ Matze</pre>
       </div>
 
       <!-- ── EINRICHTUNG ────────────────────────────────────── -->
+      <!--
+        ANSICHT EINRICHTUNG: reine Anleitung (Text), wie Supabase eingerichtet wird.
+        Hat keine eigene Funktion. Hinweis: Der Dateiname in Schritt 5 stammt aus
+        einer früheren Version; die öffentliche Seite heißt heute index.html.
+      -->
       <div class="view" id="view-setup">
         <div class="page-title-tag">// Erste Schritte</div>
         <div class="page-title">SUPABASE EINRICHTUNG</div>
@@ -738,6 +973,7 @@ Matze</pre>
           </div>
         </div>
 
+        <!-- Sicherheits-Hinweis zum öffentlichen Schlüssel (siehe auch Erklärung im Script-Teil). -->
         <div class="setup-warn">
           <strong>⚠ Wichtig:</strong> Der <code>anon public key</code> ist für Kunden sichtbar — das ist normal und sicher, solange RLS korrekt konfiguriert ist (Schritt 3). Er erlaubt nur die freigegebenen Aktionen (Buchung eintragen, Einstellungen lesen). Der <strong>service_role</strong> Key hingegen darf <em>niemals</em> in den Frontend-Code.
         </div>
@@ -748,6 +984,11 @@ Matze</pre>
 </div><!-- /screen-app -->
 
 <!-- Booking Detail Modal -->
+<!--
+  DETAIL-FENSTER: öffnet sich beim Klick auf Detail bei einer Buchung.
+  Zeigt alle Angaben des Kunden und Buttons zum Bestätigen oder Absagen.
+  Der Inhalt (modal-body) wird vom Script (openDetail) eingefüllt.
+-->
 <div class="modal-overlay" id="detail-modal">
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Buchungsdetails</div>
@@ -760,14 +1001,31 @@ Matze</pre>
   </div>
 </div>
 
+<!-- HINWEIS-BOX: kleine Meldung unten rechts (z. B. Gespeichert!). Gesteuert von showNotif. -->
 <div class="notif" id="notif"></div>
 
+<!--
+  SCRIPT-TEIL (JavaScript): die gesamte Logik der Admin-Seite.
+  Ganz oben stehen die Zugangsdaten, danach die einzelnen Funktionen,
+  ganz unten der Startbefehl.
+-->
 <script>
 // ══════════════════════════════════════════════════════════════
 // ✏️ ANPASSEN — Supabase Zugangsdaten
 // ══════════════════════════════════════════════════════════════
+// WAS IST DAS?
+// SUPABASE_URL = die Internet-Adresse deines Supabase-Projekts (deine Datenbank).
+// SUPABASE_KEY = der öffentliche Schlüssel (publishable bzw. anon key).
+// Dieser Schlüssel DARF öffentlich im Code stehen, jeder kann ihn sehen.
+// Die Sicherheit kommt nicht vom Schlüssel, sondern von den Datenbank-Regeln
+// in Supabase (RLS = Row Level Security, Regeln pro Tabelle): Ohne Admin-Login
+// dürfen Fremde nur Buchungen eintragen und Einstellungen lesen.
+// NIEMALS hier den geheimen service_role- bzw. secret-Key eintragen!
+// Ändern musst du diese Werte nur, wenn du ein neues Supabase-Projekt anlegst.
+// (Dann auch in index.html anpassen, dort stehen dieselben Werte.)
 const SUPABASE_URL = 'https://fpmywbucovaadqvdaary.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_GNIqKvMRNcCCyE_unVR1vA_-a_TRpy-';
+// sb = die fertige Verbindung zur Datenbank. Alle Abfragen unten beginnen mit sb. ...
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ══════════════════════════════════════════════════════════════
@@ -782,35 +1040,57 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 //    → notiere die TEMPLATE_ID (z.B. "template_xyz789")
 // 4. Unter "Account" → notiere den PUBLIC_KEY
 // ══════════════════════════════════════════════════════════════
+// Die drei EmailJS-Werte findest du in deinem EmailJS-Konto.
+// Solange hier noch DEIN_... steht, werden KEINE Mails verschickt
+// (die Seite zeigt dann eine Warnung). Zum Aktivieren einfach den Text
+// zwischen den Hochkommas ersetzen, die Hochkommas selbst stehen lassen.
+// Auch der EmailJS Public Key darf öffentlich sein. Schütze dein EmailJS-Konto
+// zusätzlich, indem du dort unter Security nur deine Domain matzeperformance.de
+// erlaubst.
 const EMAILJS_SERVICE_ID  = 'DEIN_SERVICE_ID';   // z.B. 'service_abc123'
 const EMAILJS_TEMPLATE_ID = 'DEIN_TEMPLATE_ID';  // z.B. 'template_xyz789'
 const EMAILJS_PUBLIC_KEY  = 'DEIN_PUBLIC_KEY';   // z.B. 'AbcDef...'
 
 // EmailJS initialisieren
+// EmailJS wird nur gestartet, wenn ein echter Public Key eingetragen ist.
 if (EMAILJS_PUBLIC_KEY !== 'DEIN_PUBLIC_KEY') {
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 }
 
 // ── State ─────────────────────────────────────────────────────
+// Zwischenspeicher, solange die Seite offen ist:
+// allBookings    = alle geladenen Buchungen (Liste)
+// currentFilter  = welcher Filter in der Buchungsliste aktiv ist (all, neu, ...)
+// modalBookingId = welche Buchung gerade im Detail-Fenster offen ist
 let allBookings  = [];
 let currentFilter = 'all';
 let modalBookingId = null;
 
 // ── Auth ──────────────────────────────────────────────────────
+// isAdminUser: fragt bei Supabase nach, ob der eingeloggte Benutzer Admin ist.
+// sb.rpc('is_admin') ruft eine kleine Funktion namens is_admin auf, die in
+// der Supabase-Datenbank hinterlegt ist. Gibt true (ja) oder false (nein) zurück.
 async function isAdminUser() {
   const { data, error } = await sb.rpc('is_admin');
   return !error && data === true;
 }
 
+// doLogin: wird beim Klick auf Einloggen (oder Enter) ausgeführt.
+// 1. liest E-Mail und Passwort aus den Feldern
+// 2. meldet sich bei Supabase an
+// 3. prüft, ob das Konto Admin-Rechte hat; wenn nicht, wird sofort wieder abgemeldet
+// 4. zeigt die Admin-App (enterApp)
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pw    = document.getElementById('login-pw').value;
   document.getElementById('login-err').textContent = '';
   if (!email || !pw) { document.getElementById('login-err').textContent = 'Bitte E-Mail und Passwort eingeben.'; return; }
 
+  // Anmeldung bei Supabase mit E-Mail und Passwort.
   const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
   if (error) { document.getElementById('login-err').textContent = 'Falsche Zugangsdaten.'; return; }
 
+  // Eingeloggt, aber kein Admin? Dann wieder abmelden und Fehlermeldung zeigen.
   if (!(await isAdminUser())) {
     await sb.auth.signOut();
     document.getElementById('login-err').textContent = 'Dieser Zugang hat keine Admin-Berechtigung.';
@@ -819,12 +1099,16 @@ async function doLogin() {
   enterApp(data.user);
 }
 
+// doLogout: Abmelden-Button. Meldet bei Supabase ab und zeigt wieder das Login-Fenster.
 async function doLogout() {
   await sb.auth.signOut();
   document.getElementById('screen-app').style.display   = 'none';
   document.getElementById('screen-login').style.display = 'flex';
 }
 
+// checkSession: läuft automatisch beim Öffnen der Seite (siehe ganz unten).
+// Wenn du noch eingeloggt bist (der Browser merkt sich das), kommst du
+// direkt ins Admin-Panel, ohne neu einzuloggen.
 async function checkSession() {
   const { data: { session } } = await sb.auth.getSession();
   if (session && await isAdminUser()) {
@@ -834,6 +1118,8 @@ async function checkSession() {
   }
 }
 
+// enterApp: blendet das Login aus und die Admin-App ein, zeigt deine E-Mail
+// oben rechts und lädt gleich alle Daten (Dashboard, Verfügbarkeit, PayPal).
 function enterApp(user) {
   document.getElementById('screen-login').style.display = 'none';
   document.getElementById('screen-app').style.display   = 'block';
@@ -844,6 +1130,10 @@ function enterApp(user) {
 }
 
 // ── Navigation ────────────────────────────────────────────────
+// showView: wechselt die sichtbare Ansicht, wenn du links einen Menüpunkt klickst.
+// v ist der Name, z. B. 'bookings' -> zeigt das Element mit id="view-bookings".
+// Danach wird der passende Menüpunkt markiert und bei Buchungen bzw.
+// Dashboard werden die Daten frisch geladen.
 function showView(v) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -859,16 +1149,22 @@ function showView(v) {
 }
 
 // ── Dashboard ─────────────────────────────────────────────────
+// loadDashboard: füllt das Dashboard.
+// Liest ALLE Zeilen aus der Supabase-Tabelle bookings, neueste zuerst
+// (sortiert nach created_at = Zeitpunkt der Anfrage), und berechnet die Zahlen.
 async function loadDashboard() {
   const { data, error } = await sb.from('bookings').select('*').order('created_at', { ascending: false });
   if (error) { showNotif('Fehler beim Laden', true); return; }
 
   allBookings = data || [];
+  // Zählen: gesamt, Status neu, Status bestaetigt.
+  // Umsatz (offen) = Summe der Beträge (Spalte paid) aller noch neuen Anfragen.
   const total     = allBookings.length;
   const newCount  = allBookings.filter(b => b.status === 'neu').length;
   const confirmed = allBookings.filter(b => b.status === 'bestaetigt').length;
   const revenue   = allBookings.filter(b => b.status === 'neu').reduce((s, b) => s + (b.paid || 0), 0);
 
+  // Zahlen in die vier Kacheln schreiben.
   document.getElementById('stat-total').textContent     = total;
   document.getElementById('stat-new').textContent       = newCount;
   document.getElementById('stat-confirmed').textContent = confirmed;
@@ -880,26 +1176,33 @@ async function loadDashboard() {
   else              { badge.style.display = 'none'; }
 
   // Letzte 5
+  // Die 5 neuesten Anfragen als Tabellenzeilen anzeigen.
   const recent = allBookings.slice(0, 5);
   const tbody  = document.getElementById('dash-recent-tbody');
   if (!recent.length) {
     tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><div class="empty-icon">📋</div>Noch keine Buchungen.</td></tr>';
     return;
   }
+  // Jede Buchung wird hier in eine Tabellenzeile (HTML-Text) umgewandelt.
+  // ${...} setzt den jeweiligen Wert ein, z. B. ${b.fname} = Vorname.
+  // Bei neuen Anfragen gibt es zusätzlich den Haken-Button zum schnellen Bestätigen.
   tbody.innerHTML = recent.map(b => `
     <tr>
       <td>${statusBadge(b.status)}</td>
-      <td><div class="tbl-name">${b.fname} ${b.lname}</div><div class="tbl-email">${b.email}</div></td>
-      <td class="tbl-svc">${b.service}</td>
-      <td class="tbl-date">${b.date}<br><span style="color:var(--muted)">${b.time} Uhr</span></td>
+      <td><div class="tbl-name">${esc(b.fname)} ${esc(b.lname)}</div><div class="tbl-email">${esc(b.email)}</div></td>
+      <td class="tbl-svc">${esc(b.service)}</td>
+      <td class="tbl-date">${esc(b.date)}<br><span style="color:var(--muted)">${esc(b.time)} Uhr</span></td>
       <td>
-        ${b.status === 'neu' ? `<button class="act-btn confirm" onclick="quickConfirm(${b.id})">✓</button>` : ''}
-        <button class="act-btn" onclick="openDetail(${b.id})">Detail</button>
+        ${b.status === 'neu' ? `<button class="act-btn confirm" onclick="quickConfirm(${Number(b.id)})">✓</button>` : ''}
+        <button class="act-btn" onclick="openDetail(${Number(b.id)})">Detail</button>
       </td>
     </tr>`).join('');
 }
 
 // ── Buchungen ─────────────────────────────────────────────────
+// loadBookings: lädt alle Buchungen aus der Tabelle bookings neu
+// (neueste zuerst) und zeichnet dann die Tabelle. Wird beim Öffnen der
+// Ansicht Buchungen und beim Klick auf Aktualisieren ausgeführt.
 async function loadBookings() {
   const tbody = document.getElementById('bookings-tbody');
   tbody.innerHTML = '<tr><td colspan="7" class="loading"><span class="spinner"></span>Lädt...</td></tr>';
@@ -911,6 +1214,7 @@ async function loadBookings() {
   renderBookingsTable();
 }
 
+// setFilter: wird von den Filter-Buttons aufgerufen. Merkt sich den Filter, markiert den Button und zeichnet die Tabelle neu.
 function setFilter(f, btn) {
   currentFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -918,6 +1222,8 @@ function setFilter(f, btn) {
   renderBookingsTable();
 }
 
+// renderBookingsTable: zeichnet die Buchungstabelle, nur mit den Buchungen,
+// die zum aktiven Filter passen. Lädt nichts neu aus der Datenbank.
 function renderBookingsTable() {
   const filtered = currentFilter === 'all'
     ? allBookings
@@ -931,25 +1237,47 @@ function renderBookingsTable() {
     return;
   }
 
+  // Pro Buchung eine Tabellenzeile. Je nach Status erscheinen die Buttons:
+  // Haken = bestätigen (setStatus ... 'bestaetigt'), Kreuz = absagen, Punkte = Details.
   tbody.innerHTML = filtered.map(b => `
     <tr>
       <td>${statusBadge(b.status)}</td>
-      <td class="tbl-date">${b.date}</td>
-      <td class="tbl-date">${b.time} Uhr</td>
+      <td class="tbl-date">${esc(b.date)}</td>
+      <td class="tbl-date">${esc(b.time)} Uhr</td>
       <td>
-        <div class="tbl-name">${b.fname} ${b.lname}</div>
-        <div class="tbl-email">${b.email}</div>
+        <div class="tbl-name">${esc(b.fname)} ${esc(b.lname)}</div>
+        <div class="tbl-email">${esc(b.email)}</div>
       </td>
-      <td class="tbl-svc">${b.service}</td>
-      <td class="tbl-price">${b.paid > 0 ? b.paid + '€' : '—'}</td>
+      <td class="tbl-svc">${esc(b.service)}</td>
+      <td class="tbl-price">${b.paid > 0 ? esc(b.paid) + '€' : '—'}</td>
       <td>
-        ${b.status !== 'bestaetigt' ? `<button class="act-btn confirm" onclick="setStatus(${b.id},'bestaetigt')" title="Bestätigen">✓</button>` : ''}
-        ${b.status !== 'abgesagt'   ? `<button class="act-btn del"     onclick="setStatus(${b.id},'abgesagt')"   title="Absagen">✕</button>` : ''}
-        <button class="act-btn" onclick="openDetail(${b.id})" title="Detail">⋯</button>
+        ${b.status !== 'bestaetigt' ? `<button class="act-btn confirm" onclick="setStatus(${Number(b.id)},'bestaetigt')" title="Bestätigen">✓</button>` : ''}
+        ${b.status !== 'abgesagt'   ? `<button class="act-btn del"     onclick="setStatus(${Number(b.id)},'abgesagt')"   title="Absagen">✕</button>` : ''}
+        <button class="act-btn" onclick="openDetail(${Number(b.id)})" title="Detail">⋯</button>
       </td>
     </tr>`).join('');
 }
 
+// esc: SICHERHEITS-SCHUTZ. Wandelt gefährliche Zeichen (< > & " ') in harmlosen
+// Text um, z. B. wird aus <script> der Text &lt;script&gt;. Der Browser zeigt das
+// nur als Buchstaben an und führt es NIE als Code aus.
+// Warum? Name, E-Mail, Nachricht usw. kommen aus dem öffentlichen Buchungsformular,
+// dort kann jeder alles eintippen. Ohne esc könnte jemand Code einschleusen, der
+// dann hier in deinem Admin-Bereich läuft (Fachbegriff: XSS).
+// REGEL: Jeder Wert aus der Datenbank, der per ${...} in HTML eingesetzt wird,
+// gehört in esc(...) verpackt, z. B. ${esc(b.fname)}.
+function esc(v) {
+  return String(v ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// statusBadge: macht aus dem Status-Wort der Datenbank ein farbiges Etikett.
+// Links steht der Datenbank-Wert (nicht ändern), rechts der angezeigte Text
+// (den darfst du ändern, z. B. 'Neu' in 'Offen').
 function statusBadge(s) {
   const map = {
     neu:         ['badge-new',       'Neu'],
@@ -957,10 +1285,13 @@ function statusBadge(s) {
     abgesagt:    ['badge-cancelled', 'Abgesagt'],
   };
   const [cls, label] = map[s] || ['badge-new', s];
-  return `<span class="badge ${cls}">${label}</span>`;
+  return `<span class="badge ${cls}">${esc(label)}</span>`;
 }
 
+// setStatus: ändert den Status einer Buchung (bestätigen oder absagen).
+// Wird von den Haken/Kreuz-Buttons und aus dem Detail-Fenster aufgerufen.
 async function setStatus(id, status) {
+  // Supabase: in Tabelle bookings bei der Zeile mit dieser id die Spalte status überschreiben.
   const { error } = await sb.from('bookings').update({ status }).eq('id', id);
   if (error) { showNotif('Fehler beim Aktualisieren', true); return; }
 
@@ -973,22 +1304,31 @@ async function setStatus(id, status) {
     showNotif('Termin abgesagt.');
   }
 
+  // Auch die lokale Liste anpassen, Tabelle neu zeichnen und Dashboard-Zahlen auffrischen.
   allBookings = allBookings.map(b => b.id === id ? { ...b, status } : b);
   renderBookingsTable();
   loadDashboard();
 }
 
 // ── E-Mail via EmailJS senden ─────────────────────────────────
+// sendConfirmationEmail: verschickt die Bestätigungs-Mail an den Kunden.
+// Wird automatisch aufgerufen, wenn du eine Buchung bestätigst.
+// Ablauf: PayPal-Daten aus der Datenbank holen, Zahlungslink bauen,
+// Werte für die Mail zusammenstellen, über EmailJS senden.
 async function sendConfirmationEmail(booking) {
+  // Abbruch mit Warnung, solange EmailJS noch nicht eingerichtet ist.
   if (EMAILJS_PUBLIC_KEY === 'DEIN_PUBLIC_KEY') {
     showNotif('⚠ EmailJS nicht eingerichtet — bitte Zugangsdaten eintragen.', true);
     return;
   }
 
   // PayPal-Link aus Supabase settings holen
+  // Supabase: aus Tabelle settings die Zeile mit key = paypal lesen (E-Mail, Währung, Modus, Text).
   const { data: settingsData } = await sb.from('settings').select('value').eq('key','paypal').maybeSingle();
   const pp = settingsData?.value || {};
 
+  // Zahlungslink bauen (nur wenn PayPal eingerichtet ist und die Buchung etwas kostet).
+  // Bei Modus deposit (Anzahlung) wird nur die Hälfte des Betrags verlangt.
   let paypalUrl = '— Kein PayPal konfiguriert —';
   if (pp.email && booking.paid > 0) {
     const amount  = pp.mode === 'deposit' ? booking.paid * 0.5 : booking.paid;
@@ -1000,6 +1340,11 @@ async function sendConfirmationEmail(booking) {
       `&amount=${amount.toFixed(2)}`;
   }
 
+  // Diese Werte werden an EmailJS übergeben. Die Namen links (to_name, service,
+  // date, ...) müssen genau so in deiner EmailJS-Vorlage in doppelten geschweiften
+  // Klammern stehen, z. B. Hallo {{to_name}}. Willst du einen weiteren Wert in der
+  // Mail, hier eine Zeile ergänzen und in der Vorlage denselben Namen verwenden.
+  // Wichtig: In EmailJS beim Template als Empfänger (To Email) {{to_email}} eintragen.
   const templateParams = {
     to_email:   booking.email,
     to_name:    booking.fname + ' ' + booking.lname,
@@ -1010,6 +1355,7 @@ async function sendConfirmationEmail(booking) {
     amount:     booking.paid > 0 ? booking.paid + ' €' : 'Kostenlos',
   };
 
+  // Mail über EmailJS senden. Klappt es nicht, erscheint eine rote Meldung (Details in der Browser-Konsole, Taste F12).
   try {
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
   } catch(e) {
@@ -1019,6 +1365,9 @@ async function sendConfirmationEmail(booking) {
 }
 
 // Test-E-Mail
+// sendTestEmail: Button Test senden in der Ansicht E-Mail.
+// Schickt eine Mail mit erfundenen Beispieldaten an die eingegebene Adresse,
+// um zu prüfen, ob EmailJS richtig eingerichtet ist. Ändert keine Buchung.
 async function sendTestEmail() {
   const addr = document.getElementById('test-email-addr').value.trim();
   const status = document.getElementById('test-email-status');
@@ -1047,24 +1396,28 @@ async function sendTestEmail() {
   }
 }
 
+// quickConfirm: Haken-Button auf dem Dashboard, bestätigt direkt (wie setStatus mit bestaetigt).
 async function quickConfirm(id) { await setStatus(id, 'bestaetigt'); }
 
 // ── Detail Modal ──────────────────────────────────────────────
+// openDetail: öffnet das Detail-Fenster zu einer Buchung und füllt es mit
+// allen Angaben (Leistung, Datum, Dauer, Kontakt, Betrag, Nachricht).
 function openDetail(id) {
   const b = allBookings.find(b => b.id === id);
   if (!b) return;
   modalBookingId = id;
 
   document.getElementById('modal-title').textContent = b.fname + ' ' + b.lname;
+  // Die Zeilen des Detail-Fensters. Eine Nachricht wird nur angezeigt, wenn der Kunde eine geschrieben hat.
   document.getElementById('modal-body').innerHTML = `
     <div class="modal-row"><span class="modal-key">Status</span><span class="modal-val">${statusBadge(b.status)}</span></div>
-    <div class="modal-row"><span class="modal-key">Leistung</span><span class="modal-val">${b.service}</span></div>
-    <div class="modal-row"><span class="modal-key">Datum & Zeit</span><span class="modal-val">${b.date} · ${b.time} Uhr</span></div>
-    <div class="modal-row"><span class="modal-key">Dauer</span><span class="modal-val">${b.duration || '—'}</span></div>
-    <div class="modal-row"><span class="modal-key">E-Mail</span><span class="modal-val">${b.email}</span></div>
-    <div class="modal-row"><span class="modal-key">Telefon</span><span class="modal-val">${b.phone || '—'}</span></div>
-    <div class="modal-row"><span class="modal-key">Betrag</span><span class="modal-val">${b.paid > 0 ? b.paid + '€' : 'Kostenlos'}</span></div>
-    ${b.message ? `<div class="modal-msg"><strong style="color:var(--muted);font-size:.72rem;font-family:'Space Mono',monospace;letter-spacing:.1em">NACHRICHT</strong><br><br>${b.message}</div>` : ''}
+    <div class="modal-row"><span class="modal-key">Leistung</span><span class="modal-val">${esc(b.service)}</span></div>
+    <div class="modal-row"><span class="modal-key">Datum & Zeit</span><span class="modal-val">${esc(b.date)} · ${esc(b.time)} Uhr</span></div>
+    <div class="modal-row"><span class="modal-key">Dauer</span><span class="modal-val">${esc(b.duration || '—')}</span></div>
+    <div class="modal-row"><span class="modal-key">E-Mail</span><span class="modal-val">${esc(b.email)}</span></div>
+    <div class="modal-row"><span class="modal-key">Telefon</span><span class="modal-val">${esc(b.phone || '—')}</span></div>
+    <div class="modal-row"><span class="modal-key">Betrag</span><span class="modal-val">${b.paid > 0 ? esc(b.paid) + '€' : 'Kostenlos'}</span></div>
+    ${b.message ? `<div class="modal-msg"><strong style="color:var(--muted);font-size:.72rem;font-family:'Space Mono',monospace;letter-spacing:.1em">NACHRICHT</strong><br><br>${esc(b.message).replace(/\n/g, '<br>')}</div>` : ''}
   `;
 
   // Show/hide action buttons based on current status
@@ -1074,6 +1427,7 @@ function openDetail(id) {
   document.getElementById('detail-modal').classList.add('open');
 }
 
+// modalConfirm / modalCancel: die Buttons im Detail-Fenster. Ändern den Status und schließen das Fenster.
 async function modalConfirm() {
   await setStatus(modalBookingId, 'bestaetigt');
   closeModal();
@@ -1082,29 +1436,42 @@ async function modalCancel() {
   await setStatus(modalBookingId, 'abgesagt');
   closeModal();
 }
+// closeModal: schließt das Detail-Fenster.
 function closeModal() {
   document.getElementById('detail-modal').classList.remove('open');
   modalBookingId = null;
 }
+// Klick auf den dunklen Bereich neben dem Fenster schließt es ebenfalls.
 document.getElementById('detail-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('detail-modal')) closeModal();
 });
 
 // ── Verfügbarkeit — datums-basiert ───────────────────────────
 // Format: availDates = {"2025-06-02": [["09:00","12:00"]], ...}
+// VERFÜGBARKEIT
+// Die Zeiten werden pro Datum gespeichert, z. B.:
+//   "2025-06-02": [["09:00","12:00"], ["14:00","18:00"]]
+// heißt: am 2. Juni 2025 buchbar von 9 bis 12 und von 14 bis 18 Uhr.
+// Die Startseite index.html teilt diese Fenster dann in Termine der gewählten
+// Slot-Länge auf (z. B. 60 Minuten).
+// Die folgenden Listen sind die Namen für Tage und Monate in der Anzeige.
 const DAY_NAMES  = ['Mo','Di','Mi','Do','Fr','Sa','So'];
 const DAY_FULL   = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
 const MONTHS_ADM = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
+// availDates    = alle Zeiten (siehe Format oben), solange die Seite offen ist
+// viewWeekStart = der Montag der gerade angezeigten Woche
 let availDates = {};   // {"2025-06-02": [["09:00","12:00"]], ...}
 let viewWeekStart = null; // Monday of currently shown week (Date object)
 
 // ISO date string helper
+// toDS: wandelt ein Datum in Text der Form JJJJ-MM-TT um (so wird es gespeichert).
 function toDS(date) {
   return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 }
 
 // Get Monday of the week containing a date
+// weekMonday: findet den Montag der Woche, in der ein Datum liegt.
 function weekMonday(date) {
   const d = new Date(date);
   const day = d.getDay();
@@ -1115,6 +1482,7 @@ function weekMonday(date) {
 }
 
 // ISO week number
+// isoWeek: berechnet die Kalenderwoche (KW) nach deutscher/ISO-Zählung.
 function isoWeek(date) {
   const d = new Date(date);
   d.setHours(0,0,0,0);
@@ -1123,6 +1491,10 @@ function isoWeek(date) {
   return 1 + Math.round(((d-w)/86400000 - 3 + ((w.getDay()+6)%7))/7);
 }
 
+// renderAvailability: wird nach dem Login aufgerufen.
+// Supabase: liest aus Tabelle settings die Zeile key = availability.
+// Darin stehen dates (deine Zeiten) und slotDur (Slot-Länge in Minuten).
+// Danach wird die aktuelle Woche angezeigt.
 async function renderAvailability() {
   const { data } = await sb.from('settings').select('value').eq('key','availability').maybeSingle();
   if (data?.value) {
@@ -1134,6 +1506,9 @@ async function renderAvailability() {
   buildWeekGrid();
 }
 
+// buildWeekGrid: zeichnet die 7 Tages-Spalten der angezeigten Woche neu
+// (Name, Datum, An/Aus-Schalter, Zeitfenster, Button + Zeit).
+// Wird nach jeder Änderung (Schalter, + Zeit, Woche wechseln, ...) aufgerufen.
 function buildWeekGrid() {
   const mon = new Date(viewWeekStart);
   const sun = new Date(mon); sun.setDate(sun.getDate() + 6);
@@ -1152,6 +1527,9 @@ function buildWeekGrid() {
     const isOn  = slots.length > 0;
     const isToday = ds === today;
 
+    // Uhrzeit-Felder für jedes Zeitfenster dieses Tages.
+    // step="1800" = Uhrzeiten in 30-Minuten-Schritten (1800 Sekunden).
+    // Für 15-Minuten-Schritte 900 eintragen.
     const slotRows = slots.map((s, si) => `
       <div class="slot-row">
         <input type="time" class="time-inp" id="from-${ds}-${si}" value="${s[0]}" step="1800">
@@ -1178,6 +1556,9 @@ function buildWeekGrid() {
   }).join('');
 }
 
+// toggleDay: An/Aus-Schalter eines Tages.
+// An = es wird ein Standard-Zeitfenster 09:00 bis 12:00 angelegt
+// (diese Uhrzeiten kannst du hier ändern). Aus = alle Zeiten des Tages löschen.
 function toggleDay(ds, checked) {
   document.getElementById('lbl-' + ds).textContent = checked ? 'An' : 'Aus';
   if (checked && (!availDates[ds] || availDates[ds].length === 0)) {
@@ -1189,28 +1570,35 @@ function toggleDay(ds, checked) {
   }
 }
 
+// addSlot: Button + Zeit. Fügt ein neues Zeitfenster hinzu (Standard 09:00 bis 12:00, hier änderbar).
 function addSlot(ds) {
   if (!availDates[ds]) availDates[ds] = [];
   availDates[ds].push(['09:00','12:00']);
   buildWeekGrid();
 }
 
+// removeSlot: das kleine Kreuz. Entfernt ein Zeitfenster.
 function removeSlot(ds, i) {
   if (availDates[ds]) { availDates[ds].splice(i, 1); }
   buildWeekGrid();
 }
 
+// changeWeek: Pfeil-Buttons. dir = -1 eine Woche zurück, +1 eine Woche vor.
 function changeWeek(dir) {
   viewWeekStart = new Date(viewWeekStart);
   viewWeekStart.setDate(viewWeekStart.getDate() + dir * 7);
   buildWeekGrid();
 }
 
+// goToCurrentWeek: Button Heute. Springt zur aktuellen Woche.
 function goToCurrentWeek() {
   viewWeekStart = weekMonday(new Date());
   buildWeekGrid();
 }
 
+// copyPrevWeek: übernimmt die Zeiten der Vorwoche Tag für Tag in die
+// angezeigte Woche. Tage ohne Zeiten in der Vorwoche bleiben unverändert.
+// Danach noch auf Woche speichern klicken!
 function copyPrevWeek() {
   const prevMon = new Date(viewWeekStart); prevMon.setDate(prevMon.getDate() - 7);
   let copied = false;
@@ -1229,6 +1617,9 @@ function copyPrevWeek() {
 }
 
 // Read current DOM state into availDates before saving
+// readWeekFromDOM: liest vor dem Speichern die aktuell eingetippten Uhrzeiten
+// aus den Feldern der angezeigten Woche (DOM = die Elemente auf der Seite).
+// Tage mit ausgeschaltetem Schalter werden geleert.
 function readWeekFromDOM() {
   const mon = new Date(viewWeekStart);
   for (let i = 0; i < 7; i++) {
@@ -1247,6 +1638,9 @@ function readWeekFromDOM() {
   }
 }
 
+// saveAvailability: Button Woche speichern.
+// Entfernt leere Tage und speichert ALLE Zeiten (nicht nur diese Woche)
+// zusammen mit der Slot-Länge in die Datenbank.
 async function saveAvailability() {
   readWeekFromDOM();
   const slotDur = parseInt(document.getElementById('slot-dur').value);
@@ -1255,6 +1649,10 @@ async function saveAvailability() {
   Object.entries(availDates).forEach(([ds, slots]) => {
     if (slots && slots.length > 0) cleanDates[ds] = slots;
   });
+  // Supabase: in Tabelle settings die Zeile key = availability schreiben.
+  // upsert = Zeile anlegen, falls es sie noch nicht gibt, sonst überschreiben.
+  // Gespeichert wird: { dates: {...deine Zeiten...}, slotDur: Minuten }.
+  // Genau diese Daten liest die Startseite index.html für den Buchungskalender.
   const value = { dates: cleanDates, slotDur };
   const { error } = await sb.from('settings').upsert({ key: 'availability', value }, { onConflict: 'key' });
   if (error) { showNotif('Fehler beim Speichern', true); return; }
@@ -1265,6 +1663,8 @@ async function saveAvailability() {
 }
 
 // ── PayPal ────────────────────────────────────────────────────
+// loadPayPalSettings: wird nach dem Login aufgerufen.
+// Supabase: liest Tabelle settings, Zeile key = paypal, und füllt das Formular.
 async function loadPayPalSettings() {
   const { data } = await sb.from('settings').select('value').eq('key','paypal').maybeSingle();
   if (!data || !data.value) return;
@@ -1276,6 +1676,7 @@ async function loadPayPalSettings() {
   updatePPPreview(pp);
 }
 
+// updatePPPreview: baut die Vorschau des PayPal-Zahlungslinks und zeigt sie an.
 function updatePPPreview(pp) {
   const url = pp.email
     ? `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(pp.email)}&item_name=${encodeURIComponent(pp.desc || 'Coaching')}&currency_code=${pp.currency || 'EUR'}&amount=XX`
@@ -1283,6 +1684,9 @@ function updatePPPreview(pp) {
   document.getElementById('pp-preview-url').textContent = url;
 }
 
+// savePayPal: Button PayPal speichern.
+// Liest das Formular und speichert es in Supabase (Tabelle settings, Zeile
+// key = paypal, per upsert = anlegen oder überschreiben).
 async function savePayPal() {
   const pp = {
     email:    document.getElementById('pp-email').value.trim(),
@@ -1301,6 +1705,7 @@ async function savePayPal() {
 }
 
 // Input live preview
+// Live-Vorschau: bei jeder Eingabe in diese Felder wird die Link-Vorschau sofort aktualisiert.
 ['pp-email','pp-currency','pp-desc'].forEach(id => {
   document.getElementById(id).addEventListener('input', () => {
     updatePPPreview({
@@ -1312,6 +1717,9 @@ async function savePayPal() {
 });
 
 // ── Notif Toast ───────────────────────────────────────────────
+// showNotif: zeigt die kleine Meldung unten rechts.
+// msg = der Text, isError = true macht sie rot.
+// 3000 = Anzeigedauer in Millisekunden (3 Sekunden); hier änderbar.
 function showNotif(msg, isError = false) {
   const el = document.getElementById('notif');
   el.textContent = msg;
@@ -1320,6 +1728,7 @@ function showNotif(msg, isError = false) {
 }
 
 // ── Init ──────────────────────────────────────────────────────
+// START: Beim Öffnen der Seite wird zuerst geprüft, ob du schon eingeloggt bist.
 checkSession();
 </script>
 </body>
