@@ -364,11 +364,11 @@ header{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:va
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-weight:800;font-stretch:115%;letter-spacing:.05em;font-size:14px;white-space:nowrap;margin-right:auto}
 .brand svg{width:30px;height:30px;color:var(--ink)}
 nav.main{display:flex;gap:24px}
-nav.main a{font-size:15px;text-decoration:none;color:var(--muted);position:relative;padding-block:6px;transition:color .2s}
+nav.main a{white-space:nowrap;font-size:15px;text-decoration:none;color:var(--muted);position:relative;padding-block:6px;transition:color .2s}
 nav.main a:hover,nav.main a.on{color:var(--ink)}
 nav.main a.on::after{content:"";position:absolute;left:50%;bottom:-6px;width:6px;height:6px;border-radius:50%;background:var(--signal);transform:translateX(-50%)}
 .menu-btn{display:none;background:none;border:0;color:var(--ink);padding:8px;margin-right:-8px;cursor:pointer}
-.course{position:relative;height:2px;background:var(--line)}
+.course{position:relative;height:2px;background:var(--line);overflow-x:clip}
 .course .done{position:absolute;inset:0 auto 0 0;width:0;background:var(--ink)}
 .course .dot{position:absolute;top:50%;left:0;width:10px;height:10px;border-radius:50%;background:var(--signal);transform:translate(-50%,-50%)}
 .course .km{position:absolute;right:var(--gutter-r);top:6px;font-family:var(--f-mono);font-size:11px;color:var(--muted);background:var(--paper);padding:0 6px;font-variant-numeric:tabular-nums}
@@ -675,7 +675,8 @@ details.racelist .races{margin-top:8px}
 .rf-price b{display:block;font-size:34px;font-weight:600;color:var(--ink);line-height:1.1}
 .rf-facts{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .rf-facts span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--signal);margin-right:8px;vertical-align:middle}
-@media (max-width:1180px){nav.main{gap:14px}}
+/* Ab Laptop-Breite passen 7 Menüpunkte nicht mehr in eine Zeile: dann das aufklappbare Menü zeigen (Erstgespräch-Knopf bleibt sichtbar) */
+@media (max-width:1180px){nav.main,.login{display:none}.menu-btn{display:block}}
 @media (max-width:900px){.rf-grid{grid-template-columns:1fr;gap:32px}.rf-cover{max-width:260px}}
 
 /* E-Book */
@@ -1392,10 +1393,10 @@ footer{border-top:1px solid var(--line);padding-block:56px 40px}
     <div class="eyebrow">Rechtliches</div>
     <h2 class="display" id="dlg-impressum-t">Impressum</h2>
 <h2>Angaben gemäß § 5 DDG</h2>
-<p><strong>[Mathias Schaefer]</strong><br>
+<p><strong>Mathias Schaefer</strong><br>
 Matze Performance <br>
-[Guttenbergerstraße 24]<br>
-[85101 Lenting]<br>
+Guttenbergerstraße 24<br>
+85101 Lenting<br>
 Deutschland</p>
 
 <h2>Kontakt</h2>
@@ -1408,7 +1409,7 @@ Deutschland</p>
 <p>Lauf- und Fitnesstraining sowie Ernährungscoaching. Die Tätigkeit wird nebenberuflich ausgeübt.</p>
 
 <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
-<p>[Mathias Schaefer], Anschrift wie oben.</p>
+<p>Mathias Schaefer, Anschrift wie oben.</p>
 
 <h2>Verbraucherstreitbeilegung</h2>
 <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
@@ -1428,10 +1429,10 @@ Deutschland</p>
     <div class="eyebrow">Rechtliches</div>
     <h2 class="display" id="dlg-dsgvo-t">Datenschutz</h2>
 <h2>1. Verantwortlicher</h2>
-    <p>[Mathias S.], [Guttenbergerstraße 24], [85101 Lenting], <a href="mailto:matzesperformance@gmail.com">matzesperformance@gmail.com</a></p>
+    <p>Mathias Schaefer, Guttenbergerstraße 24, 85101 Lenting, <a href="mailto:matzesperformance@gmail.com">matzesperformance@gmail.com</a></p>
 
     <h2>2. Deine Rechte</h2>
-    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Eine erteilte Einwilligung kannst du jederzeit mit Wirkung für die Zukunft widerrufen. Außerdem hast du ein Beschwerderecht bei einer Aufsichtsbehörde (siehe Punkt 12).</p>
+    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Eine erteilte Einwilligung kannst du jederzeit mit Wirkung für die Zukunft widerrufen. Außerdem hast du ein Beschwerderecht bei einer Aufsichtsbehörde (siehe Punkt 13).</p>
     
     <h2>3. Hosting</h2>
     <p>Unsere Website wird über GitHub Pages (GitHub, Inc., USA) bereitgestellt, der Trainingsbereich über Netlify (Netlify, Inc., USA). Beim Aufruf werden technisch notwendige Server-Logdaten (u. a. IP-Adresse, Datum/Uhrzeit, abgerufene Seite) verarbeitet, um einen sicheren und stabilen Betrieb zu gewährleisten. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Bei Übermittlung in die USA gelten die EU-Standardvertragsklauseln.</p>
